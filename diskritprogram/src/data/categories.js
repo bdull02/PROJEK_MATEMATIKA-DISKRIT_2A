@@ -170,7 +170,7 @@ export const categories = [
       {
         id: 'keira-11',
         title: 'KeiraMath',
-        author: 'Keira',
+        author: 'Keira Hadellya Arifin',
         nim: '2501979',
         embedPath: '/programs/KeiraMath_11_standalone.html',
         description: 'Program matematika diskrit interaktif.',

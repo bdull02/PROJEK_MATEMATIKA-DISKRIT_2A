@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<!-- Lottie Web (untuk animasi karakter lucu) -->
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Minor Matriks</title>
+<style>
+        #mathBackground {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .math-symbol {
+            position: absolute;
+            color: rgba(37, 99, 235, 0.18);
+            font-weight: bold;
+            user-select: none;
+            filter: blur(0.5px);
+            animation: floatMath linear infinite;
+        }
+
+        body.dark-mode .math-symbol {
+            color: rgba(96, 165, 250, 0.08);
+        }
+
+        @keyframes floatMath {
+            from {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+
+            to {
+                transform: translateY(0px);
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        #weatherWidget {
+            position: fixed;
+            top: 105px;
+            left: 15px;
+            background: linear-gradient(135deg, rgba(20, 28, 58, 0.85), rgba(10, 15, 35, 0.9));
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 18px 22px;
+            border-radius: 28px;
+            border: 1px solid rgba(0, 255, 255, 0.35);
+            border-top: 1px solid rgba(0, 255, 255, 0.6);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 25px rgba(0, 255, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            font-size: 14px;
+            line-height: 1.5;
+            font-family: 'Inter', 'Segoe UI', 'Poppins', system-ui, sans-serif;
+            font-weight: 500;
+            color: #ffffff;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            min-width: 210px;
+            animation: floatNeon 3s ease-in-out infinite;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            overflow: hidden;
+        }
+
+        #weatherWidget::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #00ffff, transparent);
+            border-radius: 3px;
+        }
+
+        #weatherWidget::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(270deg, #7b2ff7, transparent);
+            border-radius: 3px;
+        }
+
+        #weatherWidget .grid-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: radial-gradient(rgba(0, 255, 255, 0.08) 1px, transparent 1px);
+            background-size: 24px 24px;
+            border-radius: 28px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        #weatherWidget:hover {
+            transform: translateY(-5px) scale(1.01);
+            border-color: rgba(0, 255, 255, 0.7);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 255, 255, 0.4);
+            background: linear-gradient(135deg, rgba(25, 35, 70, 0.9), rgba(12, 18, 45, 0.95));
+        }
+
+        @keyframes floatNeon {
+            0% {
+                transform: translateY(0px);
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 255, 255, 0.15);
+            }
+
+            50% {
+                transform: translateY(-4px);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45), 0 0 30px rgba(0, 255, 255, 0.3);
+            }
+
+            100% {
+                transform: translateY(0px);
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 255, 255, 0.15);
+            }
+        }
+
+        #weatherWidget .city {
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            background: linear-gradient(135deg, #ffffff, #00ffff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 6px;
+            position: relative;
+            z-index: 1;
+        }
+
+        #weatherWidget .weather-main {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 8px 0;
+            gap: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        #weatherWidget .weather-icon {
+            font-size: 44px;
+            filter: drop-shadow(0 0 12px rgba(0, 255, 255, 0.6));
+            animation: iconPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes iconPulse {
+
+            0%,
+            100% {
+                filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.5));
+                transform: scale(1);
+            }
+
+            50% {
+                filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.9));
+                transform: scale(1.02);
+            }
+        }
+
+        #weatherWidget .temp {
+            font-size: 42px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #00ffff, #a855f7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -2px;
+            line-height: 1;
+        }
+
+        #weatherWidget .condition {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: capitalize;
+            margin: 6px 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            position: relative;
+            z-index: 1;
+        }
+
+        #weatherWidget .condition::before {
+            content: '☁️';
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        #weatherWidget .info-strip {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(0, 255, 255, 0.25);
+            position: relative;
+            z-index: 1;
+        }
+
+        #weatherWidget .info-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        #weatherWidget .info-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: rgba(0, 255, 255, 0.75);
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        #weatherWidget .info-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+        }
+
+        body.dark-mode #weatherWidget {
+            background: linear-gradient(135deg, rgba(15, 22, 45, 0.9), rgba(8, 12, 28, 0.95));
+            border-color: rgba(0, 255, 255, 0.4);
+        }
+
+        /* Jam dengan Karakter Lucu */
+        #jamRealtime {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(245, 245, 255, 0.88));
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 8px 16px 8px 12px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 180, 180, 0.4);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.02);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 9999;
+            transition: all 0.2s ease;
+        }
+
+        #jamRealtime .character {
+            width: 66px;
+            height: 66px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes cuteBounce {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-3px);
+            }
+        }
+
+        #jamRealtime .character lottie-player {
+            animation: cuteBounce 2s ease-in-out infinite;
+        }
+
+        #jamRealtime .clock-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        #jamRealtime .clock-time {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 16px;
+            font-weight: 700;
+            color: #2d3748;
+            letter-spacing: 1px;
+        }
+
+        #jamRealtime .clock-zone {
+            font-size: 9px;
+            font-weight: 500;
+            color: #e67e22;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+
+        #jamRealtime .jam-digit {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+            padding: 0 2px;
+        }
+
+        body.dark-mode #jamRealtime {
+            background: linear-gradient(135deg, rgba(30, 30, 45, 0.92), rgba(25, 25, 40, 0.88));
+            border-color: rgba(255, 120, 120, 0.3);
+        }
+
+        body.dark-mode #jamRealtime .clock-time {
+            color: #f0f0f0;
+        }
+
+        body.dark-mode #jamRealtime .clock-zone {
+            color: #f39c12;
+        }
+
+        body.dark-mode #jamRealtime .jam-digit {
+            background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        #jamRealtime:hover {
+            transform: scale(1.02);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(250, 250, 255, 0.95));
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode #jamRealtime:hover {
+            background: linear-gradient(135deg, rgba(40, 40, 55, 0.98), rgba(35, 35, 50, 0.95));
+        }
+
+        @media (max-width: 600px) {
+            #jamRealtime {
+                top: 15px;
+                left: 15px;
+                padding: 5px 12px 5px 8px;
+                gap: 6px;
+            }
+
+            #jamRealtime .character {
+                width: 28px;
+                height: 28px;
+            }
+
+            #jamRealtime .clock-time {
+                font-size: 12px;
+            }
+
+            #jamRealtime .clock-zone {
+                font-size: 7px;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f6f9;
+            padding: 30px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: auto;
+            background: white;
+            text-align: center;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.9);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2563eb;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            margin-top: 20px;
+            color: #333;
+        }
+
+        label {
+            font-weight: 600;
+        }
+
+        input[type="number"] {
+            width: 65px;
+            padding: 5px;
+            margin: 5px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            margin-top: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .matrix {
+            margin-top: 20px;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .matrix input {
+            width: 50px;
+            text-align: center;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        td {
+            border: 1px solid #d1d5db;
+            padding: 12px;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        #hasil {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card {
+            background: #f8fafc;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: fit-content;
+        }
+
+        .manual-card {
+            background: #e0e7ff;
+            border-left: 4px solid #2563eb;
+        }
+        body.dark-mode .manual-card {
+            background: #1e2a4a;
+        }
+
+        #toggleTheme {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 9999;
+        }
+
+        body.dark-mode {
+            background: #121212;
+            color: #f5f5f5;
+        }
+
+        body.dark-mode .container {
+            background: #1e1e1e;
+            color: #f5f5f5;
+        }
+
+        body.dark-mode .card {
+            background: #2b2b2b;
+        }
+
+        body.dark-mode h2 {
+            color: #f5f5f5;
+        }
+
+        body.dark-mode input {
+            background: #333;
+            color: white;
+            border-color: #555;
+        }
+
+        body.dark-mode td {
+            border-color: #555;
+        }
+
+        body.dark-mode #hasil table {
+            background: #243447;
+        }
+
+        /* Style untuk tampilan matriks minor */
+        .minor-matrix {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(0,0,0,0.05);
+            padding: 8px;
+            border-radius: 8px;
+            display: inline-block;
+            margin: 5px 0;
+        }
+        body.dark-mode .minor-matrix {
+            background: rgba(255,255,255,0.1);
+        }
+        .minor-step {
+            margin: 15px 0;
+            padding: 10px;
+            border-left: 3px solid #2563eb;
+        }
+
+        .manual-controls {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f0f4ff;
+            border-radius: 12px;
+        }
+        body.dark-mode .manual-controls {
+            background: #1a2745;
+        }
+        .manual-controls select, .manual-controls input {
+            padding: 5px 10px;
+            margin: 0 5px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+    </style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Faris Zufar Arkananta_2504382</div>
+<div id="mathBackground"></div>
+<div class="container">
+<div id="jamRealtime"></div>
+<div id="weatherWidget">
+            Memuat cuaca...
+        </div>
+<h1>📊 Minor Matriks</h1>
+<script src="https://cdn.lordicon.com/lordicon.js"></script>
+<lord-icon src="https://cdn.lordicon.com/xpesqpji.json" style="width:100px;height:100px" trigger="loop">
+</lord-icon>
+<script src="https://cdn.lordicon.com/lordicon.js"></script>
+<lord-icon src="https://cdn.lordicon.com/pvibmvxz.json" style="width:100px;height:100px" trigger="loop">
+</lord-icon>
+<button id="toggleTheme">🌙 Dark Mode</button>
+<div class="card">
+<label>Jumlah Baris:</label>
+<input id="rows" max="5" min="2" type="number" value="3"/>
+<label>Jumlah Kolom:</label>
+<input id="cols" max="5" min="2" type="number" value="3"/>
+<button onclick="buatMatriks()">Buat Matriks</button>
+</div>
+<button onclick="isiRandom()">
+            Isi Otomatis dan random
+        </button>
+<div id="matrixContainer"></div>
+<!-- ==================== MINOR MANUAL ==================== -->
+<div class="manual-controls">
+<h3>🎯 Minor Manual (Pilih Baris &amp; Kolom)</h3>
+<label>Baris yang dihapus: </label>
+<select id="manualRow">
+<option value="0">1</option>
+<option value="1">2</option>
+<option value="2">3</option>
+<option value="3">4</option>
+<option value="4">5</option>
+</select>
+<label>Kolom yang dihapus: </label>
+<select id="manualCol">
+<option value="0">1</option>
+<option value="1">2</option>
+<option value="2">3</option>
+<option value="3">4</option>
+<option value="4">5</option>
+</select>
+<button onclick="hitungMinorManual()">Hitung Minor Manual</button>
+</div>
+<button onclick="hitungMinor()">
+            🔄 Hitung Minor (Auto - Diagonal)
+        </button>
+<h2>Hasil Minor Matriks</h2>
+<div id="hasil"></div>
+</div>
+<script>
+        // ==================== JAM REALTIME ====================
+        function tampilkanJamRealtime() {
+            const jamElement = document.getElementById("jamRealtime");
+            if (jamElement) {
+                jamElement.innerHTML = `
+                    <div class="character">
+                        <lottie-player src="https://assets10.lottiefiles.com/packages/lf20_puciaact.json" 
+                            background="transparent" 
+                            speed="1" 
+                            style="width: 100%; height: 100%;" 
+                            loop 
+                            autoplay>
+                        </lottie-player>
+                    </div>
+                    <div class="clock-container">
+                        <div class="clock-time">
+                            <span class="jam-digit">--</span>:<span class="jam-digit">--</span>:<span class="jam-digit">--</span>
+                        </div>
+                        <div class="clock-zone">MEMUAT...</div>
+                    </div>
+                `;
+            }
+
+            function updateJam() {
+                const sekarang = new Date();
+                const jam = sekarang.getHours().toString().padStart(2, '0');
+                const menit = sekarang.getMinutes().toString().padStart(2, '0');
+                const detik = sekarang.getSeconds().toString().padStart(2, '0');
+                const waktuDigital = `<span class="jam-digit">${jam}</span>:<span class="jam-digit">${menit}</span>:<span class="jam-digit">${detik}</span>`;
+
+                const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                let zona = timezone;
+                if (timezone === "Asia/Jakarta") zona = "🇮🇩 WIB";
+                else if (timezone === "Asia/Makassar") zona = "🇮🇩 WITA";
+                else if (timezone === "Asia/Jayapura") zona = "🇮🇩 WIT";
+                else zona = `🕐 ${timezone.split('/').pop() || "UTC"}`;
+
+                const jamContainer = document.getElementById("jamRealtime");
+                if (jamContainer) {
+                    const timeElement = jamContainer.querySelector('.clock-time');
+                    const zoneElement = jamContainer.querySelector('.clock-zone');
+                    if (timeElement) timeElement.innerHTML = waktuDigital;
+                    if (zoneElement) zoneElement.innerHTML = zona;
+                }
+            }
+
+            updateJam();
+            setInterval(updateJam, 1000);
+        }
+        tampilkanJamRealtime();
+
+        // ==================== MATRIKS ====================
+        function buatMatriks() {
+            const rows = parseInt(document.getElementById("rows").value);
+            const cols = parseInt(document.getElementById("cols").value);
+            
+            const manualRow = document.getElementById("manualRow");
+            const manualCol = document.getElementById("manualCol");
+            manualRow.innerHTML = '';
+            manualCol.innerHTML = '';
+            for (let i = 0; i < rows; i++) {
+                manualRow.innerHTML += `<option value="${i}">${i+1}</option>`;
+                manualCol.innerHTML += `<option value="${i}">${i+1}</option>`;
+            }
+
+            let html = '<div class="matrix">';
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    html += `<input type="number" id="m_${i}_${j}" value="0">`;
+                }
+                html += "<br>";
+            }
+            html += "</div>";
+            document.getElementById("matrixContainer").innerHTML = html;
+            document.getElementById("hasil").innerHTML = "";
+        }
+
+        function isiRandom() {
+            const rows = parseInt(document.getElementById("rows").value);
+            const cols = parseInt(document.getElementById("cols").value);
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    const angkaRandom = Math.floor(Math.random() * 20) + 1;
+                    const input = document.getElementById(`m_${i}_${j}`);
+                    if (input) input.value = angkaRandom;
+                }
+            }
+        }
+
+        // ==================== FUNGSI DETERMINAN DENGAN DETAIL ====================
+        // Fungsi untuk menghitung determinan matriks 2x2 dengan detail
+        function detailDeterminan2x2(mat, prefix = "") {
+            const a = mat[0][0], b = mat[0][1], c = mat[1][0], d = mat[1][1];
+            const hasil = (a * d) - (b * c);
+            return {
+                hasil: hasil,
+                teks: `${prefix}(${a} × ${d}) − (${b} × ${c}) = ${a*d} − ${b*c} = ${hasil}`
+            };
+        }
+
+        // Fungsi untuk menghitung determinan matriks 3x3 dengan ekspansi kofaktor (detail)
+        function detailDeterminan3x3(mat, prefix = "") {
+            const a = mat[0][0], b = mat[0][1], c = mat[0][2];
+            const d = mat[1][0], e = mat[1][1], f = mat[1][2];
+            const g = mat[2][0], h = mat[2][1], i = mat[2][2];
+            
+            // Minor M11
+            const minor11 = [[e, f], [h, i]];
+            const det11 = (e * i) - (f * h);
+            // Minor M12
+            const minor12 = [[d, f], [g, i]];
+            const det12 = (d * i) - (f * g);
+            // Minor M13
+            const minor13 = [[d, e], [g, h]];
+            const det13 = (d * h) - (e * g);
+            
+            const hasil = (a * det11) - (b * det12) + (c * det13);
+            
+            let teks = `${prefix}det = ${a} × (${e}×${i} − ${f}×${h}) − ${b} × (${d}×${i} − ${f}×${g}) + ${c} × (${d}×${h} − ${e}×${g})\n`;
+            teks += `${prefix}= ${a} × (${e*i} − ${f*h}) − ${b} × (${d*i} − ${f*g}) + ${c} × (${d*h} − ${e*g})\n`;
+            teks += `${prefix}= ${a} × ${det11} − ${b} × ${det12} + ${c} × ${det13}\n`;
+            teks += `${prefix}= ${a*det11} − ${b*det12} + ${c*det13} = ${hasil}`;
+            
+            return { hasil: hasil, teks: teks };
+        }
+
+        // Fungsi determinan umum dengan rekursif dan detail untuk ukuran > 3x3
+        function hitungDeterminanDetail(mat, level = 0) {
+            const n = mat.length;
+            const indent = "  ".repeat(level);
+            
+            if (n === 1) return { hasil: mat[0][0], teks: `${indent}= ${mat[0][0]}` };
+            if (n === 2) {
+                const a = mat[0][0], b = mat[0][1], c = mat[1][0], d = mat[1][1];
+                const hasil = (a * d) - (b * c);
+                return { hasil: hasil, teks: `${indent}(${a} × ${d}) − (${b} × ${c}) = ${a*d} − ${b*c} = ${hasil}` };
+            }
+            
+            // Untuk n >= 3, ekspansi kofaktor baris pertama
+            let det = 0;
+            let teks = `${indent}det = `;
+            let steps = [];
+            
+            for (let col = 0; col < n; col++) {
+                // Buat submatriks minor
+                let subMat = [];
+                for (let i = 1; i < n; i++) {
+                    let row = [];
+                    for (let j = 0; j < n; j++) {
+                        if (j !== col) row.push(mat[i][j]);
+                    }
+                    subMat.push(row);
+                }
+                const subDet = hitungDeterminanDetail(subMat, level + 1);
+                const sign = (col % 2 === 0) ? 1 : -1;
+                const term = sign * mat[0][col] * subDet.hasil;
+                det += term;
+                
+                let signStr = (col === 0) ? "" : (sign === 1 ? " + " : " − ");
+                if (col === 0) signStr = "";
+                else signStr = (sign === 1) ? " + " : " − ";
+                
+                steps.push(`${signStr}${Math.abs(mat[0][col])} × (${subDet.hasil})`);
+            }
+            
+            teks += steps.join("");
+            teks += `\n${indent}= ${det}`;
+            
+            return { hasil: det, teks: teks };
+        }
+
+        // Fungsi untuk menghitung determinan tanpa detail (untuk keperluan internal)
+        function hitungDeterminan(mat) {
+            const n = mat.length;
+            if (n === 1) return mat[0][0];
+            if (n === 2) return (mat[0][0] * mat[1][1]) - (mat[0][1] * mat[1][0]);
+            
+            let det = 0;
+            for (let col = 0; col < n; col++) {
+                let subMat = [];
+                for (let i = 1; i < n; i++) {
+                    let row = [];
+                    for (let j = 0; j < n; j++) {
+                        if (j !== col) row.push(mat[i][j]);
+                    }
+                    subMat.push(row);
+                }
+                det += Math.pow(-1, col) * mat[0][col] * hitungDeterminan(subMat);
+            }
+            return det;
+        }
+
+        // ==================== MEMBUAT MATRIKS MINOR ====================
+        function getMinorMatrix(matrix, barisHapus, kolomHapus) {
+            let minor = [];
+            for (let i = 0; i < matrix.length; i++) {
+                if (i === barisHapus) continue;
+                let row = [];
+                for (let j = 0; j < matrix.length; j++) {
+                    if (j === kolomHapus) continue;
+                    row.push(matrix[i][j]);
+                }
+                minor.push(row);
+            }
+            return minor;
+        }
+
+        // ==================== MENAMPILKAN MATRIKS ====================
+        function tampilkanMatriks(mat) {
+            if (!mat || mat.length === 0) return "[]";
+            let result = "    ";
+            for (let i = 0; i < mat.length; i++) {
+                if (i > 0) result += "  ";
+                for (let j = 0; j < mat[i].length; j++) {
+                    result += mat[i][j];
+                    if (j < mat[i].length - 1) result += " ";
+                }
+                if (i < mat.length - 1) result += "<br>  ";
+            }
+            result += "   ";
+            return result;
+        }
+
+        // ==================== HITUNG MINOR MANUAL ====================
+        function hitungMinorManual() {
+            const rows = parseInt(document.getElementById("rows").value);
+            const cols = parseInt(document.getElementById("cols").value);
+
+            if (rows !== cols) {
+                alert("Minor hanya untuk matriks persegi!");
+                return;
+            }
+
+            let matrix = [];
+            for (let i = 0; i < rows; i++) {
+                matrix[i] = [];
+                for (let j = 0; j < cols; j++) {
+                    const el = document.getElementById(`m_${i}_${j}`);
+                    if (!el) {
+                        alert("Matriks belum dibuat!");
+                        return;
+                    }
+                    matrix[i][j] = parseFloat(el.value) || 0;
+                }
+            }
+
+            const barisHapus = parseInt(document.getElementById("manualRow").value);
+            const kolomHapus = parseInt(document.getElementById("manualCol").value);
+            
+            const minorMat = getMinorMatrix(matrix, barisHapus, kolomHapus);
+            const ukuranMinor = minorMat.length;
+            
+            let detail;
+            if (ukuranMinor === 2) {
+                detail = detailDeterminan2x2(minorMat, "");
+            } else if (ukuranMinor === 3) {
+                detail = detailDeterminan3x3(minorMat, "");
+            } else {
+                detail = hitungDeterminanDetail(minorMat, "");
+            }
+            
+            let hasilManual = `<div class="card manual-card" style="display:block;text-align:left;max-width:700px">
+                                <h3>🎯 Minor Manual M${barisHapus+1}${kolomHapus+1}</h3>
+                                <p><b>M${barisHapus+1}${kolomHapus+1}</b> = hapus baris ${barisHapus+1} kolom ${kolomHapus+1} →</p>
+                                <div class="minor-matrix">${tampilkanMatriks(minorMat)}</div>`;
+            
+            if (ukuranMinor === 1) {
+                hasilManual += `<p>→ = <b>${minorMat[0][0]}</b></p>`;
+            } else {
+                hasilManual += `<p>→ ${detail.teks.replace(/\n/g, '<br>')}</p>`;
+            }
+            
+            hasilManual += `</div>`;
+            
+            const hasilAuto = document.getElementById("hasil").innerHTML;
+            document.getElementById("hasil").innerHTML = hasilManual + hasilAuto;
+        }
+
+        // ==================== HITUNG MINOR AUTO (DIAGONAL) ====================
+        function hitungMinor() {
+            const rows = parseInt(document.getElementById("rows").value);
+            const cols = parseInt(document.getElementById("cols").value);
+
+            if (rows !== cols) {
+                document.getElementById("hasil").innerHTML = "<div class='card'><h3>❌ Minor hanya untuk matriks persegi!</h3></div>";
+                return;
+            }
+
+            let matrix = [];
+            for (let i = 0; i < rows; i++) {
+                matrix[i] = [];
+                for (let j = 0; j < cols; j++) {
+                    const el = document.getElementById(`m_${i}_${j}`);
+                    if (!el) {
+                        document.getElementById("hasil").innerHTML = "<div class='card'><h3>❌ Matriks belum dibuat!</h3></div>";
+                        return;
+                    }
+                    matrix[i][j] = parseFloat(el.value) || 0;
+                }
+            }
+
+            let hasilHTML = `<div class="card" style="display:block;text-align:left;max-width:700px">
+                            <h3>📐 Minor Matriks (Auto - Diagonal)</h3>`;
+
+            const maxTampil = Math.min(rows, 5);
+        
+            for (let idx = 0; idx < maxTampil; idx++) {
+                const i = idx;
+                const j = idx;
+                
+                const minorMat = getMinorMatrix(matrix, i, j);
+                const ukuranMinor = minorMat.length;
+                
+                let detail;
+                if (ukuranMinor === 2) {
+                    detail = detailDeterminan2x2(minorMat, "");
+                } else if (ukuranMinor === 3) {
+                    detail = detailDeterminan3x3(minorMat, "");
+                } else {
+                    detail = hitungDeterminanDetail(minorMat, "");
+                }
+                
+                hasilHTML += `<div class="minor-step">
+                              <p><b>M${i+1}${j+1}</b> = hapus baris ${i+1} kolom ${j+1} →</p>
+                              <div class="minor-matrix">${tampilkanMatriks(minorMat)}</div>`;
+                
+                if (ukuranMinor === 1) {
+                    hasilHTML += `<p>→ = <b>${minorMat[0][0]}</b></p>`;
+                } else {
+                    hasilHTML += `<p>→ ${detail.teks.replace(/\n/g, '<br>')}</p>`;
+                }
+                hasilHTML += `</div>`;
+            }
+            
+            hasilHTML += `</div>`;
+            
+            const hasilManual = document.getElementById("hasil").innerHTML;
+            if (hasilManual && hasilManual.includes("Minor Manual")) {
+                document.getElementById("hasil").innerHTML = hasilManual + hasilHTML;
+            } else {
+                document.getElementById("hasil").innerHTML = hasilHTML;
+            }
+        }
+
+        // ==================== DARK MODE ====================
+        const tombolTema = document.getElementById("toggleTheme");
+        tombolTema.addEventListener("click", () => {
+            document.body.classList.toggle("dark-mode");
+            if (document.body.classList.contains("dark-mode")) {
+                tombolTema.innerHTML = "☀️ Light Mode";
+            } else {
+                tombolTema.innerHTML = "🌙 Dark Mode";
+            }
+        });
+
+        // ==================== BACKGROUND MATEMATIKA ====================
+        function buatBackgroundMatematika() {
+            const simbol = ["∑", "∫", "π", "√", "∞", "Δ", "∇", "Aᵀ", "A⁻¹", "det(A)", "rank(A)", "Ax=b", "λ₁", "λ₂", "λ₃", "μ", "σ", "x²+y²=z²", "sin(x)", "cos(x)", "tan(x)", "Σxᵢ", "lim x→∞", "|A|", "[aᵢⱼ]"];
+            const warna = ["#60A5FA", "#38BDF8", "#22D3EE", "#2DD4BF", "#4ADE80", "#A3E635", "#FACC15", "#FB923C", "#F472B6", "#C084FC", "#818CF8", "#F9A8D4"];
+            const bg = document.getElementById("mathBackground");
+            for (let i = 0; i < 150; i++) {
+                const span = document.createElement("span");
+                span.className = "math-symbol";
+                span.style.color = warna[Math.floor(Math.random() * warna.length)];
+                span.textContent = simbol[Math.floor(Math.random() * simbol.length)];
+                span.style.left = Math.random() * 100 + "%";
+                span.style.top = Math.random() * 100 + "%";
+                span.style.fontSize = (20 + Math.random() * 25) + "px";
+                span.style.animationDuration = (4 + Math.random() * 8) + "s";
+                span.style.animationDelay = (Math.random() * 5) + "s";
+                span.style.transform = `rotate(${Math.random() * 40 - 20}deg)`;
+                bg.appendChild(span);
+            }
+        }
+        buatBackgroundMatematika();
+
+        // ==================== CUACA ====================
+        async function tampilkanCuaca() {
+            if (!navigator.geolocation) {
+                document.getElementById("weatherWidget").innerHTML = "📍 Lokasi tidak didukung";
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                const lat = pos.coords.latitude;
+                const lon = pos.coords.longitude;
+                try {
+                    const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,is_day`);
+                    const weatherData = await weatherRes.json();
+                    const lokasiRes = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=id`);
+                    const lokasiData = await lokasiRes.json();
+                    const kota = lokasiData.address.city || lokasiData.address.town || lokasiData.address.village || "Lokasi";
+                    const suhu = Math.round(weatherData.current.temperature_2m);
+                    const kelembapan = weatherData.current.relative_humidity_2m;
+                    const kode = weatherData.current.weather_code;
+                    const isDay = weatherData.current.is_day;
+                    let icon = isDay ? "☀️" : "🌙";
+                    let kondisi = "Cerah";
+                    if ([1, 2, 3].includes(kode)) kondisi = "Berawan";
+                    if ([45, 48].includes(kode)) kondisi = "Berkabut";
+                    if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(kode)) kondisi = "Hujan";
+                    if ([71, 73, 75, 77, 85, 86].includes(kode)) kondisi = "Salju";
+                    if (kondisi === "Hujan") icon = "🌧️";
+                    else if (kondisi === "Berawan") icon = "☁️";
+                    else if (kondisi === "Berkabut") icon = "🌫️";
+                    else if (kondisi === "Salju") icon = "❄️";
+                    else if (isDay) icon = "☀️";
+                    else icon = "🌙";
+
+                    document.getElementById("weatherWidget").innerHTML = `
+                        <div class="grid-bg"></div>
+                        <div class="city">📍 ${kota}</div>
+                        <div class="weather-main">
+                            <div class="weather-icon">${icon}</div>
+                            <div class="temp">${suhu}°C</div>
+                        </div>
+                        <div class="condition">${kondisi}</div>
+                        <div class="info-strip">
+                            <div class="info-item"><div class="info-label">HUMIDITY</div><div class="info-value">${kelembapan}%</div></div>
+                            <div class="info-item"><div class="info-label">FEELS LIKE</div><div class="info-value">${suhu}°C</div></div>
+                            <div class="info-item"><div class="info-label">WIND</div><div class="info-value">${Math.floor(Math.random() * 20 + 2)} km/h</div></div>
+                        </div>
+                    `;
+                } catch (err) {
+                    document.getElementById("weatherWidget").innerHTML = `<div class="grid-bg"></div><div class="city">⚠️ Gagal memuat</div><div class="weather-main"><div class="weather-icon">🌐</div><div class="temp">--°C</div></div><div class="condition">Coba lagi nanti</div>`;
+                }
+            });
+        }
+        tampilkanCuaca();
+
+        // Inisialisasi matriks awal
+        buatMatriks();
+    </script>
+</body>
+</html>

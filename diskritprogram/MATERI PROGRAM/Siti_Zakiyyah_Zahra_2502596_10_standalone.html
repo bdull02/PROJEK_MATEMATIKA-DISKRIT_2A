@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Prime Number Explorer</title>
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:#f8f7ff;
+    padding:30px;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    margin-bottom:20px;
+    border-radius:20px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.08);
+}
+
+h1{
+    text-align:center;
+    color:#7b6dff;
+    margin-bottom:20px;
+}
+
+h2{
+    color:#7b6dff;
+    margin-bottom:15px;
+}
+
+p{
+    color:#444;
+    line-height:1.8;
+}
+
+ul{
+    margin-left:20px;
+    line-height:1.8;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    border:2px solid #d9d6ff;
+    border-radius:10px;
+    margin:10px 0;
+    font-size:16px;
+}
+
+button{
+    background:#b9b4ff;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+button:hover{
+    background:#9f99ff;
+}
+
+.output{
+    margin-top:15px;
+    padding:15px;
+    background:#f4f3ff;
+    border-radius:10px;
+    line-height:1.8;
+}
+
+.prima{
+    color:green;
+    font-weight:bold;
+}
+
+.bukan{
+    color:red;
+    font-weight:bold;
+}
+
+</style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Siti Zakiyyah Zahra_2502596</div>
+<div class="container">
+<div class="card">
+<h1>Prime Number Explorer</h1>
+<p>
+Bilangan prima adalah bilangan bulat positif yang hanya memiliki dua faktor,
+yaitu 1 dan dirinya sendiri.
+</p>
+<br/>
+<p>
+Program ini dapat menganalisis bilangan prima dari berbagai bentuk ekspresi matematika.
+</p>
+<br/>
+<b>Contoh Input:</b>
+<ul>
+<li>29</li>
+<li>12 + 17</li>
+<li>50 − 13</li>
+<li>6 × 7</li>
+<li>100 ÷ 4</li>
+<li>2^5</li>
+<li>√121</li>
+<li>(7 × 8) − 3</li>
+</ul>
+</div>
+<div class="card">
+<h2>Analisis Bilangan Prima</h2>
+<input id="angka" placeholder="Masukan Operasi/Bilangan" type="text"/>
+<button onclick="analisisBilangan()">
+Analisis
+</button>
+<div class="output" id="hasil"></div>
+</div>
+<div class="card">
+<h2>Generator Bilangan Prima</h2>
+<input id="batas" placeholder="Masukkan batas bilangan" type="number"/>
+<button onclick="generatePrima()">
+Generate
+</button>
+<div class="output" id="hasilPrima"></div>
+</div>
+</div>
+<script>
+
+function isPrime(n){
+
+    if(n < 2){
+        return false;
+    }
+
+    for(let i = 2; i <= Math.sqrt(n); i++){
+
+        if(n % i === 0){
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function hitungEkspresi(ekspresi){
+
+    ekspresi = ekspresi.replace(/×/g,"*");
+    ekspresi = ekspresi.replace(/÷/g,"/");
+    ekspresi = ekspresi.replace(/−/g,"-");
+    ekspresi = ekspresi.replace(/\^/g,"**");
+
+    ekspresi = ekspresi.replace(
+        /√(\d+(\.\d+)?)/g,
+        "Math.sqrt($1)"
+    );
+
+    return Function(
+        '"use strict"; return (' +
+        ekspresi +
+        ')'
+    )();
+}
+
+function analisisBilangan(){
+
+    const hasil =
+    document.getElementById("hasil");
+
+    const ekspresi =
+    document.getElementById("angka").value;
+
+    let angka;
+
+    try{
+
+        angka =
+        hitungEkspresi(ekspresi);
+
+    }
+    catch{
+
+        hasil.innerHTML =
+        "❌ Ekspresi matematika tidak valid.";
+
+        return;
+    }
+
+    if(isNaN(angka) || angka < 0){
+
+        hasil.innerHTML =
+        "❌ Masukkan ekspresi yang valid.";
+
+        return;
+    }
+
+    angka = Math.round(angka);
+
+    let faktor = [];
+
+    for(let i=1;i<=angka;i++){
+
+        if(angka%i===0){
+
+            faktor.push(i);
+        }
+    }
+
+    let faktorPrima = [];
+
+    let temp = angka;
+
+    while(temp > 1){
+
+        let pembagi = 2;
+
+        while(temp % pembagi !== 0){
+
+            pembagi++;
+        }
+
+        faktorPrima.push(pembagi);
+
+        temp = temp / pembagi;
+    }
+
+    let status;
+    let penjelasan;
+
+    if(isPrime(angka)){
+
+        status =
+        "<span class='prima'>✅ Bilangan Prima</span>";
+
+        penjelasan =
+        angka +
+        " hanya memiliki dua faktor yaitu 1 dan " +
+        angka +
+        ". Karena jumlah faktornya tepat dua, maka bilangan tersebut termasuk bilangan prima.";
+
+    }
+    else{
+
+        status =
+        "<span class='bukan'>❌ Bukan Bilangan Prima</span>";
+
+        penjelasan =
+        angka +
+        " memiliki lebih dari dua faktor yaitu " +
+        faktor.join(", ") +
+        ". Oleh karena itu bilangan tersebut bukan bilangan prima.";
+    }
+
+    hasil.innerHTML =
+
+    "<h3>Hasil Analisis</h3>" +
+
+    "<b>Ekspresi Matematika:</b> " +
+    ekspresi +
+
+    "<br><br><b>Hasil Perhitungan:</b> " +
+    angka +
+
+    "<br><br><b>Status:</b> " +
+    status +
+
+    "<br><br><b>Faktor Bilangan:</b> " +
+    faktor.join(", ") +
+
+    "<br><br><b>Jumlah Faktor:</b> " +
+    faktor.length +
+
+    "<br><br><b>Faktorisasi Prima:</b> " +
+    faktorPrima.join(" × ") +
+
+    "<br><br><b>Penjelasan:</b><br>" +
+    penjelasan;
+}
+
+function generatePrima(){
+
+    const batas =
+    parseInt(
+        document.getElementById("batas").value
+    );
+
+    const hasil =
+    document.getElementById("hasilPrima");
+
+    if(isNaN(batas) || batas < 2){
+
+        hasil.innerHTML =
+        "Masukkan bilangan lebih besar dari 1.";
+
+        return;
+    }
+
+    let daftar = [];
+
+    for(let i=2;i<=batas;i++){
+
+        if(isPrime(i)){
+
+            daftar.push(i);
+        }
+    }
+
+    hasil.innerHTML =
+
+    "<b>Bilangan Prima dari 2 sampai " +
+    batas +
+    ":</b><br><br>" +
+
+    daftar.join(", ");
+}
+
+</script>
+</body>
+</html>

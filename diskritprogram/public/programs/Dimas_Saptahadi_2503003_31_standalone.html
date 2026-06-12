@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EqualCheck - Himpunan yang Sama</title>
+<style>
+
+body{
+    background:#eef2ff;
+    font-family:Verdana, sans-serif;
+    margin:0;
+    padding:25px;
+}
+
+.wrapper{
+    max-width:900px;
+    margin:auto;
+    background:white;
+    padding:35px;
+    border-radius:15px;
+    box-shadow:0 0 15px rgba(0,0,0,0.15);
+}
+
+h1{
+    text-align:center;
+    color:#4338ca;
+    font-size:42px;
+}
+
+.sub{
+    text-align:center;
+    color:#4b5563;
+    margin-bottom:30px;
+}
+
+.kotak-rumus{
+    background:#e0e7ff;
+    padding:15px;
+    border-left:6px solid #4338ca;
+    border-radius:8px;
+    font-size:22px;
+}
+
+label{
+    display:block;
+    margin-top:20px;
+    font-size:18px;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:1px solid #cbd5e1;
+    margin-top:8px;
+    font-size:16px;
+}
+
+button{
+    width:100%;
+    margin-top:25px;
+    padding:14px;
+    background:#4338ca;
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:18px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#312e81;
+}
+
+#hasil{
+    margin-top:25px;
+    padding:18px;
+    border-radius:10px;
+    background:#f1f5f9;
+    font-size:20px;
+}
+
+.info{
+    margin-top:30px;
+    line-height:1.8;
+}
+
+</style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Dimas Saptahadi_2503003</div>
+<div class="wrapper">
+<h1>EqualCheck</h1>
+<p class="sub">
+Sistem Pengecekan Himpunan yang Sama
+</p>
+<h2>Pengertian</h2>
+<p>
+Himpunan yang sama adalah dua himpunan yang memiliki anggota yang persis sama walaupun urutannya berbeda.
+</p>
+<div class="kotak-rumus">
+A = B jika seluruh anggota A dan B sama
+</div>
+<h2>Program Pengecekan</h2>
+<label>Masukkan Himpunan A</label>
+<input id="himpunanA" placeholder="Contoh: 1,2,3" type="text"/>
+<label>Masukkan Himpunan B</label>
+<input id="himpunanB" placeholder="Contoh: 3,2,1" type="text"/>
+<button onclick="cekHimpunan()">Cek Kesamaan</button>
+<div id="hasil">
+Hasil pengecekan akan muncul di sini...
+</div>
+<div class="info">
+<h2>Fungsi Sistem</h2>
+<ul>
+<li>Mengecek apakah dua himpunan sama</li>
+<li>Menghapus data yang duplikat</li>
+<li>Membantu pembelajaran Matematika Diskrit</li>
+<li>Menampilkan hasil otomatis</li>
+</ul>
+</div>
+</div>
+<script>
+
+function cekHimpunan(){
+
+    let A = document.getElementById("himpunanA").value
+            .split(",")
+            .map(data => data.trim());
+
+    let B = document.getElementById("himpunanB").value
+            .split(",")
+            .map(data => data.trim());
+
+    A = [...new Set(A)].sort();
+    B = [...new Set(B)].sort();
+
+    let status = JSON.stringify(A) === JSON.stringify(B);
+
+    if(status){
+        document.getElementById("hasil").innerHTML =
+        "<b>Kesimpulan:</b> Himpunan A dan B adalah HIMPUNAN YANG SAMA.";
+    }
+    else{
+        document.getElementById("hasil").innerHTML =
+        "<b>Kesimpulan:</b> Himpunan A dan B BUKAN himpunan yang sama.";
+    }
+}
+
+</script>
+</body>
+</html>

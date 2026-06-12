@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sistem Kombinasi Linear</title>
+<style>
+
+        body{
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container{
+            background: white;
+            width: 420px;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        h2{
+            text-align: center;
+            color: #0077cc;
+            margin-bottom: 20px;
+        }
+
+        label{
+            font-weight: bold;
+        }
+
+        input{
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        button{
+            width: 100%;
+            padding: 12px;
+            background-color: #0077cc;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover{
+            background-color: #005fa3;
+        }
+
+        #hasil{
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f2f9ff;
+            border-left: 5px solid #0077cc;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+    </style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Rizqi Muhammad Habibi_2503124</div>
+<div class="container">
+<h2>Sistem Kombinasi Linear</h2>
+<label>Masukkan Nilai a</label>
+<input id="a" type="number"/>
+<label>Masukkan Nilai b</label>
+<input id="b" type="number"/>
+<label>Masukkan Nilai c</label>
+<input id="c" type="number"/>
+<button onclick="hitung()">
+        Cari Solusi
+    </button>
+<div id="hasil"></div>
+</div>
+<script>
+
+function hitung(){
+
+    let a = parseInt(document.getElementById("a").value);
+    let b = parseInt(document.getElementById("b").value);
+    let c = parseInt(document.getElementById("c").value);
+
+    let ditemukan = false;
+    let hasil = "";
+
+    for(let x = 0; x <= 50; x++){
+
+        for(let y = 0; y <= 50; y++){
+
+            if((a * x) + (b * y) === c){
+
+                hasil =
+                "Solusi ditemukan <br><br>" +
+                "Nilai x = " + x + "<br>" +
+                "Nilai y = " + y;
+
+                ditemukan = true;
+                break;
+            }
+        }
+
+        if(ditemukan){
+            break;
+        }
+    }
+
+    if(!ditemukan){
+
+        hasil = "Tidak ada solusi";
+    }
+
+    document.getElementById("hasil").innerHTML = hasil;
+}
+
+</script>
+</body>
+</html>

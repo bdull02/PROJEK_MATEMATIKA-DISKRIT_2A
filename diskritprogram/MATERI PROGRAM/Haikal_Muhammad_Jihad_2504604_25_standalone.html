@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Perancangan Rangkaian Logika</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Sora:wght@400;500;600&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #f5f4f0;
+  --surface: #ffffff;
+  --border: #e2e0d8;
+  --text: #1a1917;
+  --text-muted: #6b6960;
+  --text-hint: #9e9c94;
+  --accent: #2a5caa;
+  --accent-light: #e8eef8;
+  --accent-text: #1a3d7a;
+  --green: #1a7a4a;
+  --green-light: #e6f4ed;
+  --green-text: #0f4f2e;
+  --amber: #8a5200;
+  --amber-light: #fef3dc;
+  --amber-text: #5a3400;
+  --blue: #1a4a8a;
+  --blue-light: #e0eaf8;
+  --blue-text: #0f2f5e;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'Sora', sans-serif;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.7;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── HEADER ── */
+header {
+  background: var(--text);
+  color: #fff;
+  padding: .85rem 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .05em;
+  background: rgba(255,255,255,.12);
+  color: rgba(255,255,255,.65);
+  padding: 3px 9px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+header h1 {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -.02em;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: rgba(255,255,255,.45);
+  white-space: nowrap;
+}
+
+/* ── LAYOUT DUA KOLOM ── */
+.layout {
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 1.25rem 1.25rem 2rem;
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 1.25rem;
+  align-items: start;
+  flex: 1;
+}
+
+.kolom-materi {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: sticky;
+  top: 58px;
+  max-height: calc(100vh - 70px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.kolom-materi::-webkit-scrollbar { width: 4px; }
+.kolom-materi::-webkit-scrollbar-track { background: transparent; }
+.kolom-materi::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.kolom-evaluator {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem;
+}
+
+.card h2 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: .65rem;
+  color: var(--text);
+}
+
+.card p {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: .4rem;
+}
+
+.section-note {
+  font-size: 12px;
+  color: var(--text-hint);
+  margin-bottom: .65rem;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12px;
+  background: #f0efe9;
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: var(--text);
+}
+
+/* ── AKSIOMA / LANGKAH ── */
+.aksioma-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: .65rem 0;
+}
+
+.aksioma-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: .4rem .7rem;
+  background: #f8f7f3;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.aksioma-nama {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-hint);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  width: 72px;
+  flex-shrink: 0;
+}
+
+.aksioma-expr {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.operator-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: .65rem;
+}
+
+.op-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  background: var(--accent-light);
+  border: 1px solid #a8bfdf;
+  border-radius: 20px;
+  font-size: 11px;
+}
+
+.op-sym {
+  font-family: var(--mono);
+  font-weight: 600;
+  color: var(--accent-text);
+  font-size: 13px;
+}
+
+.op-name { color: var(--accent-text); }
+
+/* ── INFO BOX ── */
+.info-box {
+  background: var(--amber-light);
+  border: 1px solid #f0d898;
+  border-radius: var(--radius-sm);
+  padding: .65rem .85rem;
+  font-size: 12.5px;
+  color: var(--amber-text);
+  margin-top: .65rem;
+  line-height: 1.65;
+}
+
+.info-box.info-blue {
+  background: var(--blue-light);
+  border-color: #a8bfdf;
+  color: var(--blue-text);
+}
+
+.info-box code {
+  background: rgba(255,255,255,.6);
+  color: inherit;
+}
+
+.lit {
+  font-family: var(--mono);
+  font-size: 12px;
+  background: rgba(255,255,255,.7);
+  color: var(--amber);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+/* ── FUNGSI LIST ── */
+.fn-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.fn-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .45rem .75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+  gap: 8px;
+}
+
+.fn-item:hover {
+  background: #f8f7f3;
+  border-color: #c8c6be;
+}
+
+.fn-item.active {
+  background: var(--accent-light);
+  border-color: #a8bfdf;
+}
+
+.fn-expr {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text);
+}
+
+.fn-badge {
+  font-size: 10px;
+  color: var(--text-hint);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── EVAL DESC ── */
+.eval-desc {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-bottom: .75rem;
+  line-height: 1.6;
+  min-height: 0;
+}
+.eval-desc:empty { display: none; }
+
+/* ── EVALUATOR ── */
+.eval-fn-display {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: .75rem;
+  padding: .55rem .85rem;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.eval-label {
+  font-size: 11px;
+  color: var(--text-hint);
+  flex-shrink: 0;
+}
+
+.eval-fn-text {
+  font-family: var(--mono);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* ── VAR TOGGLES ── */
+.var-area {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: .85rem;
+}
+
+.var-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.var-name {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.toggle-btn {
+  width: 42px;
+  height: 24px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  cursor: pointer;
+  position: relative;
+  transition: background .2s, border-color .2s;
+}
+
+.toggle-btn.on {
+  background: var(--green);
+  border-color: var(--green);
+}
+
+.toggle-btn::after {
+  content: '';
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: left .2s;
+}
+
+.toggle-btn.on::after { left: 20px; }
+
+.var-val {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* ── STEPS ── */
+.steps-area { margin-bottom: .85rem; }
+
+.steps-label {
+  font-size: 11px;
+  color: var(--text-hint);
+  margin-bottom: 4px;
+}
+
+.steps-box {
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 2;
+  padding: .65rem .85rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+}
+
+.step-line {
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--text-muted);
+  white-space: pre;
+}
+
+.step-line:first-child {
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* ── PENJELASAN ── */
+.penjelasan-box {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: var(--green-light);
+  border: 1px solid #a8d4bb;
+  border-radius: var(--radius-sm);
+  padding: .7rem .9rem;
+  margin-bottom: .85rem;
+  font-size: 13px;
+  color: var(--green-text);
+  line-height: 1.65;
+}
+
+.penjelasan-box:empty { display: none; }
+.penjelasan-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+.penjelasan-text strong { font-weight: 600; }
+
+/* ── RESULT ── */
+.result-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.result-label {
+  font-size: 13px;
+  color: var(--text-hint);
+}
+
+.result-val {
+  font-size: 26px;
+  font-weight: 600;
+  font-family: var(--mono);
+}
+
+.result-val.r1 { color: var(--green); }
+.result-val.r0 { color: var(--text-hint); }
+
+.result-word {
+  font-size: 12px;
+  padding: 2px 10px;
+  border-radius: 20px;
+}
+
+.result-word.r1 { background: var(--green-light); color: var(--green-text); }
+.result-word.r0 { background: #f0efe9; color: var(--text-hint); }
+
+/* ── TABEL KEBENARAN ── */
+.table-wrap {
+  overflow-x: auto;
+}
+
+.truth-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 12.5px;
+}
+
+.truth-table th {
+  background: #f0efe9;
+  padding: 6px 14px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .05em;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+
+.truth-table th:last-child {
+  background: var(--accent-light);
+  color: var(--accent-text);
+  border-right: none;
+}
+
+.truth-table td {
+  padding: 5px 14px;
+  text-align: center;
+  color: var(--text-muted);
+  border-bottom: 1px solid #f0efe9;
+  border-right: 1px solid #f0efe9;
+}
+
+.truth-table td:last-child { border-right: none; }
+
+.truth-table tr:last-child td { border-bottom: none; }
+
+.truth-table tr.row-active td { background: #f8f7f3; }
+
+.truth-table td.val-1 { color: var(--green); font-weight: 600; }
+.truth-table td.val-0 { color: var(--text-hint); }
+.truth-table td.out-1 {
+  color: var(--green);
+  font-weight: 700;
+  background: var(--green-light);
+}
+.truth-table td.out-0 {
+  color: var(--text-hint);
+}
+
+/* ── KUSTOM ── */
+.input-row {
+  display: flex;
+  gap: 8px;
+  margin-top: .5rem;
+}
+
+.input-row input {
+  flex: 1;
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+  transition: border-color .15s;
+}
+
+.input-row input:focus { border-color: var(--accent); }
+
+.input-row button {
+  padding: 8px 16px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--text);
+  color: #fff;
+  cursor: pointer;
+  transition: opacity .15s;
+}
+
+.input-row button:hover { opacity: .85; }
+
+.custom-err {
+  font-size: 12px;
+  color: #b94040;
+  margin-top: 6px;
+  min-height: 18px;
+}
+
+/* ── FOOTER ── */
+footer {
+  text-align: center;
+  padding: 1rem;
+  font-size: 11px;
+  color: var(--text-hint);
+  border-top: 1px solid var(--border);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 720px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .kolom-materi {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+  header { flex-wrap: wrap; }
+  .subtitle { display: none; }
+}
+</style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Haikal Muhammad Jihad_2504604</div>
+<header>
+<span class="badge">Haikal Muhammad Jihad (2504604)</span>
+<h1>Perancangan Rangkaian Logika</h1>
+<p class="subtitle">Peta Karnaugh, Fungsi Boolean, dan Rangkaian Digital</p>
+</header>
+<main class="layout">
+<!-- KOLOM KIRI: Materi -->
+<aside class="kolom-materi">
+<!-- SECTION 0: Definisi -->
+<section class="card" id="definisi">
+<h2>Perancangan Rangkaian Logika</h2>
+<p>
+          Rangkaian logika dirancang dari <strong>fungsi Boolean</strong> yang diperoleh melalui
+          tabel kebenaran dan disederhanakan menggunakan <strong>Peta Karnaugh</strong>.
+        </p>
+<div class="aksioma-list">
+<div class="aksioma-item">
+<div class="aksioma-nama">Langkah 1</div>
+<div class="aksioma-expr">Buat tabel kebenaran</div>
+</div>
+<div class="aksioma-item">
+<div class="aksioma-nama">Langkah 2</div>
+<div class="aksioma-expr">Sederhanakan dengan K-Map</div>
+</div>
+<div class="aksioma-item">
+<div class="aksioma-nama">Langkah 3</div>
+<div class="aksioma-expr">Gambar rangkaian logika</div>
+</div>
+<div class="aksioma-item">
+<div class="aksioma-nama">Gerbang</div>
+<div class="aksioma-expr">AND · OR + NOT '</div>
+</div>
+</div>
+<div class="operator-row">
+<div class="op-chip"><span class="op-sym">·</span><span class="op-name">AND</span></div>
+<div class="op-chip"><span class="op-sym">+</span><span class="op-name">OR</span></div>
+<div class="op-chip"><span class="op-sym">'</span><span class="op-name">NOT</span></div>
+<div class="op-chip"><span class="op-sym">⊕</span><span class="op-name">XOR</span></div>
+</div>
+</section>
+<!-- SECTION 1: Peta Karnaugh -->
+<section class="card" id="kmap">
+<h2>Peta Karnaugh (K-Map)</h2>
+<p>
+          Peta Karnaugh adalah metode grafis untuk menyederhanakan fungsi Boolean.
+          Minterm yang berdekatan dikelompokkan dalam kelipatan 2.
+        </p>
+<div class="info-box">
+          Sel bertanda <strong>X</strong> adalah <em>don't care</em> — nilainya bebas
+          dan dapat dimanfaatkan untuk memperbesar kelompok sehingga ekspresi lebih sederhana.
+        </div>
+<div class="info-box info-blue">
+          Semakin besar kelompok (1→2→4→8 sel), semakin sedikit literal dalam hasil penyederhanaan.
+        </div>
+</section>
+<!-- SECTION 2: Daftar Contoh -->
+<section class="card" id="contoh">
+<h2>Contoh Rangkaian</h2>
+<p class="section-note">Klik salah satu untuk mencoba simulasi evaluasinya.</p>
+<div class="fn-list" id="fn-list">
+<div class="fn-item active" data-key="majority" onclick="pilihFungsi('majority', this)">
+<span class="fn-expr">f(x,y,z) = xz + xy + yz</span>
+<span class="fn-badge">Majority Gate</span>
+</div>
+<div class="fn-item" data-key="genap" onclick="pilihFungsi('genap', this)">
+<span class="fn-expr">f(a0..a3) = a3'</span>
+<span class="fn-badge">Bilangan Genap</span>
+</div>
+<div class="fn-item" data-key="halfadder_sum" onclick="pilihFungsi('halfadder_sum', this)">
+<span class="fn-expr">SUM = x ⊕ y</span>
+<span class="fn-badge">Half Adder — Sum</span>
+</div>
+<div class="fn-item" data-key="halfadder_carry" onclick="pilihFungsi('halfadder_carry', this)">
+<span class="fn-expr">CARRY = x · y</span>
+<span class="fn-badge">Half Adder — Carry</span>
+</div>
+<div class="fn-item" data-key="kuadrat_a" onclick="pilihFungsi('kuadrat_a', this)">
+<span class="fn-expr">a(x,y) = xy</span>
+<span class="fn-badge">Kuadrat 2-bit — bit a</span>
+</div>
+<div class="fn-item" data-key="kuadrat_b" onclick="pilihFungsi('kuadrat_b', this)">
+<span class="fn-expr">b(x,y) = xy'</span>
+<span class="fn-badge">Kuadrat 2-bit — bit b</span>
+</div>
+<div class="fn-item" data-key="lebih_besar" onclick="pilihFungsi('lebih_besar', this)">
+<span class="fn-expr">f = a1b1' + a2b1'b2' + a1a2b2'</span>
+<span class="fn-badge">Komparator A &gt; B</span>
+</div>
+</div>
+</section>
+</aside>
+<!-- KOLOM KANAN: Evaluator -->
+<div class="kolom-evaluator">
+<!-- SECTION 3: Evaluator -->
+<section class="card" id="evaluator">
+<h2>Evaluasi Fungsi</h2>
+<div class="eval-fn-display">
+<span class="eval-label">Fungsi aktif:</span>
+<span class="eval-fn-text" id="eval-fn-text">f(x, y, z) = xz + xy + yz</span>
+</div>
+<div class="eval-desc" id="eval-desc"></div>
+<div class="var-area" id="var-area"></div>
+<div class="steps-area">
+<div class="steps-label">Langkah evaluasi:</div>
+<div class="steps-box" id="steps-box">—</div>
+</div>
+<div class="penjelasan-box" id="penjelasan-box"></div>
+<div class="result-area" id="result-area"></div>
+</section>
+<!-- SECTION 4: Tabel Kebenaran -->
+<section class="card" id="tabel">
+<h2>Tabel Kebenaran</h2>
+<p class="section-note">Tabel kebenaran lengkap untuk fungsi yang sedang aktif.</p>
+<div class="table-wrap" id="table-wrap">
+<p style="color:var(--text-hint);font-size:13px">Pilih fungsi untuk melihat tabel kebenaran.</p>
+</div>
+</section>
+<!-- SECTION 5: Fungsi Kustom -->
+<section class="card" id="kustom">
+<h2>Coba Fungsi Sendiri</h2>
+<p class="section-note">
+          Tulis ekspresi Boolean menggunakan <code>AND</code>, <code>OR</code>, <code>NOT</code>, <code>XOR</code>.
+          Peubah: <code>x</code>, <code>y</code>, <code>z</code>
+</p>
+<div class="input-row">
+<input id="custom-input" placeholder="contoh: (x AND y) OR (NOT z)" type="text" value="(x AND y) OR (NOT z)"/>
+<button onclick="pakaiKustom()">Gunakan</button>
+</div>
+<div class="custom-err" id="custom-err"></div>
+</section>
+</div>
+</main>
+<footer>
+<p>Materi dari: Aljabar Boolean (Bag. 3) — Rinaldi Munir, ITB — IF1220 Matematika Diskrit</p>
+</footer>
+<script>const FUNGSI = {
+
+  majority: {
+    label: 'f(x, y, z) = xz + xy + yz',
+    desc: 'Majority Gate: output = 1 jika mayoritas input (minimal 2 dari 3) bernilai 1. Diperoleh dari tabel kebenaran 3 variabel dan disederhanakan dengan K-Map.',
+    vars: ['x', 'y', 'z'],
+    hitung: (v) => ((v.x && v.z) || (v.x && v.y) || (v.y && v.z)) ? 1 : 0,
+    jelaskan: (v) => {
+      const xz = (v.x && v.z) ? 1 : 0;
+      const xy = (v.x && v.y) ? 1 : 0;
+      const yz = (v.y && v.z) ? 1 : 0;
+      const h  = (xz || xy || yz) ? 1 : 0;
+      return [
+        `f(x, y, z) = xz + xy + yz`,
+        `f(${v.x}, ${v.y}, ${v.z}) = (${v.x}·${v.z}) + (${v.x}·${v.y}) + (${v.y}·${v.z})`,
+        `           = ${xz} + ${xy} + ${yz}`,
+        `           = ${h}`,
+        `Suku xz = ${v.x}·${v.z} = ${xz}. Suku xy = ${v.x}·${v.y} = ${xy}. Suku yz = ${v.y}·${v.z} = ${yz}. Hasilnya OR dari ketiga suku: ${xz}+${xy}+${yz} = ${h}. Fungsi bernilai 1 jika minimal 2 input bernilai 1 (mayoritas).`
+      ];
+    },
+    tabel: () => buildTabel(['x','y','z'], (v) => ((v.x&&v.z)||(v.x&&v.y)||(v.y&&v.z)) ? 1 : 0)
+  },
+
+  genap: {
+    label: "f(a0, a1, a2, a3) = a3'",
+    desc: "Deteksi bilangan genap dalam representasi 4-bit BCD. Sebuah desimal genap selalu memiliki bit paling kanan (a3) = 0, sehingga f = a3' (NOT dari bit terakhir).",
+    vars: ['a0','a1','a2','a3'],
+    hitung: (v) => v.a3 ? 0 : 1,
+    jelaskan: (v) => {
+      const h = v.a3 ? 0 : 1;
+      return [
+        `f(a0, a1, a2, a3) = a3'`,
+        `f(${v.a0}, ${v.a1}, ${v.a2}, ${v.a3}) = (${v.a3})'`,
+        `                 = ${h}`,
+        `Bilangan genap selalu memiliki bit terakhir (a3) = 0. Fungsinya cukup memeriksa apakah a3 = 0, yaitu dengan NOT a3. (${v.a3})' = ${h}. ${h ? 'Bilangan ini GENAP.' : 'Bilangan ini GANJIL.'}`
+      ];
+    },
+    tabel: () => buildTabel(['a0','a1','a2','a3'], (v) => v.a3 ? 0 : 1, 10)
+  },
+
+  halfadder_sum: {
+    label: "SUM(x, y) = x ⊕ y",
+    desc: "Half Adder — keluaran SUM. Penjumlahan dua bit menghasilkan jumlah (SUM) yang merupakan operasi XOR. SUM = 1 jika kedua bit berbeda.",
+    vars: ['x','y'],
+    hitung: (v) => (v.x ^ v.y) ? 1 : 0,
+    jelaskan: (v) => {
+      const h = (v.x ^ v.y) ? 1 : 0;
+      const nx = v.x ? 0 : 1, ny = v.y ? 0 : 1;
+      const t1 = (!v.x && v.y) ? 1 : 0;
+      const t2 = (v.x && !v.y) ? 1 : 0;
+      return [
+        `SUM(x, y) = x'y + xy' = x ⊕ y`,
+        `SUM(${v.x}, ${v.y}) = (${v.x})'·${v.y} + ${v.x}·(${v.y})'`,
+        `          = ${nx}·${v.y} + ${v.x}·${ny}`,
+        `          = ${t1} + ${t2}`,
+        `          = ${h}`,
+        `x'y = ${nx}·${v.y} = ${t1} (x=0 dan y=1). xy' = ${v.x}·${ny} = ${t2} (x=1 dan y=0). SUM = ${t1}+${t2} = ${h}. SUM bernilai 1 hanya jika tepat satu input bernilai 1 (operasi XOR).`
+      ];
+    },
+    tabel: () => buildTabel(['x','y'], (v) => (v.x ^ v.y) ? 1 : 0)
+  },
+
+  halfadder_carry: {
+    label: "CARRY(x, y) = x · y",
+    desc: "Half Adder — keluaran CARRY. Pindahan terjadi hanya jika kedua bit input bernilai 1. CARRY = AND dari kedua input.",
+    vars: ['x','y'],
+    hitung: (v) => (v.x && v.y) ? 1 : 0,
+    jelaskan: (v) => {
+      const h = (v.x && v.y) ? 1 : 0;
+      return [
+        `CARRY(x, y) = x · y`,
+        `CARRY(${v.x}, ${v.y}) = ${v.x} · ${v.y}`,
+        `            = ${h}`,
+        `CARRY adalah gerbang AND. Bernilai 1 hanya jika x=1 DAN y=1 secara bersamaan. ${v.x}·${v.y} = ${h}. ${h ? 'Ada pindahan ke bit berikutnya.' : 'Tidak ada pindahan.'}`
+      ];
+    },
+    tabel: () => buildTabel(['x','y'], (v) => (v.x && v.y) ? 1 : 0)
+  },
+
+  kuadrat_a: {
+    label: "a(x, y) = xy  [bit MSB dari x²]",
+    desc: "Rangkaian pengkuadrat 2-bit. Input xy (desimal 0–3), output abcd adalah kuadratnya (4-bit). Bit a (MSB) = xy, hanya bernilai 1 jika input = 11₂ (desimal 3, kuadrat = 9 = 1001₂).",
+    vars: ['x','y'],
+    hitung: (v) => (v.x && v.y) ? 1 : 0,
+    jelaskan: (v) => {
+      const h = (v.x && v.y) ? 1 : 0;
+      const dec = v.x * 2 + v.y;
+      const sq  = dec * dec;
+      return [
+        `a(x, y) = xy  [MSB kuadrat]`,
+        `a(${v.x}, ${v.y}) = ${v.x} · ${v.y}`,
+        `        = ${h}`,
+        `Input biner ${v.x}${v.y} = desimal ${dec}. Kuadratnya: ${dec}² = ${sq} = ${sq.toString(2).padStart(4,'0')}₂. Bit a (MSB, posisi ke-4) = ${h}. Bit a hanya 1 jika input = 11₂ (3²=9=1001₂).`
+      ];
+    },
+    tabel: () => buildTabel(['x','y'], (v) => (v.x && v.y) ? 1 : 0)
+  },
+
+  kuadrat_b: {
+    label: "b(x, y) = xy'  [bit ke-3 dari x²]",
+    desc: "Rangkaian pengkuadrat 2-bit. Bit b (posisi ke-3 dari kanan) = xy'. Bernilai 1 hanya jika input = 10₂ (desimal 2, kuadrat = 4 = 0100₂).",
+    vars: ['x','y'],
+    hitung: (v) => (v.x && !v.y) ? 1 : 0,
+    jelaskan: (v) => {
+      const ny = v.y ? 0 : 1;
+      const h  = (v.x && !v.y) ? 1 : 0;
+      const dec = v.x * 2 + v.y;
+      const sq  = dec * dec;
+      return [
+        `b(x, y) = xy'  [bit ke-3 kuadrat]`,
+        `b(${v.x}, ${v.y}) = ${v.x} · (${v.y})'`,
+        `        = ${v.x} · ${ny}`,
+        `        = ${h}`,
+        `Input biner ${v.x}${v.y} = desimal ${dec}. Kuadratnya: ${dec}² = ${sq} = ${sq.toString(2).padStart(4,'0')}₂. Bit b (posisi 3 dari kanan) = ${h}. b = xy' artinya x=1 DAN y=0 (input=2, kuadrat=4=0100₂).`
+      ];
+    },
+    tabel: () => buildTabel(['x','y'], (v) => (v.x && !v.y) ? 1 : 0)
+  },
+
+  lebih_besar: {
+    label: "f(a1,a2,b1,b2) = a1b1' + a2b1'b2' + a1a2b2'",
+    desc: "Komparator 2-bit: output = 1 jika A > B, di mana A = a1a2 dan B = b1b2 (representasi biner 2-bit). Diperoleh dari K-Map 4 variabel.",
+    vars: ['a1','a2','b1','b2'],
+    hitung: (v) => {
+      const A = v.a1 * 2 + v.a2;
+      const B = v.b1 * 2 + v.b2;
+      return A > B ? 1 : 0;
+    },
+    jelaskan: (v) => {
+      const nb1 = v.b1 ? 0 : 1, nb2 = v.b2 ? 0 : 1;
+      const t1 = (v.a1 && nb1) ? 1 : 0;
+      const t2 = (v.a2 && nb1 && nb2) ? 1 : 0;
+      const t3 = (v.a1 && v.a2 && nb2) ? 1 : 0;
+      const h  = (t1 || t2 || t3) ? 1 : 0;
+      const A  = v.a1 * 2 + v.a2;
+      const B  = v.b1 * 2 + v.b2;
+      return [
+        `f = a1b1' + a2b1'b2' + a1a2b2'`,
+        `f(${v.a1},${v.a2},${v.b1},${v.b2}) = ${v.a1}·${nb1} + ${v.a2}·${nb1}·${nb2} + ${v.a1}·${v.a2}·${nb2}`,
+        `              = ${t1} + ${t2} + ${t3}`,
+        `              = ${h}`,
+        `A = ${v.a1}${v.a2}₂ = ${A}, B = ${v.b1}${v.b2}₂ = ${B}. Suku a1b1' = ${t1}, a2b1'b2' = ${t2}, a1a2b2' = ${t3}. Hasil: ${h}. ${h ? `A(${A}) > B(${B}) ✓` : `A(${A}) tidak lebih besar dari B(${B}).`}`
+      ];
+    },
+    tabel: () => buildTabel(['a1','a2','b1','b2'], (v) => (v.a1*2+v.a2) > (v.b1*2+v.b2) ? 1 : 0)
+  }
+};
+
+function buildTabel(vars, fn, maxRows) {
+  const n = vars.length;
+  const total = Math.pow(2, n);
+  const limit = maxRows || total;
+
+  let html = `<table class="truth-table"><thead><tr>`;
+  vars.forEach(v => { html += `<th>${v}</th>`; });
+  html += `<th>OUTPUT</th></tr></thead><tbody>`;
+
+  for (let i = 0; i < Math.min(total, limit); i++) {
+    const vals = {};
+    vars.forEach((v, idx) => {
+      vals[v] = (i >> (n - 1 - idx)) & 1;
+    });
+    const out = fn(vals);
+    html += `<tr>`;
+    vars.forEach(v => {
+      html += `<td class="val-${vals[v]}">${vals[v]}</td>`;
+    });
+    html += `<td class="${out ? 'out-1' : 'out-0'}">${out}</td></tr>`;
+  }
+
+  if (total > limit) {
+    html += `<tr><td colspan="${n+1}" style="text-align:center;color:var(--text-hint);font-size:11px;padding:6px">... (ditampilkan ${limit} dari ${total} baris)</td></tr>`;
+  }
+
+  html += `</tbody></table>`;
+  return html;
+}
+
+let state = {
+  fnKey: 'majority',
+  custom: false,
+  customLabel: '',
+  customVars: [],
+  customEval: null,
+  nilai: { x:1, y:1, z:0, a0:0, a1:1, a2:0, a3:0, b1:0, b2:1 }
+};
+
+function pilihFungsi(key, el) {
+  state.fnKey = key;
+  state.custom = false;
+  document.getElementById('custom-err').textContent = '';
+  document.querySelectorAll('.fn-item').forEach(e => e.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+
+function toggleVar(v) {
+  state.nilai[v] = state.nilai[v] ? 0 : 1;
+  const btn = document.getElementById('tog-' + v);
+  const lbl = document.getElementById('lbl-' + v);
+  if (btn) btn.classList.toggle('on', state.nilai[v] === 1);
+  if (lbl) lbl.textContent = state.nilai[v];
+  hitung();
+}
+
+function render() {
+  const fn   = state.custom ? null : FUNGSI[state.fnKey];
+  const vars  = state.custom ? state.customVars : fn.vars;
+  const label = state.custom ? state.customLabel : fn.label;
+  const desc  = state.custom ? '' : fn.desc;
+
+  document.getElementById('eval-fn-text').textContent = label;
+  document.getElementById('eval-desc').textContent = desc;
+
+  const area = document.getElementById('var-area');
+  area.innerHTML = '';
+  vars.forEach(v => {
+    const val = state.nilai[v] ?? 0;
+    const div = document.createElement('div');
+    div.className = 'var-block';
+    div.innerHTML = `
+      <span class="var-name">${v}</span>
+      <button class="toggle-btn ${val ? 'on' : ''}" id="tog-${v}" onclick="toggleVar('${v}')"></button>
+      <span class="var-val" id="lbl-${v}">${val}</span>
+    `;
+    area.appendChild(div);
+  });
+
+  const tWrap = document.getElementById('table-wrap');
+  if (!state.custom && fn.tabel) {
+    tWrap.innerHTML = fn.tabel();
+  } else {
+    tWrap.innerHTML = '<p style="color:var(--text-hint);font-size:13px">Tabel kebenaran tidak tersedia untuk fungsi kustom.</p>';
+  }
+
+  hitung();
+}
+
+function hitung() {
+  const fn   = state.custom ? null : FUNGSI[state.fnKey];
+  const vars  = state.custom ? state.customVars : fn.vars;
+
+  let hasil, langkahLines, penjelasan;
+
+  if (state.custom) {
+    hasil = state.customEval(state.nilai);
+    langkahLines = buatLangkahKustom(vars);
+    penjelasan = buatPenjelasanKustom(vars, hasil);
+  } else {
+    hasil = fn.hitung(state.nilai);
+    const info = fn.jelaskan(state.nilai);
+    langkahLines = info.slice(0, info.length - 1);
+    penjelasan   = info[info.length - 1];
+  }
+
+  if (hasil === null) {
+    document.getElementById('steps-box').textContent = 'Ekspresi tidak valid.';
+    document.getElementById('penjelasan-box').innerHTML = '';
+    document.getElementById('result-area').innerHTML   = '';
+    return;
+  }
+
+  document.getElementById('steps-box').innerHTML =
+    langkahLines.map(l => `<div class="step-line">${escHtml(l)}</div>`).join('');
+
+  document.getElementById('penjelasan-box').innerHTML = `
+    <div class="penjelasan-icon">💡</div>
+    <div class="penjelasan-text">${penjelasan}</div>
+  `;
+
+  document.getElementById('result-area').innerHTML = `
+    <span class="result-label">Hasil:</span>
+    <span class="result-val ${hasil ? 'r1' : 'r0'}">${hasil}</span>
+    <span class="result-word ${hasil ? 'r1' : 'r0'}">${hasil ? 'BENAR (TRUE)' : 'SALAH (FALSE)'}</span>
+  `;
+
+  highlightBaris(vars);
+}
+
+function highlightBaris(vars) {
+  const rows = document.querySelectorAll('.truth-table tbody tr');
+  if (!rows.length) return;
+  const n = vars.length;
+  let idx = 0;
+  vars.forEach((v, i) => {
+    idx += (state.nilai[v] ?? 0) << (n - 1 - i);
+  });
+  rows.forEach((r, i) => r.classList.toggle('row-active', i === idx));
+}
+
+function buatLangkahKustom(vars) {
+  const nilaiStr = vars.map(v => `${v}=${state.nilai[v] ?? 0}`).join(', ');
+  let sub = state.customLabel.toUpperCase();
+  vars.forEach(v => {
+    sub = sub.replace(new RegExp('\\b' + v.toUpperCase() + '\\b', 'g'), state.nilai[v] ?? 0);
+  });
+  return [
+    state.customLabel,
+    `Dengan ${nilaiStr}:`,
+    sub
+  ];
+}
+
+function buatPenjelasanKustom(vars, hasil) {
+  const bagian = vars.map(v => `${v} = ${state.nilai[v] ?? 0}`).join(', ');
+  return `Dengan nilai ${bagian}, setelah mengganti semua peubah dan menghitung operator AND/OR/NOT/XOR secara berurutan, hasilnya adalah <strong>${hasil}</strong> (${hasil ? 'BENAR' : 'SALAH'}).`;
+}
+
+function pakaiKustom() {
+  const raw   = document.getElementById('custom-input').value.trim();
+  const errEl = document.getElementById('custom-err');
+
+  if (!raw) { errEl.textContent = 'Masukkan ekspresi terlebih dahulu.'; return; }
+
+  const vars   = ambilPeubah(raw);
+  const evalFn = buatEvaluator(raw);
+  const test   = evalFn({ x:0, y:0, z:0, a0:0, a1:0, a2:0, a3:0, b1:0, b2:0 });
+
+  if (test === null) {
+    errEl.textContent = 'Ekspresi tidak dikenali. Periksa penulisan operator (AND, OR, NOT, XOR).';
+    return;
+  }
+
+  errEl.textContent = '';
+  state.custom      = true;
+  state.customLabel = 'f(' + vars.join(', ') + ') = ' + raw;
+  state.customVars  = vars;
+  state.customEval  = evalFn;
+  state.fnKey       = null;
+
+  document.querySelectorAll('.fn-item').forEach(e => e.classList.remove('active'));
+  render();
+}
+
+function ambilPeubah(expr) {
+  const found = [];
+  ['x','y','z'].forEach(v => {
+    if (new RegExp('\\b' + v + '\\b', 'i').test(expr)) found.push(v);
+  });
+  return found.length ? found : ['x'];
+}
+
+function buatEvaluator(expr) {
+  return function(vals) {
+    let e = expr.toUpperCase().trim();
+    ['X','Y','Z'].forEach(v => {
+      e = e.replace(new RegExp('\\b' + v + '\\b', 'g'), (vals[v.toLowerCase()] ?? 0) ? 'true' : 'false');
+    });
+    e = e.replace(/\bXOR\b/g, ' XOR_OP ')
+         .replace(/\bNOT\s*/g, '!')
+         .replace(/\bAND\b/g, '&&')
+         .replace(/\bOR\b/g, '||');
+    // handle XOR
+    e = e.replace(/(true|false)\s*XOR_OP\s*(true|false)/g,
+      (m, a, b) => (a !== b ? 'true' : 'false'));
+    try {
+      return Function('"use strict"; return (' + e + ')')() ? 1 : 0;
+    } catch(err) {
+      return null;
+    }
+  };
+}
+
+function escHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>KeiraMath</title>
+<style>*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:
+linear-gradient(
+135deg,
+#ff9ecf,
+#ffc5e6,
+#ffe2f1
+);
+
+color:#333;
+}
+
+nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 10%;
+backdrop-filter:blur(20px);
+}
+
+nav ul{
+display:flex;
+gap:20px;
+list-style:none;
+}
+
+nav a{
+text-decoration:none;
+color:#d63384;
+font-weight:600;
+}
+
+.hero{
+min-height:80vh;
+display:flex;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:30px;
+}
+
+.hero h1{
+font-size:3rem;
+color:#c2185b;
+}
+
+.hero p{
+margin:20px 0;
+font-size:1.1rem;
+}
+
+.button{
+display:inline-block;
+padding:15px 30px;
+background:#ff4fa0;
+color:white;
+border-radius:50px;
+text-decoration:none;
+}
+
+section{
+padding:80px 10%;
+}
+
+h2{
+text-align:center;
+margin-bottom:40px;
+color:#c2185b;
+}
+
+.cards{
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(250px,1fr));
+gap:25px;
+}
+
+.card{
+background:rgba(255,255,255,.35);
+backdrop-filter:blur(15px);
+padding:25px;
+border-radius:20px;
+transition:.3s;
+}
+
+.card:hover{
+transform:translateY(-8px);
+}
+
+.simulator-box,
+.quiz-box,
+.play-box{
+background:rgba(255,255,255,.4);
+backdrop-filter:blur(20px);
+padding:25px;
+border-radius:20px;
+max-width:700px;
+margin:auto;
+}
+
+input,
+textarea{
+width:100%;
+padding:12px;
+margin:10px 0;
+border:none;
+border-radius:10px;
+}
+
+button{
+width:100%;
+padding:15px;
+margin-top:10px;
+background:#ff4fa0;
+color:white;
+border:none;
+border-radius:10px;
+cursor:pointer;
+}
+
+button:hover{
+opacity:.9;
+}
+
+#hasil{
+margin-top:20px;
+font-size:1.1rem;
+font-weight:600;
+}
+
+footer{
+padding:30px;
+text-align:center;
+}
+
+@media(max-width:768px){
+
+.hero h1{
+font-size:2rem;
+}
+
+nav{
+flex-direction:column;
+gap:10px;
+}
+
+nav ul{
+flex-wrap:wrap;
+justify-content:center;
+}
+
+section{
+padding:60px 20px;
+}
+
+.quiz-container{
+max-width:700px;
+margin:auto;
+background:rgba(255,255,255,.45);
+backdrop-filter:blur(20px);
+padding:30px;
+border-radius:25px;
+}
+
+#questionNumber{
+font-weight:600;
+margin-bottom:15px;
+color:#c2185b;
+}
+
+#question{
+margin-bottom:25px;
+}
+
+.answer-btn{
+display:block;
+width:100%;
+margin:10px 0;
+padding:15px;
+border:none;
+border-radius:12px;
+background:white;
+cursor:pointer;
+transition:.3s;
+font-size:16px;
+}
+
+.answer-btn:hover{
+transform:translateY(-3px);
+}
+
+.answer-btn.selected{
+background:#ff69b4;
+color:white;
+}
+
+.quiz-buttons{
+display:flex;
+gap:15px;
+margin-top:20px;
+}
+
+.quiz-buttons button{
+flex:1;
+}
+
+#scoreContainer{
+margin-top:25px;
+font-size:1.3rem;
+font-weight:600;
+text-align:center;
+color:#c2185b;
+}
+
+#resetBtn{
+margin-top:20px;
+display:none;
+}
+
+}</style>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">KeiraMath</div>
+<nav>
+<div class="logo">🌸 KeiraMath</div>
+<ul>
+<li><a href="#materi">Materi</a></li>
+<li><a href="#simulator">Simulator</a></li>
+<li><a href="#quiz">Quiz</a></li>
+</ul>
+</nav>
+<header class="hero">
+<div class="hero-content">
+<h1>Fungsi Injektif, Surjektif &amp; Bijektif</h1>
+<p>
+            Belajar Matematika Diskrit dengan cara visual,
+            interaktif, dan menyenangkan.
+        </p>
+<a class="button" href="#simulator">
+            Mulai Simulasi
+        </a>
+</div>
+</header>
+<section id="materi">
+<h2>📚 Ringkasan Materi</h2>
+<div class="cards">
+<div class="card">
+<h3>Injektif</h3>
+<p>
+                Tidak ada dua anggota domain yang
+                memiliki output sama.
+            </p>
+</div>
+<div class="card">
+<h3>Surjektif</h3>
+<p>
+                Semua anggota kodomain
+                digunakan.
+            </p>
+</div>
+<div class="card">
+<h3>Bijektif</h3>
+<p>
+                Injektif sekaligus surjektif.
+            </p>
+</div>
+</div>
+</section>
+<section id="simulator">
+<h2>🎯 Function Mapping Simulator</h2>
+<div class="simulator-box">
+<input id="domain" placeholder="Domain: 1,2,3"/>
+<input id="codomain" placeholder="Kodomain: a,b,c"/>
+<textarea id="mapping" placeholder="1:a
+2:b
+3:c">
+        </textarea>
+<button onclick="cekFungsi()">
+            Analisis Fungsi
+        </button>
+<div id="hasil"></div>
+</div>
+</section>
+<section id="playground">
+<h2>📈 Function Playground</h2>
+<div class="play-box">
+<label>a</label>
+<input id="aSlider" max="10" min="-10" type="range" value="2"/>
+<span id="aVal">2</span>
+<label>b</label>
+<input id="bSlider" max="20" min="-20" type="range" value="3"/>
+<span id="bVal">3</span>
+<h3 id="formula">
+            f(x)=2x+3
+        </h3>
+</div>
+</section>
+<section id="quiz">
+<h2>🏆 Quiz KeiraMath</h2>
+<div class="quiz-container">
+<div id="questionNumber">
+        Soal 1 dari 5
+    </div>
+<h3 id="question"></h3>
+<div id="answers"></div>
+<div class="quiz-buttons">
+<button id="prevBtn">
+            ⬅ Sebelumnya
+        </button>
+<button id="nextBtn">
+            Selanjutnya ➡
+        </button>
+</div>
+<div id="scoreContainer"></div>
+<button id="resetBtn">
+        🔄 Ulangi Quiz
+    </button>
+</div>
+</section>
+<footer>
+    Made with 💖 by KeiraMath
+</footer>
+<script>function cekFungsi(){
+
+const outputs=[];
+
+const codomain=
+document
+.getElementById("codomain")
+.value
+.split(",");
+
+const lines=
+document
+.getElementById("mapping")
+.value
+.trim()
+.split("\n");
+
+lines.forEach(line=>{
+
+let pair=line.split(":");
+
+if(pair.length===2){
+outputs.push(
+pair[1].trim()
+);
+}
+
+});
+
+const injektif=
+outputs.length===
+new Set(outputs).size;
+
+const surjektif=
+codomain.every(
+x=>outputs.includes(x.trim())
+);
+
+let hasil="";
+
+hasil+=
+injektif
+? "✅ Injektif<br>"
+: "❌ Tidak Injektif<br>";
+
+hasil+=
+surjektif
+? "✅ Surjektif<br>"
+: "❌ Tidak Surjektif<br>";
+
+hasil+=
+(injektif&&surjektif)
+? "<br>🎉 BIJEKTIF"
+: "";
+
+document
+.getElementById("hasil")
+.innerHTML=hasil;
+}
+
+const aSlider=
+document.getElementById("aSlider");
+
+const bSlider=
+document.getElementById("bSlider");
+
+const formula=
+document.getElementById("formula");
+
+function updateFormula(){
+
+let a=aSlider.value;
+let b=bSlider.value;
+
+document.getElementById("aVal")
+.innerText=a;
+
+document.getElementById("bVal")
+.innerText=b;
+
+formula.innerHTML=
+`f(x) = ${a}x + ${b}`;
+
+}
+
+aSlider.addEventListener(
+"input",
+updateFormula
+);
+
+bSlider.addEventListener(
+"input",
+updateFormula
+);
+
+const quizData = [
+
+{
+question:
+`Domain = {1,2,3}
+Kodomain = {a,b,c}
+
+Pemetaan:
+1:a
+2:b
+3:c
+
+Termasuk fungsi apakah?`,
+
+answers:[
+"Injektif",
+"Surjektif",
+"Bijektif",
+"Bukan Ketiganya"
+],
+
+correct:2
+},
+
+{
+question:
+`Domain = {1,2,3}
+Kodomain = {a,b,c,d}
+
+Pemetaan:
+1:a
+2:b
+3:c
+
+Termasuk fungsi apakah?`,
+
+answers:[
+"Injektif Saja",
+"Surjektif Saja",
+"Bijektif",
+"Bukan Ketiganya"
+],
+
+correct:0
+},
+
+{
+question:
+`Domain = {1,2,3,4}
+Kodomain = {a,b,c}
+
+Pemetaan:
+1:a
+2:a
+3:b
+4:c
+
+Termasuk fungsi apakah?`,
+
+answers:[
+"Injektif Saja",
+"Surjektif Saja",
+"Bijektif",
+"Bukan Ketiganya"
+],
+
+correct:1
+},
+
+{
+question:
+`Domain = {1,2,3}
+Kodomain = {a,b,c,d}
+
+Pemetaan:
+1:a
+2:a
+3:b
+
+Termasuk fungsi apakah?`,
+
+answers:[
+"Injektif Saja",
+"Surjektif Saja",
+"Bijektif",
+"Bukan Ketiganya"
+],
+
+correct:3
+},
+
+{
+question:
+`Pada sebuah website:
+
+User1 → keira01
+User2 → keira02
+User3 → keira03
+
+Jenis fungsi yang paling tepat adalah?`,
+
+answers:[
+"Injektif",
+"Surjektif",
+"Bijektif",
+"Tidak Bisa Ditentukan"
+],
+
+correct:2
+}
+
+];
+
+let currentQuestion=0;
+let userAnswers=new Array(quizData.length).fill(null);
+
+const question=document.getElementById("question");
+const answers=document.getElementById("answers");
+const questionNumber=document.getElementById("questionNumber");
+const scoreContainer=document.getElementById("scoreContainer");
+const nextBtn=document.getElementById("nextBtn");
+const prevBtn=document.getElementById("prevBtn");
+const resetBtn=document.getElementById("resetBtn");
+
+function loadQuestion(){
+
+const q=quizData[currentQuestion];
+
+questionNumber.innerHTML=
+`Soal ${currentQuestion+1} dari ${quizData.length}`;
+
+question.innerHTML=q.question;
+
+answers.innerHTML="";
+
+q.answers.forEach((answer,index)=>{
+
+const btn=document.createElement("button");
+
+btn.classList.add("answer-btn");
+
+btn.innerText=answer;
+
+if(userAnswers[currentQuestion]===index){
+btn.classList.add("selected");
+}
+
+btn.onclick=()=>{
+
+userAnswers[currentQuestion]=index;
+
+loadQuestion();
+
+};
+
+answers.appendChild(btn);
+
+});
+
+prevBtn.style.display=
+currentQuestion===0
+? "none"
+: "block";
+
+nextBtn.innerHTML=
+currentQuestion===quizData.length-1
+? "Selesai"
+: "Selanjutnya ➡";
+
+}
+
+nextBtn.onclick=()=>{
+
+if(currentQuestion<
+quizData.length-1){
+
+currentQuestion++;
+
+loadQuestion();
+
+}
+else{
+
+showResult();
+
+}
+
+};
+
+prevBtn.onclick=()=>{
+
+if(currentQuestion>0){
+
+currentQuestion--;
+
+loadQuestion();
+
+}
+
+};
+
+function showResult(){
+
+let score=0;
+
+quizData.forEach((q,index)=>{
+
+if(userAnswers[index]===q.correct){
+
+score++;
+
+}
+
+});
+
+const nilai=
+Math.round(
+(score/quizData.length)*100
+);
+
+question.style.display="none";
+answers.style.display="none";
+questionNumber.style.display="none";
+nextBtn.style.display="none";
+prevBtn.style.display="none";
+
+scoreContainer.innerHTML=
+`
+<h2>🎉 Quiz Selesai</h2>
+
+<br>
+
+<h2>Nilai: ${nilai}</h2>
+
+<p>
+Benar ${score}
+dari ${quizData.length}
+soal
+</p>
+`;
+
+resetBtn.style.display="block";
+
+}
+
+resetBtn.onclick=()=>{
+
+currentQuestion=0;
+
+userAnswers=
+new Array(quizData.length)
+.fill(null);
+
+question.style.display="block";
+answers.style.display="block";
+questionNumber.style.display="block";
+nextBtn.style.display="block";
+prevBtn.style.display="block";
+
+scoreContainer.innerHTML="";
+
+resetBtn.style.display="none";
+
+loadQuestion();
+
+};
+
+loadQuestion();</script>
+</body>
+</html>

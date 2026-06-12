@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Himpunan Kuasa - Studi Kasus</title>
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#0f172a,#1e40af);
+    min-height:100vh;
+    padding:30px;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+    background:white;
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+
+h1{
+    text-align:center;
+    color:#1e3a8a;
+    margin-bottom:15px;
+}
+
+.deskripsi{
+    text-align:center;
+    line-height:1.8;
+    margin-bottom:20px;
+}
+
+.rumus{
+    background:#dbeafe;
+    text-align:center;
+    padding:15px;
+    border-radius:10px;
+    font-size:22px;
+    font-weight:bold;
+    margin-bottom:25px;
+}
+
+.case-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:15px;
+    margin-bottom:25px;
+}
+
+.case-btn{
+    padding:15px;
+    border:none;
+    border-radius:10px;
+    background:#2563eb;
+    color:white;
+    cursor:pointer;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.case-btn:hover{
+    background:#1d4ed8;
+    transform:translateY(-3px);
+}
+
+#hasil{
+    background:#f8fafc;
+    border-radius:15px;
+    padding:20px;
+    min-height:200px;
+}
+
+.judul-kasus{
+    color:#1e3a8a;
+    margin-bottom:10px;
+}
+
+.subset{
+    background:white;
+    padding:10px;
+    margin:5px 0;
+    border-left:5px solid #2563eb;
+    border-radius:5px;
+}
+
+.info{
+    margin-top:15px;
+    background:#dbeafe;
+    padding:15px;
+    border-radius:10px;
+    line-height:1.8;
+}
+
+footer{
+    text-align:center;
+    margin-top:20px;
+    color:#64748b;
+}
+</style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Muhammad Farrel Fallah_2504193</div>
+<div class="container">
+<h1>📚 Himpunan Kuasa (Power Set)</h1>
+<p class="deskripsi">
+        Himpunan Kuasa adalah himpunan yang berisi seluruh subset
+        dari suatu himpunan. Jika sebuah himpunan memiliki n anggota,
+        maka banyak anggota himpunan kuasanya adalah:
+    </p>
+<div class="rumus">
+        |P(A)| = 2ⁿ
+    </div>
+<h2>Pilih Studi Kasus</h2>
+<br/>
+<div class="case-grid">
+<button class="case-btn" onclick="loadCase(1)">
+            Studi Kasus 1<br/>
+            Ekstrakurikuler
+        </button>
+<button class="case-btn" onclick="loadCase(2)">
+            Studi Kasus 2<br/>
+            Mata Kuliah
+        </button>
+<button class="case-btn" onclick="loadCase(3)">
+            Studi Kasus 3<br/>
+            Warna Produk
+        </button>
+<button class="case-btn" onclick="loadCase(4)">
+            Studi Kasus 4<br/>
+            Perangkat Komputer
+        </button>
+<button class="case-btn" onclick="loadCase(5)">
+            Studi Kasus 5<br/>
+            Tim Proyek
+        </button>
+<button class="case-btn" onclick="loadCase(6)">
+            Studi Kasus 6<br/>
+            Menu Makanan
+        </button>
+</div>
+<div id="hasil">
+<h3>Silakan pilih salah satu studi kasus.</h3>
+</div>
+<footer>
+        Project Matematika Diskrit - Materi Himpunan Kuasa
+    </footer>
+</div>
+<script>
+
+function powerSet(arr){
+
+    let result = [[]];
+
+    for(let item of arr){
+
+        let copy = [...result];
+
+        for(let subset of copy){
+
+            result.push([...subset,item]);
+
+        }
+    }
+
+    return result;
+}
+
+function loadCase(no){
+
+    const kasus = {
+
+        1:{
+            judul:"Pemilihan Ekstrakurikuler",
+            deskripsi:"Seorang siswa dapat memilih kombinasi ekstrakurikuler yang tersedia.",
+            data:["Pramuka","PMR","Paskibra"]
+        },
+
+        2:{
+            judul:"Pemilihan Mata Kuliah",
+            deskripsi:"Mahasiswa dapat memilih kombinasi mata kuliah pilihan.",
+            data:["AI","Web","Mobile"]
+        },
+
+        3:{
+            judul:"Pilihan Warna Produk",
+            deskripsi:"Perusahaan ingin mengetahui seluruh kombinasi warna yang dapat digunakan.",
+            data:["Merah","Biru","Hijau"]
+        },
+
+        4:{
+            judul:"Perangkat Komputer",
+            deskripsi:"Toko komputer menawarkan kombinasi perangkat yang dapat dibeli pelanggan.",
+            data:["Mouse","Keyboard","Printer","Scanner"]
+        },
+
+        5:{
+            judul:"Pembentukan Tim Proyek",
+            deskripsi:"Dosen ingin melihat kemungkinan kombinasi anggota tim.",
+            data:["Ali","Budi","Citra","Dina"]
+        },
+
+        6:{
+            judul:"Paket Menu Makanan",
+            deskripsi:"Restoran ingin mengetahui seluruh kombinasi menu yang dapat dibuat.",
+            data:["Nasi","Ayam","Es Teh","Sambal"]
+        }
+
+    };
+
+    let k = kasus[no];
+
+    let hasil = powerSet(k.data);
+
+    let html = `
+        <h2 class="judul-kasus">${k.judul}</h2>
+
+        <p>${k.deskripsi}</p>
+
+        <br>
+
+        <b>Himpunan A = { ${k.data.join(", ")} }</b>
+
+        <div class="info">
+            Banyak anggota himpunan = ${k.data.length}<br>
+            Jumlah anggota himpunan kuasa = ${hasil.length}<br>
+            Menggunakan rumus: |P(A)| = 2<sup>${k.data.length}</sup>
+        </div>
+
+        <br>
+
+        <h3>Himpunan Kuasa:</h3>
+        <br>
+    `;
+
+    hasil.forEach((subset,index)=>{
+
+        html += `
+            <div class="subset">
+                ${index+1}. { ${subset.join(", ")} }
+            </div>
+        `;
+
+    });
+
+    document.getElementById("hasil").innerHTML = html;
+}
+
+</script>
+</body>
+</html>

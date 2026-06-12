@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aljabar Boolean — Tabel Kebenaran</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&amp;family=DM+Mono:wght@400;500&amp;family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<style>
+    :root {
+      --sky:    #7EC8E3;
+      --sky-lt: #C9EAFA;
+      --sky-xs: #EAF6FC;
+      --navy:   #1B3A6B;
+      --navy-md:#2B5291;
+      --navy-lt:#4A7CC7;
+      --white:  #FFFFFF;
+      --slate:  #F0F6FF;
+      --accent: #FF7F51;
+      --green:  #2ECC71;
+      --red:    #E74C3C;
+      --text:   #1A2942;
+      --muted:  #5A7099;
+      --shadow: 0 4px 24px rgba(27,58,107,.10);
+      --shadow-lg: 0 8px 40px rgba(27,58,107,.16);
+      --radius: 16px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--slate);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── HERO ── */
+    header {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-md) 55%, var(--navy-lt) 100%);
+      color: var(--white);
+      padding: 64px 24px 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content:'';
+      position:absolute; inset:0;
+      background: radial-gradient(ellipse 80% 60% at 50% 110%, rgba(126,200,227,.25) 0%, transparent 70%);
+    }
+    .hero-badge {
+      display:inline-block;
+      background: rgba(126,200,227,.20);
+      border:1px solid rgba(126,200,227,.40);
+      color: var(--sky);
+      font-size:.78rem; font-weight:700; letter-spacing:.12em;
+      padding:6px 16px; border-radius:999px;
+      margin-bottom:20px; text-transform:uppercase;
+    }
+    header h1 {
+      font-family:'DM Serif Display', serif;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      line-height:1.15;
+      margin-bottom:14px;
+    }
+    header h1 span { color: var(--sky); }
+    header p {
+      font-size:1.05rem; color:rgba(255,255,255,.72);
+      max-width:560px; margin:0 auto 32px;
+      line-height:1.7;
+    }
+    .hero-chips {
+      display:flex; flex-wrap:wrap; gap:10px; justify-content:center;
+    }
+    .chip {
+      background:rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.22);
+      color:var(--white);
+      padding:7px 18px; border-radius:999px;
+      font-size:.85rem; font-weight:700;
+      font-family:'DM Mono', monospace;
+      letter-spacing:.04em;
+    }
+
+    /* ── LAYOUT ── */
+    main { max-width:960px; margin:0 auto; padding:48px 20px 80px; }
+
+    /* ── SECTION TITLE ── */
+    .sec-title {
+      display:flex; align-items:center; gap:12px;
+      margin-bottom:24px;
+    }
+    .sec-title .icon {
+      width:42px; height:42px; border-radius:12px;
+      background: linear-gradient(135deg,var(--navy-md),var(--navy-lt));
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.1rem; flex-shrink:0;
+      box-shadow:0 4px 12px rgba(27,58,107,.25);
+    }
+    .sec-title h2 {
+      font-family:'DM Serif Display', serif;
+      font-size:1.55rem; color:var(--navy);
+    }
+
+    /* ── CARD ── */
+    .card {
+      background:var(--white);
+      border-radius:var(--radius);
+      padding:28px;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(126,200,227,.25);
+      margin-bottom:28px;
+      animation: fadeUp .5s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(20px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* intro materi */
+    .intro-box {
+      background: linear-gradient(135deg,var(--sky-xs),var(--white));
+      border:1.5px solid var(--sky);
+      border-radius:var(--radius);
+      padding:22px 26px;
+      margin-bottom:32px;
+    }
+    .intro-box p { color:var(--text); line-height:1.75; font-size:.97rem; }
+
+    /* ── GATE GRID ── */
+    .gate-grid {
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap:16px; margin-bottom:36px;
+    }
+    .gate-card {
+      border-radius:14px;
+      padding:20px 18px 18px;
+      border:1.5px solid transparent;
+      transition:transform .2s, box-shadow .2s;
+    }
+    .gate-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-lg); }
+    .gate-and  { background:#E8F4FD; border-color:#7EC8E3; }
+    .gate-or   { background:#E8F0FD; border-color:#4A7CC7; }
+    .gate-not  { background:#FDE8F3; border-color:#B07CC7; }
+    .gate-xor  { background:#FDF3E8; border-color:#E8A03C; }
+    .gate-card .gate-name {
+      font-family:'DM Mono',monospace;
+      font-size:1.05rem; font-weight:700;
+      margin-bottom:6px; color:var(--navy);
+    }
+    .gate-card .gate-sym {
+      font-size:1.5rem; margin-bottom:8px;
+    }
+    .gate-card .gate-desc {
+      font-size:.83rem; color:var(--muted); line-height:1.55;
+    }
+    .gate-card .gate-formula {
+      font-family:'DM Mono',monospace;
+      font-size:.88rem;
+      background:rgba(27,58,107,.08);
+      border-radius:8px; padding:5px 10px;
+      margin-top:10px; display:inline-block;
+      color:var(--navy-md);
+    }
+
+    /* ── TRUTH TABLE ── */
+    .tab-header {
+      display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;
+    }
+    .tab-btn {
+      background:var(--slate);
+      border:1.5px solid rgba(126,200,227,.4);
+      color:var(--navy); font-family:'DM Mono',monospace;
+      font-size:.85rem; font-weight:700;
+      padding:8px 18px; border-radius:999px;
+      cursor:pointer; transition:all .18s;
+    }
+    .tab-btn:hover, .tab-btn.active {
+      background: var(--navy); color:var(--white);
+      border-color:var(--navy);
+    }
+
+    .truth-table {
+      width:100%; border-collapse:collapse;
+      font-family:'DM Mono',monospace; font-size:.88rem;
+    }
+    .truth-table th {
+      background: linear-gradient(to bottom, var(--navy-md), var(--navy));
+      color:var(--white);
+      padding:11px 16px; text-align:center;
+      font-size:.8rem; letter-spacing:.07em; text-transform:uppercase;
+    }
+    .truth-table th:first-child { border-radius:10px 0 0 0; }
+    .truth-table th:last-child  { border-radius:0 10px 0 0; }
+    .truth-table td {
+      padding:10px 16px; text-align:center;
+      border-bottom:1px solid var(--sky-lt);
+    }
+    .truth-table tr:last-child td { border-bottom:none; }
+    .truth-table tr:nth-child(even) td { background:var(--sky-xs); }
+    .truth-table tr:hover td { background:var(--sky-lt); }
+
+    .val-1 { color:var(--green); font-weight:800; }
+    .val-0 { color:var(--red);   font-weight:800; }
+
+    .table-wrap { overflow-x:auto; border-radius:10px; border:1.5px solid var(--sky-lt); }
+
+    /* ── KASUS SOAL ── */
+    .kasus-list { display:flex; flex-direction:column; gap:20px; }
+    .kasus {
+      border-radius:14px;
+      border:1.5px solid var(--sky-lt);
+      background:var(--white);
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      transition:box-shadow .2s;
+    }
+    .kasus:hover { box-shadow:var(--shadow-lg); }
+    .kasus-head {
+      display:flex; align-items:center; gap:14px;
+      padding:16px 20px;
+      background: linear-gradient(90deg, var(--sky-xs), var(--white));
+      border-bottom:1px solid var(--sky-lt);
+    }
+    .kasus-num {
+      width:36px; height:36px; border-radius:50%;
+      background: linear-gradient(135deg,var(--navy-md),var(--navy-lt));
+      color:var(--white); font-weight:800; font-size:.92rem;
+      display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    }
+    .kasus-head h3 { font-size:1rem; color:var(--navy); font-weight:700; }
+    .kasus-body { padding:18px 20px; }
+    .kasus-body .soal {
+      background:var(--slate);
+      border-radius:10px; padding:14px 16px;
+      font-size:.92rem; color:var(--text);
+      margin-bottom:14px; line-height:1.65;
+      border-left:4px solid var(--sky);
+    }
+    .kasus-body .soal code {
+      font-family:'DM Mono',monospace;
+      background:rgba(27,58,107,.10);
+      padding:2px 6px; border-radius:5px;
+      font-size:.88rem;
+    }
+
+    /* Interactive solver */
+    .solver {
+      background:var(--sky-xs);
+      border-radius:10px; padding:14px 16px;
+      border:1px solid var(--sky);
+    }
+    .solver-row {
+      display:flex; flex-wrap:wrap; gap:10px;
+      align-items:center; margin-bottom:10px;
+    }
+    .solver label { font-size:.82rem; font-weight:700; color:var(--navy-md); min-width:28px; }
+    .toggle-btn {
+      width:54px; height:28px; border-radius:999px;
+      border:none; cursor:pointer;
+      font-family:'DM Mono',monospace; font-size:.78rem; font-weight:700;
+      transition:all .2s; position:relative;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .toggle-btn.val-true  { background:var(--green); color:#fff; }
+    .toggle-btn.val-false { background:#ccc;         color:#666; }
+    .solve-btn {
+      background: linear-gradient(135deg,var(--navy-md),var(--navy-lt));
+      color:var(--white); border:none;
+      padding:9px 22px; border-radius:999px;
+      font-family:'Nunito',sans-serif; font-weight:700; font-size:.88rem;
+      cursor:pointer; transition:all .18s;
+    }
+    .solve-btn:hover { opacity:.88; transform:scale(1.03); }
+    .result-box {
+      display:none;
+      margin-top:12px;
+      padding:12px 16px;
+      border-radius:10px;
+      font-weight:700; font-size:.95rem;
+      align-items:center; gap:10px;
+    }
+    .result-box.show { display:flex; }
+    .result-box.true-res  { background:#D5F5E3; border:1.5px solid var(--green); color:#1A6B40; }
+    .result-box.false-res { background:#FADBD8; border:1.5px solid var(--red);   color:#7B241C; }
+    .result-tag { font-family:'DM Mono',monospace; font-size:1.1rem; }
+    .result-label { font-size:.85rem; font-weight:600; }
+
+    /* ── FOOTER ── */
+    footer {
+      background:var(--navy);
+      color:rgba(255,255,255,.55);
+      text-align:center;
+      padding:28px 20px;
+      font-size:.82rem;
+      margin-top:32px;
+    }
+    footer strong { color:var(--sky); }
+
+    /* ── NAV ── */
+    nav {
+      position:sticky; top:0; z-index:100;
+      background:rgba(255,255,255,.90);
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid rgba(126,200,227,.35);
+      padding:0 20px;
+    }
+    .nav-inner {
+      max-width:960px; margin:0 auto;
+      display:flex; align-items:center; gap:0;
+      overflow-x:auto;
+    }
+    .nav-link {
+      color:var(--muted); text-decoration:none;
+      font-size:.82rem; font-weight:700;
+      padding:14px 16px; white-space:nowrap;
+      border-bottom:2.5px solid transparent;
+      transition:all .15s;
+    }
+    .nav-link:hover { color:var(--navy); border-bottom-color:var(--sky); }
+
+    /* hidden sections */
+    .table-section { display:none; }
+    .table-section.active { display:block; }
+
+    @media(max-width:600px) {
+      .gate-grid { grid-template-columns:1fr 1fr; }
+      header h1 { font-size:1.75rem; }
+    }
+  </style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Alyya Deliani Yusuf_2509558</div>
+<!-- NAV -->
+<nav>
+<div class="nav-inner">
+<a class="nav-link" href="#materi">📚 Materi</a>
+<a class="nav-link" href="#gerbang">🔌 Gerbang</a>
+<a class="nav-link" href="#tabel">📋 Tabel Kebenaran</a>
+<a class="nav-link" href="#kasus">🧩 Contoh Soal</a>
+</div>
+</nav>
+<!-- HERO -->
+<header>
+<div class="hero-badge">Matematika Diskrit</div>
+<h1>Aljabar <span>Boolean</span><br/>&amp; Tabel Kebenaran</h1>
+<p>Pelajari dasar logika digital: AND, OR, NOT, dan XOR — lengkap dengan tabel kebenaran dan contoh soal interaktif.</p>
+<div class="hero-chips">
+<span class="chip">AND</span>
+<span class="chip">OR</span>
+<span class="chip">NOT</span>
+<span class="chip">XOR</span>
+</div>
+</header>
+<main>
+<!-- MATERI -->
+<section id="materi" style="animation:fadeUp .5s ease .1s both">
+<div class="sec-title">
+<div class="icon">📚</div>
+<h2>Apa itu Aljabar Boolean?</h2>
+</div>
+<div class="intro-box">
+<p>
+<strong>Aljabar Boolean</strong> adalah sistem matematika yang bekerja dengan nilai <em>benar (1 / TRUE)</em> dan <em>salah (0 / FALSE)</em>.
+        Dikembangkan oleh <strong>George Boole</strong> pada abad ke-19, aljabar ini menjadi fondasi utama dalam <strong>desain rangkaian digital</strong>,
+        pemrograman logika, dan ilmu komputer modern.
+        <br/><br/>
+        Setiap ekspresi Boolean menghasilkan salah satu dari dua nilai: <strong>1 (TRUE)</strong> atau <strong>0 (FALSE)</strong>.
+        Operasi dasar yang digunakan adalah <strong>AND, OR, NOT</strong>, dan <strong>XOR</strong>.
+        <strong>Tabel kebenaran</strong> adalah alat untuk mendaftar semua kemungkinan kombinasi input dan output dari suatu operasi Boolean.
+      </p>
+</div>
+<!-- GERBANG LOGIKA -->
+<section id="gerbang">
+<div class="sec-title">
+<div class="icon">🔌</div>
+<h2>Operasi Gerbang Logika</h2>
+</div>
+<div class="gate-grid">
+<div class="gate-card gate-and">
+<div class="gate-sym">⊓</div>
+<div class="gate-name">AND</div>
+<div class="gate-desc">Menghasilkan 1 hanya jika <strong>semua</strong> input bernilai 1. Jika ada satu input 0, hasilnya 0.</div>
+<div class="gate-formula">A AND B = A · B</div>
+</div>
+<div class="gate-card gate-or">
+<div class="gate-sym">⊔</div>
+<div class="gate-name">OR</div>
+<div class="gate-desc">Menghasilkan 1 jika <strong>minimal satu</strong> input bernilai 1. Hasilnya 0 hanya jika semua input 0.</div>
+<div class="gate-formula">A OR B = A + B</div>
+</div>
+<div class="gate-card gate-not">
+<div class="gate-sym">¬</div>
+<div class="gate-name">NOT</div>
+<div class="gate-desc">Membalik nilai input. Jika input 1, output 0. Jika input 0, output 1. Disebut juga <em>inverter</em>.</div>
+<div class="gate-formula">NOT A = Ā</div>
+</div>
+<div class="gate-card gate-xor">
+<div class="gate-sym">⊕</div>
+<div class="gate-name">XOR</div>
+<div class="gate-desc">Menghasilkan 1 jika input <strong>berbeda</strong> nilainya. Jika input sama (keduanya 1 atau 0), hasilnya 0.</div>
+<div class="gate-formula">A XOR B = A ⊕ B</div>
+</div>
+</div>
+</section>
+</section>
+<!-- TABEL KEBENARAN -->
+<section id="tabel">
+<div class="sec-title">
+<div class="icon">📋</div>
+<h2>Tabel Kebenaran</h2>
+</div>
+<div class="card">
+<div class="tab-header">
+<button class="tab-btn active" onclick="showTable('and')">AND</button>
+<button class="tab-btn" onclick="showTable('or')">OR</button>
+<button class="tab-btn" onclick="showTable('not')">NOT</button>
+<button class="tab-btn" onclick="showTable('xor')">XOR</button>
+</div>
+<!-- AND -->
+<div class="table-section active" id="tbl-and">
+<p style="margin-bottom:12px;color:var(--muted);font-size:.9rem;">
+<strong>Aturan AND:</strong> Output = 1 hanya jika A = 1 <em>dan</em> B = 1.
+        </p>
+<div class="table-wrap">
+<table class="truth-table">
+<thead><tr><th>A</th><th>B</th><th>A AND B (A·B)</th></tr></thead>
+<tbody>
+<tr><td class="val-0">0</td><td class="val-0">0</td><td class="val-0">0</td></tr>
+<tr><td class="val-0">0</td><td class="val-1">1</td><td class="val-0">0</td></tr>
+<tr><td class="val-1">1</td><td class="val-0">0</td><td class="val-0">0</td></tr>
+<tr><td class="val-1">1</td><td class="val-1">1</td><td class="val-1">1</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- OR -->
+<div class="table-section" id="tbl-or">
+<p style="margin-bottom:12px;color:var(--muted);font-size:.9rem;">
+<strong>Aturan OR:</strong> Output = 0 hanya jika A = 0 <em>dan</em> B = 0.
+        </p>
+<div class="table-wrap">
+<table class="truth-table">
+<thead><tr><th>A</th><th>B</th><th>A OR B (A+B)</th></tr></thead>
+<tbody>
+<tr><td class="val-0">0</td><td class="val-0">0</td><td class="val-0">0</td></tr>
+<tr><td class="val-0">0</td><td class="val-1">1</td><td class="val-1">1</td></tr>
+<tr><td class="val-1">1</td><td class="val-0">0</td><td class="val-1">1</td></tr>
+<tr><td class="val-1">1</td><td class="val-1">1</td><td class="val-1">1</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- NOT -->
+<div class="table-section" id="tbl-not">
+<p style="margin-bottom:12px;color:var(--muted);font-size:.9rem;">
+<strong>Aturan NOT:</strong> Output selalu kebalikan dari input.
+        </p>
+<div class="table-wrap">
+<table class="truth-table">
+<thead><tr><th>A</th><th>NOT A (Ā)</th></tr></thead>
+<tbody>
+<tr><td class="val-0">0</td><td class="val-1">1</td></tr>
+<tr><td class="val-1">1</td><td class="val-0">0</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- XOR -->
+<div class="table-section" id="tbl-xor">
+<p style="margin-bottom:12px;color:var(--muted);font-size:.9rem;">
+<strong>Aturan XOR:</strong> Output = 1 jika A dan B <em>berbeda</em>. Output = 0 jika A dan B <em>sama</em>.
+        </p>
+<div class="table-wrap">
+<table class="truth-table">
+<thead><tr><th>A</th><th>B</th><th>A XOR B (A⊕B)</th></tr></thead>
+<tbody>
+<tr><td class="val-0">0</td><td class="val-0">0</td><td class="val-0">0</td></tr>
+<tr><td class="val-0">0</td><td class="val-1">1</td><td class="val-1">1</td></tr>
+<tr><td class="val-1">1</td><td class="val-0">0</td><td class="val-1">1</td></tr>
+<tr><td class="val-1">1</td><td class="val-1">1</td><td class="val-0">0</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<!-- CONTOH SOAL -->
+<section id="kasus">
+<div class="sec-title">
+<div class="icon">🧩</div>
+<h2>Contoh Soal Interaktif</h2>
+</div>
+<p style="color:var(--muted);font-size:.9rem;margin-bottom:20px;">
+      Klik tombol nilai input untuk mengubahnya antara <strong>0</strong> dan <strong>1</strong>, lalu tekan <em>"Hitung"</em> untuk melihat hasil.
+    </p>
+<div class="kasus-list">
+<!-- KASUS 1 -->
+<div class="kasus">
+<div class="kasus-head">
+<div class="kasus-num">1</div>
+<h3>Ekspresi AND Sederhana</h3>
+</div>
+<div class="kasus-body">
+<div class="soal">
+            Hitung nilai ekspresi: <code>Y = A AND B</code><br/>
+            Tentukan output Y untuk berbagai kombinasi nilai A dan B!
+          </div>
+<div class="solver">
+<div class="solver-row">
+<label>A =</label>
+<button class="toggle-btn val-false" id="k1-a" onclick="toggle('k1-a')">0</button>
+<label>B =</label>
+<button class="toggle-btn val-false" id="k1-b" onclick="toggle('k1-b')">0</button>
+<button class="solve-btn" onclick="solveAND('k1')">Hitung ▶</button>
+</div>
+<div class="result-box" id="k1-result">
+<span class="result-tag" id="k1-rtag"></span>
+<span class="result-label" id="k1-rlabel"></span>
+</div>
+</div>
+</div>
+</div>
+<!-- KASUS 2 -->
+<div class="kasus">
+<div class="kasus-head">
+<div class="kasus-num">2</div>
+<h3>Ekspresi OR Sederhana</h3>
+</div>
+<div class="kasus-body">
+<div class="soal">
+            Hitung nilai ekspresi: <code>Y = A OR B</code><br/>
+            Kapan nilai Y bisa bernilai 0?
+          </div>
+<div class="solver">
+<div class="solver-row">
+<label>A =</label>
+<button class="toggle-btn val-false" id="k2-a" onclick="toggle('k2-a')">0</button>
+<label>B =</label>
+<button class="toggle-btn val-false" id="k2-b" onclick="toggle('k2-b')">0</button>
+<button class="solve-btn" onclick="solveOR('k2')">Hitung ▶</button>
+</div>
+<div class="result-box" id="k2-result">
+<span class="result-tag" id="k2-rtag"></span>
+<span class="result-label" id="k2-rlabel"></span>
+</div>
+</div>
+</div>
+</div>
+<!-- KASUS 3 -->
+<div class="kasus">
+<div class="kasus-head">
+<div class="kasus-num">3</div>
+<h3>Ekspresi NOT (Inverter)</h3>
+</div>
+<div class="kasus-body">
+<div class="soal">
+            Hitung nilai ekspresi: <code>Y = NOT A</code><br/>
+            Jika A = 1, maka Y = ? dan jika A = 0, maka Y = ?
+          </div>
+<div class="solver">
+<div class="solver-row">
+<label>A =</label>
+<button class="toggle-btn val-false" id="k3-a" onclick="toggle('k3-a')">0</button>
+<button class="solve-btn" onclick="solveNOT('k3')">Hitung ▶</button>
+</div>
+<div class="result-box" id="k3-result">
+<span class="result-tag" id="k3-rtag"></span>
+<span class="result-label" id="k3-rlabel"></span>
+</div>
+</div>
+</div>
+</div>
+<!-- KASUS 4 -->
+<div class="kasus">
+<div class="kasus-head">
+<div class="kasus-num">4</div>
+<h3>Ekspresi XOR — Beda Nilai</h3>
+</div>
+<div class="kasus-body">
+<div class="soal">
+            Hitung nilai ekspresi: <code>Y = A XOR B</code><br/>
+            Coba buktikan bahwa XOR menghasilkan 1 hanya jika nilai A dan B <strong>berbeda</strong>!
+          </div>
+<div class="solver">
+<div class="solver-row">
+<label>A =</label>
+<button class="toggle-btn val-false" id="k4-a" onclick="toggle('k4-a')">0</button>
+<label>B =</label>
+<button class="toggle-btn val-false" id="k4-b" onclick="toggle('k4-b')">0</button>
+<button class="solve-btn" onclick="solveXOR('k4')">Hitung ▶</button>
+</div>
+<div class="result-box" id="k4-result">
+<span class="result-tag" id="k4-rtag"></span>
+<span class="result-label" id="k4-rlabel"></span>
+</div>
+</div>
+</div>
+</div>
+<!-- KASUS 5 -->
+<div class="kasus">
+<div class="kasus-head">
+<div class="kasus-num">5</div>
+<h3>Ekspresi Gabungan 3 Variabel</h3>
+</div>
+<div class="kasus-body">
+<div class="soal">
+            Hitung ekspresi gabungan: <code>Y = (A AND B) OR (NOT C)</code><br/>
+            Ini adalah contoh ekspresi Boolean kompleks dengan 3 variabel dan 2 operasi berbeda.
+          </div>
+<div class="solver">
+<div class="solver-row">
+<label>A =</label>
+<button class="toggle-btn val-false" id="k5-a" onclick="toggle('k5-a')">0</button>
+<label>B =</label>
+<button class="toggle-btn val-false" id="k5-b" onclick="toggle('k5-b')">0</button>
+<label>C =</label>
+<button class="toggle-btn val-false" id="k5-c" onclick="toggle('k5-c')">0</button>
+<button class="solve-btn" onclick="solveMix('k5')">Hitung ▶</button>
+</div>
+<div class="result-box" id="k5-result">
+<span class="result-tag" id="k5-rtag"></span>
+<span class="result-label" id="k5-rlabel"></span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer>
+<p>✦ <strong>Aljabar Boolean</strong> — Matematika Diskrit</p>
+</footer>
+<script>
+  /* ── Tab switching ── */
+  function showTable(name) {
+    document.querySelectorAll('.table-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tbl-' + name).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  /* ── Toggle buttons ── */
+  function toggle(id) {
+    const btn = document.getElementById(id);
+    const isTrue = btn.classList.contains('val-true');
+    btn.classList.toggle('val-true', !isTrue);
+    btn.classList.toggle('val-false', isTrue);
+    btn.textContent = isTrue ? '0' : '1';
+  }
+
+  function getVal(id) {
+    return document.getElementById(id).classList.contains('val-true') ? 1 : 0;
+  }
+
+  /* ── Show result ── */
+  function showResult(prefix, result, detail) {
+    const box = document.getElementById(prefix + '-result');
+    const tag = document.getElementById(prefix + '-rtag');
+    const lbl = document.getElementById(prefix + '-rlabel');
+    box.className = 'result-box show ' + (result ? 'true-res' : 'false-res');
+    tag.textContent = result ? '✔ Y = 1 (TRUE)' : '✘ Y = 0 (FALSE)';
+    lbl.textContent = detail;
+  }
+
+  /* ── Solvers ── */
+  function solveAND(p) {
+    const a = getVal(p+'-a'), b = getVal(p+'-b'), r = a & b;
+    showResult(p, r, `A(${a}) AND B(${b}) = ${r} — ${r?'Semua input = 1, hasil TRUE':'Minimal satu input = 0, hasil FALSE'}`);
+  }
+  function solveOR(p) {
+    const a = getVal(p+'-a'), b = getVal(p+'-b'), r = a | b;
+    showResult(p, r, `A(${a}) OR B(${b}) = ${r} — ${r?'Minimal satu input = 1, hasil TRUE':'Semua input = 0, hasil FALSE'}`);
+  }
+  function solveNOT(p) {
+    const a = getVal(p+'-a'), r = a ? 0 : 1;
+    showResult(p, r, `NOT A(${a}) = ${r} — Nilai dibalik menjadi ${r}`);
+  }
+  function solveXOR(p) {
+    const a = getVal(p+'-a'), b = getVal(p+'-b'), r = a ^ b;
+    showResult(p, r, `A(${a}) XOR B(${b}) = ${r} — ${r?'Input berbeda, hasil TRUE':'Input sama, hasil FALSE'}`);
+  }
+  function solveMix(p) {
+    const a = getVal(p+'-a'), b = getVal(p+'-b'), c = getVal(p+'-c');
+    const ab = a & b, notC = c ? 0 : 1, r = ab | notC;
+    showResult(p, r,
+      `(A(${a}) AND B(${b})) = ${ab},  NOT C(${c}) = ${notC},  ${ab} OR ${notC} = ${r}`);
+  }
+</script>
+</body>
+</html>

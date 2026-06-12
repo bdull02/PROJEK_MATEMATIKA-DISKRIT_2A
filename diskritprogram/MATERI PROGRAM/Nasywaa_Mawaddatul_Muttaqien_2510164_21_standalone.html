@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Sistem Belajar Himpunan</title>
+<style>
+        body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
+        nav { background: #333; padding: 10px; color: white; display: flex; gap: 15px; }
+        nav a { color: white; text-decoration: none; cursor: pointer; }
+        .section { display: none; padding: 20px; border: 1px solid #ddd; margin-top: 10px; }
+        .active { display: block; }
+        input { padding: 8px; width: 200px; }
+        button { padding: 8px 15px; background: #28a745; color: white; border: none; cursor: pointer; }
+    </style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Nasywaa_Mawaddatul_Muttaqien_2510164</div>
+<nav>
+<a onclick="show('materi')">Materi</a>
+<a onclick="show('contoh')">Contoh</a>
+<a onclick="show('simulasi')">Simulasi</a>
+<a onclick="show('kuis')">Kuis</a>
+</nav>
+<!-- BAGIAN MATERI -->
+<div class="section active" id="materi">
+<h2>Materi: Selisih Himpunan</h2>
+<p>Selisih himpunan A dan B (A - B) adalah himpunan elemen yang ada di A tetapi tidak ada di B.</p>
+</div>
+<!-- BAGIAN CONTOH -->
+<div class="section" id="contoh">
+<h2>Contoh</h2>
+<p>A = {1, 2, 3}, B = {2} maka A - B = {1, 3}</p>
+</div>
+<!-- BAGIAN SIMULASI (DENGAN DESKRIPSI) -->
+<div class="section" id="simulasi">
+<h2>Simulasi</h2>
+<input id="inputA" placeholder="A (contoh: 1, 2, 3)" type="text"/>
+<input id="inputB" placeholder="B (contoh: 2)" type="text"/>
+<button onclick="hitung()">Hitung</button>
+<div id="hasil" style="margin-top: 15px; font-weight: bold;"></div>
+<div id="deskripsi" style="color: gray; font-style: italic;"></div>
+</div>
+<!-- BAGIAN KUIS -->
+<div class="section" id="kuis">
+<h2>Kuis</h2>
+<p>Berapakah {a, b} - {b} ?</p>
+<input id="jawaban" type="text"/>
+<button onclick="cekKuis()">Cek Jawaban</button>
+<p id="hasilKuis"></p>
+</div>
+<script>
+    function show(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    function hitung() {
+        let a = document.getElementById("inputA").value.split(",").map(x => x.trim());
+        let b = document.getElementById("inputB").value.split(",").map(x => x.trim());
+        let res = a.filter(x => !b.includes(x));
+        document.getElementById("hasil").innerHTML = "Hasil: { " + res.join(", ") + " }";
+        
+        let desc = document.getElementById("deskripsi");
+        desc.innerHTML = (res.length == a.length) ? "Penjelasan: Tidak ada elemen B di A." : "Penjelasan: Elemen B telah dikurangi dari A.";
+    }
+
+    function cekKuis() {
+        let ans = document.getElementById("jawaban").value.trim();
+        document.getElementById("hasilKuis").innerHTML = (ans == "a") ? "Benar!" : "Coba lagi.";
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>✨ MyReprelation — Easy Way to Learn Relation Representation | Matematika Diskrit</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;family=Fredoka+One&amp;display=swap" rel="stylesheet"/>
+<!-- File CSS Eksternal -->
+<link href="style.css" rel="stylesheet"/>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Delina Dwi Pebriyanti_2504420</div>
+<!-- Dekorasi latar belakang (blob warna) -->
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+<div class="blob blob3"></div>
+<!-- Dekorasi emoji sudut -->
+<div class="deco d1">⭐</div>
+<div class="deco d2">🌸</div>
+<div class="deco d3">🍀</div>
+<div class="deco d4">✨</div>
+<!-- ══════════ HEADER ══════════ -->
+<header>
+<div class="emoji-row">🌸 ✨ 📚 ✨ 🌸</div>
+<h1>MyReprelation — Easy Way to Learn Relation Representation</h1>
+<p>Kalkulator Representasi Relasi • Materi Matematika Diskrit / Relasi &amp; Fungsi 🧮💕</p>
+</header>
+<div class="container">
+<!-- Tab Navigasi -->
+<div class="tabs">
+<button class="tab-btn t0 active" onclick="showPanel(0, this)">🗂️ Pasangan Berurutan</button>
+<button class="tab-btn t1" onclick="showPanel(1, this)">📊 Diagram Panah</button>
+<button class="tab-btn t2" onclick="showPanel(2, this)">📐 Grafik Kartesius</button>
+<button class="tab-btn t3" onclick="showPanel(3, this)">🔍 Cek Fungsi</button>
+<button class="tab-btn t4" onclick="showPanel(4, this)">📖 Teori Lengkap</button>
+</div>
+<div class="panel active" id="p0">
+<div class="card">
+<div class="section-title">
+<span class="dot" style="background:var(--pink-d)"></span>
+        🗂️ Pasangan Berurutan
+      </div>
+<div class="info-box">
+        Masukkan himpunan A dan B, lalu tentukan aturan relasi. Sistem akan otomatis membuat daftar
+        <strong>pasangan berurutan</strong> dan menganalisis sifatnya! 🌟
+      </div>
+<label>Himpunan A (pisahkan dengan koma)</label>
+<input id="setA" placeholder="Contoh: 1, 2, 3, 4" type="text" value="1, 2, 3, 4"/>
+<label>Himpunan B (pisahkan dengan koma)</label>
+<input id="setB" placeholder="Contoh: 1, 4, 9, 16" type="text" value="1, 4, 9, 16"/>
+<label>Aturan Relasi (pilih)</label>
+<select id="ruleSelect" onchange="updateRuleHint()">
+<option value="kuadrat">a → b jika b = a² (kuadrat)</option>
+<option value="lebih">a → b jika a &lt; b</option>
+<option value="faktor">a → b jika a adalah faktor dari b</option>
+<option value="sama">a → b jika a = b</option>
+<option value="manual">✏️ Pasangan Manual</option>
+</select>
+<div id="ruleHint" style="font-size:.85rem;color:var(--text-s);margin-top:-8px;margin-bottom:14px;"></div>
+<!-- Input manual (tersembunyi, muncul jika pilih "manual") -->
+<div id="manualArea" style="display:none">
+<label>Masukkan pasangan manual (contoh: (1,1),(2,4),(3,9))</label>
+<input id="manualPairs" placeholder="(1,1),(2,4),(3,9)" type="text"/>
+</div>
+<button class="btn btn-pink" onclick="solvePairs()">✨ Hitung Sekarang!</button>
+<!-- Kotak hasil -->
+<div class="result-box" id="res0">
+<h3>🎉 Hasil Analisis</h3>
+<div id="res0content"></div>
+</div>
+</div>
+</div>
+<div class="panel" id="p1">
+<div class="card">
+<div class="section-title">
+<span class="dot" style="background:var(--lav-d)"></span>
+        📊 Diagram Panah
+      </div>
+<div class="info-box">
+        Masukkan pasangan berurutan dan sistem akan
+        <strong>menggambar diagram panah</strong> secara otomatis! 🎨
+      </div>
+<label>Pasangan Berurutan (contoh: (1,2),(2,4),(3,6))</label>
+<input id="arrowPairs" placeholder="(1,2),(2,4),(3,6)" type="text" value="(1,2),(2,4),(3,6)"/>
+<button class="btn btn-lav" onclick="drawArrow()">🎨 Gambar Diagram!</button>
+<!-- Canvas untuk diagram panah -->
+<canvas height="320" id="arrowCanvas" style="display:none" width="680"></canvas>
+<div class="result-box" id="res1">
+<h3>📌 Keterangan</h3>
+<div id="res1content"></div>
+</div>
+</div>
+</div>
+<!-- ════════ PANEL 2 : GRAFIK KARTESIUS ════════ -->
+<div class="panel" id="p2">
+<div class="card">
+<div class="section-title">
+<span class="dot" style="background:var(--mint-d)"></span>
+        📐 Grafik Kartesius
+      </div>
+<div class="info-box">
+        Masukkan pasangan dan lihat
+        <strong>titik-titik pada bidang Kartesius</strong>! 🗺️
+      </div>
+<label>Pasangan Berurutan</label>
+<input id="cartPairs" placeholder="(1,1),(2,4),(3,9),(4,16)" type="text" value="(1,1),(2,4),(3,9),(4,16)"/>
+<button class="btn btn-mint" onclick="drawCartesian()">📐 Plot Grafik!</button>
+<!-- Canvas untuk grafik Kartesius -->
+<canvas height="400" id="cartCanvas" style="display:none" width="480"></canvas>
+<div class="result-box" id="res2">
+<h3>📌 Koordinat</h3>
+<div id="res2content"></div>
+</div>
+</div>
+</div>
+<!-- ════════ PANEL 3 : CEK FUNGSI ════════ -->
+<div class="panel" id="p3">
+<div class="card">
+<div class="section-title">
+<span class="dot" style="background:var(--yellow-d)"></span>
+        🔍 Cek Apakah Relasi adalah Fungsi
+      </div>
+<div class="info-box">
+        Masukkan pasangan berurutan, sistem akan mengecek apakah ini
+        <strong>fungsi, injektif, surjektif, atau bijektif</strong>! 🧠
+      </div>
+<label>Himpunan Domain (A)</label>
+<input id="domainSet" placeholder="Contoh: 1, 2, 3" type="text" value="1, 2, 3"/>
+<label>Himpunan Kodomain (B)</label>
+<input id="codomainSet" placeholder="Contoh: a, b, c" type="text" value="a, b, c"/>
+<label>Pasangan Berurutan</label>
+<input id="funcPairs" placeholder="(1,a),(2,b),(3,c)" type="text" value="(1,a),(2,b),(3,c)"/>
+<button class="btn btn-yellow" onclick="checkFunction()">🔍 Analisis Fungsi!</button>
+<div class="result-box" id="res3">
+<h3>🎯 Hasil Analisis Fungsi</h3>
+<div id="res3content"></div>
+</div>
+</div>
+</div>
+<!-- ════════ PANEL 4 : TEORI LENGKAP ════════ -->
+<div class="panel" id="p4">
+<div class="card">
+<div class="section-title">
+<span class="dot" style="background:var(--sky-d)"></span>
+        📖 Teori Representasi Relasi
+      </div>
+<!-- Definisi Relasi -->
+<div class="info-box" style="border-left-color:var(--sky-d)">
+<strong>📌 Apa itu Relasi?</strong><br/>
+        Relasi dari himpunan A ke himpunan B adalah <em>subset dari hasil kali Kartesius A × B</em>,
+        yaitu himpunan pasangan terurut (a, b) di mana a ∈ A dan b ∈ B yang memenuhi suatu aturan
+        tertentu. Konsep ini menjadi dasar dari fungsi dalam Matematika Diskrit.
+      </div>
+<!-- 1. Pasangan Berurutan -->
+<div style="margin-bottom:18px">
+<div class="section-title" style="font-size:1.1rem;margin-bottom:10px">
+          🗂️ 1. Pasangan Berurutan
+        </div>
+<p style="font-size:.93rem;line-height:1.8;margin-bottom:8px">
+          Relasi R dari A ke B dinyatakan sebagai R ⊆ A × B, yaitu himpunan pasangan terurut (a, b)
+          di mana aRb berlaku.
+        </p>
+<div style="background:#fdf0ff;border-radius:12px;padding:12px 16px;font-size:.9rem">
+<strong>Contoh:</strong> A = {1, 2, 3}, B = {1, 4, 9}<br/>
+          Relasi R = {(a,b) | b = a²}:
+          <span class="chip chip-lav">(1,1)</span>
+<span class="chip chip-lav">(2,4)</span>
+<span class="chip chip-lav">(3,9)</span>
+</div>
+</div>
+<!-- 2. Diagram Panah -->
+<div style="margin-bottom:18px">
+<div class="section-title" style="font-size:1.1rem;margin-bottom:10px">
+          📊 2. Diagram Panah
+        </div>
+<p style="font-size:.93rem;line-height:1.8;margin-bottom:8px">
+          Dua elips mewakili himpunan A (domain) dan B (kodomain). Setiap panah dari a ∈ A ke b ∈ B
+          menunjukkan pasangan (a,b) ∈ R. Cocok untuk memvisualisasikan relasi secara intuitif.
+        </p>
+<div style="background:#f0f4ff;border-radius:12px;padding:12px 16px;font-size:.9rem">
+          ✅ <strong>Fungsi:</strong> Setiap a ∈ A memiliki tepat <em>satu</em> panah keluar<br/>
+          ❌ <strong>Bukan Fungsi:</strong> Ada a ∈ A yang memiliki 0 atau lebih dari 1 panah
+        </div>
+</div>
+<!-- 3. Grafik Kartesius -->
+<div style="margin-bottom:18px">
+<div class="section-title" style="font-size:1.1rem;margin-bottom:10px">
+          📐 3. Grafik Kartesius
+        </div>
+<p style="font-size:.93rem;line-height:1.8;margin-bottom:8px">
+          Setiap pasangan (a, b) ∈ R diplot sebagai titik pada bidang koordinat. Sumbu-x
+          merepresentasikan domain, sumbu-y merepresentasikan kodomain. Relasi yang merupakan fungsi
+          tidak akan memiliki dua titik dengan absis (x) yang sama.
+        </p>
+</div>
+<!-- 4. Jenis-Jenis Fungsi -->
+<div style="margin-bottom:0">
+<div class="section-title" style="font-size:1.1rem;margin-bottom:10px">
+          🔑 Jenis-Jenis Fungsi
+        </div>
+<table class="rel-table">
+<tr>
+<th>Jenis</th>
+<th>Syarat Formal</th>
+<th>Contoh</th>
+</tr>
+<tr>
+<td><span class="chip chip-lav">Fungsi</span></td>
+<td>∀a ∈ A, ∃! b ∈ B sehingga (a,b) ∈ R</td>
+<td>{(1,a),(2,b),(3,c)}</td>
+</tr>
+<tr>
+<td><span class="chip chip-mint">Injektif (1-1)</span></td>
+<td>f(a₁)=f(a₂) ⟹ a₁=a₂ (tidak ada output yang sama)</td>
+<td>{(1,a),(2,b),(3,c)}</td>
+</tr>
+<tr>
+<td><span class="chip chip-yellow">Surjektif (Onto)</span></td>
+<td>∀b ∈ B, ∃a ∈ A sehingga f(a)=b (semua kodomain tercakup)</td>
+<td>{(1,a),(2,b),(3,a)} jika B={a,b}</td>
+</tr>
+<tr>
+<td><span class="chip chip-sky">Bijektif</span></td>
+<td>Injektif ∧ Surjektif (korespondensi satu-satu)</td>
+<td>{(1,a),(2,b),(3,c)} dengan |A|=|B|</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div><!-- /container -->
+<!-- Toast Notifikasi -->
+<div id="toast">✨ Berhasil!</div>
+<!-- File JavaScript Eksternal -->
+<script src="script.js"></script>
+</body>
+</html>

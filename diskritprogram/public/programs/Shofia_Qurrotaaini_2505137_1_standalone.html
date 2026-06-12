@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gabungan Himpunan (Union)</title>
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 40px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        h2 {
+            color: #34495e;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        textarea {
+            width: 100%;
+            height: 60px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            padding: 10px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .hasil {
+            margin-top: 20px;
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+    </style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Shofia Qurrotaaini_2505137</div>
+<div class="container">
+<h1>Implementasi Operasi Gabungan Himpunan (Union)</h1>
+<h2>Materi</h2>
+<p>
+        Gabungan himpunan (Union) adalah operasi yang menghasilkan
+        himpunan baru yang berisi seluruh anggota dari himpunan A
+        dan himpunan B tanpa pengulangan elemen yang sama.
+    </p>
+<p>
+        Rumus:
+        <strong>A ∪ B = {x | x ∈ A atau x ∈ B}</strong>
+</p>
+<hr/>
+<h2>Latihan Soal</h2>
+<label>Masukkan Himpunan A</label>
+<textarea id="setA" placeholder="Contoh: 1,2,3,4"></textarea>
+<label>Masukkan Himpunan B</label>
+<textarea id="setB" placeholder="Contoh: 3,4,5,6"></textarea>
+<button onclick="hitungUnion()">Hitung Gabungan</button>
+<div class="hasil" id="hasil">
+        Hasil akan muncul di sini.
+    </div>
+</div>
+<script>
+
+function hitungUnion() {
+
+    let A = document.getElementById("setA").value
+        .split(",")
+        .map(item => item.trim())
+        .filter(item => item !== "");
+
+    let B = document.getElementById("setB").value
+        .split(",")
+        .map(item => item.trim())
+        .filter(item => item !== "");
+
+    let union = [...new Set([...A, ...B])];
+
+    document.getElementById("hasil").innerHTML =
+        "<b>Hasil A ∪ B:</b><br>{ " + union.join(", ") + " }";
+}
+
+</script>
+</body>
+</html>

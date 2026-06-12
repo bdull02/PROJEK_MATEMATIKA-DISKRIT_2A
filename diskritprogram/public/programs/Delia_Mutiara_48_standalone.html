@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pengerjaan Irisan Himpunan</title>
+<style>
+
+    body{
+      font-family:'Times New Roman', serif;
+      background:#f2f2f2;
+      margin:0;
+      padding:30px;
+    }
+
+    .paper{
+      max-width:950px;
+      margin:auto;
+      background:white;
+      padding:40px;
+      box-shadow:0 0 15px rgba(0,0,0,0.15);
+      border-radius:10px;
+    }
+
+    h1{
+      text-align:center;
+      color:purple;
+      font-size:42px;
+      margin-bottom:5px;
+    }
+
+    h2{
+      color:#400c4c;
+      margin-top:40px;
+    }
+
+    p{
+      font-size:18px;
+      line-height:1.7;
+    }
+
+    .rumus{
+      background:#f9fafb;
+      padding:15px;
+      border-left:5px solid #8c1e7f;
+      margin:20px 0;
+      font-size:22px;
+    }
+
+    .diagram{
+      text-align:center;
+      margin:30px 0;
+    }
+
+    input{
+      width:100%;
+      padding:12px;
+      margin-top:10px;
+      margin-bottom:20px;
+      border-radius:8px;
+      border:1px solid #ccc;
+      font-size:16px;
+    }
+
+    button{
+      background:#753782 ;
+      color:white;
+      border:none;
+      padding:12px 20px;
+      border-radius:8px;
+      font-size:16px;
+      cursor:pointer;
+    }
+
+    button:hover{
+      background:#ac81c6;
+    }
+
+    .hasil{
+      margin-top:20px;
+      background:#d9b9e2;
+      padding:15px;
+      border-radius:10px;
+      font-size:20px;
+    }
+
+    .keterangan{
+      text-align:center;
+      font-size:18px;
+      margin-top:10px;
+    }
+
+  </style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Delia Mutiara</div>
+<div class="paper">
+<h1>IntersectionSet</h1>
+<p style="text-align:center; font-size:22px;">
+    Operasi Himpunan : Irisan (Intersection)
+  </p>
+<h2>Pengertian Irisan</h2>
+<p>
+    Irisan dua himpunan adalah anggota yang terdapat pada kedua himpunan.
+  </p>
+<div class="rumus">
+    A ∩ B = { x | x ∈ A dan x ∈ B }
+  </div>
+<h2>Program Irisan Himpunan</h2>
+<label>Masukkan Himpunan A</label>
+<input id="setA" placeholder="Contoh: 1,2,3,4" type="text"/>
+<label>Masukkan Himpunan B</label>
+<input id="setB" placeholder="Contoh: 3,4,5,6" type="text"/>
+<button onclick="hitungIrisan()">
+    Hitung Irisan
+  </button>
+<div class="hasil" id="output">
+    Hasil irisan akan muncul di sini...
+  </div>
+<h2>Diagram Venn Irisan</h2>
+<div class="diagram">
+<svg height="260" width="450">
+<!-- Background -->
+<rect fill="white" height="100%" width="100%"></rect>
+<!-- Lingkaran A -->
+<circle cx="170" cy="130" fill="#89cff0" fill-opacity="0.5" r="85" stroke-width="3"></circle>
+<!-- Lingkaran B -->
+<circle cx="280" cy="130" fill="#ffc0cb" fill-opacity="0.5" r="85" stroke-width="3"></circle>
+<!-- Label -->
+<text font-size="24" font-weight="bold" x="125" y="65">
+        A
+      </text>
+<text font-size="24" font-weight="bold" x="315" y="65">
+        B
+      </text>
+<!-- Isi Himpunan A -->
+<text font-size="16" font-weight="bold" id="isiA" x="120" y="135">
+</text>
+<!-- Irisan -->
+<text fill="black" font-size="16" font-weight="bold" id="isiIrisan" x="195" y="135">
+</text>
+<!-- Isi Himpunan B -->
+<text font-size="16" font-weight="bold" id="isiB" x="295" y="135">
+</text>
+</svg>
+</div>
+<div class="keterangan">
+    Diagram akan otomatis menampilkan anggota himpunan dan irisannya.
+  </div>
+</div>
+<script>
+
+function hitungIrisan(){
+
+  // Ambil input
+  let A = document.getElementById("setA").value
+            .split(",")
+            .map(x => x.trim());
+
+  let B = document.getElementById("setB").value
+            .split(",")
+            .map(x => x.trim());
+
+  // Cari irisan
+  let irisan = A.filter(x => B.includes(x));
+
+  // Hilangkan duplikat
+  irisan = [...new Set(irisan)];
+
+  // Tampilkan hasil
+  document.getElementById("output").innerHTML =
+    "<b>Hasil Irisan:</b> { "
+    + irisan.join(", ")
+    + " }";
+
+  // Cari elemen khusus A
+  let hanyaA = A.filter(x => !irisan.includes(x));
+
+  // Cari elemen khusus B
+  let hanyaB = B.filter(x => !irisan.includes(x));
+
+  // Tampilkan ke diagram venn
+  document.getElementById("isiA").textContent =
+    hanyaA.join(",");
+
+  document.getElementById("isiB").textContent =
+    hanyaB.join(",");
+
+  document.getElementById("isiIrisan").textContent =
+    irisan.join(",");
+
+}
+
+</script>
+</body>
+</html>

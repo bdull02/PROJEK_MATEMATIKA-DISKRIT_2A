@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<title>Penjumlahan Deret — Matematika Diskrit</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #0f0f1a;
+    color: #e8e8f4;
+    min-height: 100vh;
+    padding: 1.5rem 1rem 4rem;
+  }
+
+  /* ── HEADER ── */
+  .page-title {
+    text-align: center;
+    margin-bottom: 1.8rem;
+  }
+  .page-title h1 {
+    font-size: 1.7rem;
+    font-weight: 800;
+    background: linear-gradient(90deg, #a78bfa, #f472b6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.2rem;
+  }
+
+  /* ── PENJELASAN BOX ── */
+  .info-box {
+    max-width: 680px;
+    margin: 0 auto 2rem;
+    background: #1a1a2e;
+    border: 1px solid #2a2a45;
+    border-left: 4px solid #a78bfa;
+    border-radius: 8px;
+    padding: 1.1rem 1.3rem;
+    font-size: 0.85rem;
+    line-height: 1.85;
+    color: #c0bcd8;
+  }
+
+  .info-box .sigma {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #a78bfa;
+  }
+
+  /* ── GAMIFIKASI BAR ── */
+  .game-bar {
+    max-width: 680px;
+    margin: 0 auto 1.8rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+    background: #1a1a2e;
+    border: 1px solid #2a2a45;
+    border-radius: 10px;
+    padding: 0.9rem 1.2rem;
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .stat-label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #888;
+  }
+
+  .stat-value {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .xp-wrap {
+    flex: 1;
+    min-width: 160px;
+  }
+
+  .xp-label-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.65rem;
+    color: #888;
+    margin-bottom: 0.3rem;
+  }
+
+  .xp-bar {
+    height: 8px;
+    background: #2a2a45;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .xp-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #a78bfa, #f472b6);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  .badges-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    font-size: 1.2rem;
+    opacity: 0.2;
+    filter: grayscale(1);
+    transition: all 0.4s;
+    cursor: default;
+    position: relative;
+  }
+
+  .badge.earned {
+    opacity: 1;
+    filter: none;
+  }
+
+  .badge[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: #fff;
+    font-size: 0.65rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  /* ── CARDS ── */
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .card {
+    background: #1a1a2e;
+    border: 1px solid #2a2a45;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.25s;
+  }
+
+  .card.done { border-color: #4ade80; }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.9rem 1.2rem;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .num {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .card-header h2 {
+    flex: 1;
+    font-size: 0.92rem;
+    font-weight: 600;
+  }
+
+  .card-header small {
+    font-size: 0.7rem;
+    color: #666;
+  }
+
+  .check-mark {
+    font-size: 1rem;
+    display: none;
+    margin-right: 0.3rem;
+  }
+
+  .card.done .check-mark { display: inline; }
+
+  .chevron {
+    font-size: 0.75rem;
+    color: #555;
+    transition: transform 0.2s;
+    margin-left: 0.3rem;
+  }
+  .chevron.open { transform: rotate(180deg); }
+
+  .card-body {
+    display: none;
+    padding: 0 1.2rem 1.2rem;
+    border-top: 1px solid #22223a;
+  }
+  .card-body.open { display: block; }
+
+  /* formula */
+  .formula {
+    background: #111128;
+    border-left: 3px solid #a78bfa;
+    padding: 0.6rem 0.9rem;
+    margin: 0.9rem 0;
+    font-size: 0.82rem;
+    color: #c0bcd8;
+    line-height: 1.8;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .formula b { color: #a78bfa; }
+
+  /* inputs */
+  .fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-bottom: 0.9rem;
+    align-items: flex-end;
+  }
+
+  .field { display: flex; flex-direction: column; gap: 0.25rem; }
+
+  .field label {
+    font-size: 0.68rem;
+    color: #777;
+    font-weight: 500;
+  }
+
+  .field input {
+    background: #111128;
+    border: 1.5px solid #2a2a45;
+    border-radius: 6px;
+    padding: 0.38rem 0.6rem;
+    font-size: 0.88rem;
+    width: 92px;
+    outline: none;
+    font-family: inherit;
+    color: #e8e8f4;
+    transition: border-color 0.2s;
+  }
+
+  .field input:focus { border-color: #a78bfa; }
+
+  .btn {
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.42rem 1.1rem;
+    font-size: 0.82rem;
+    font-family: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    align-self: flex-end;
+    transition: opacity 0.2s, transform 0.1s;
+    background: #6d28d9;
+  }
+
+  .btn:hover { opacity: 0.85; }
+  .btn:active { transform: scale(0.96); }
+
+  /* result */
+  .result {
+    display: none;
+    background: #111128;
+    border-radius: 7px;
+    padding: 0.8rem 1rem;
+    position: relative;
+  }
+
+  .result.show { display: block; }
+
+  .result .ans {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #f0eeff;
+    margin-bottom: 0.35rem;
+  }
+
+  .result .steps {
+    font-size: 0.73rem;
+    color: #888;
+    line-height: 2;
+    border-top: 1px solid #22223a;
+    padding-top: 0.5rem;
+    margin-top: 0.35rem;
+    max-height: 140px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+  }
+
+  /* XP pop */
+  .xp-pop {
+    position: absolute;
+    top: -10px; right: 10px;
+    background: linear-gradient(90deg,#a78bfa,#f472b6);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.15rem 0.55rem;
+    border-radius: 20px;
+    animation: popUp 1.6s ease forwards;
+    pointer-events: none;
+  }
+
+  @keyframes popUp {
+    0%   { opacity:0; transform:translateY(0); }
+    20%  { opacity:1; transform:translateY(-8px); }
+    80%  { opacity:1; transform:translateY(-12px); }
+    100% { opacity:0; transform:translateY(-20px); }
+  }
+
+  .err { color: #f87171; font-size: 0.82rem; }
+
+  /* toast */
+  .toast {
+    position: fixed;
+    bottom: 30px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #1e1e35;
+    border: 1px solid #a78bfa;
+    color: #e8e8f4;
+    padding: 0.6rem 1.4rem;
+    border-radius: 30px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 999;
+    white-space: nowrap;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: #111; }
+  ::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+</style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Fadhil Nurshiddiq_2501584</div>
+<!-- JUDUL -->
+<div class="page-title">
+<h1>Σ Penjumlahan Deret</h1>
+</div>
+<!-- PENJELASAN -->
+<div class="info-box">
+  Dalam matematika diskrit, penjumlahan deretan (sumasi) adalah proses menjumlahkan suku-suku dari suatu barisan.
+  Ini direpresentasikan menggunakan notasi sigma <span class="sigma">Σ</span>.
+  Berdasarkan jenisnya, penjumlahan dapat berupa <strong>deret aritmatika</strong> dengan beda tetap,
+  <strong>deret geometri</strong> dengan rasio tetap, atau <strong>penjumlahan ganda</strong> (nested)
+  yang sering digunakan dalam analisis algoritma.
+</div>
+<!-- GAME BAR -->
+<div class="game-bar">
+<div class="stat-item">
+<span class="stat-label">Skor</span>
+<span class="stat-value" id="skor">0</span>
+</div>
+<div class="stat-item">
+<span class="stat-label">Selesai</span>
+<span class="stat-value" id="selesai">0 / 5</span>
+</div>
+<div class="xp-wrap">
+<div class="xp-label-row">
+<span>XP</span>
+<span id="xp-txt">0 / 500</span>
+</div>
+<div class="xp-bar"><div class="xp-fill" id="xp-fill"></div></div>
+</div>
+<div class="badges-row">
+<span class="badge" id="b1" title="Pecinta Aritmatika">🥉</span>
+<span class="badge" id="b2" title="Master Geometri">🥈</span>
+<span class="badge" id="b3" title="Sahabat Gauss">🥇</span>
+<span class="badge" id="b4" title="Kuadrat Hero">⭐</span>
+<span class="badge" id="b5" title="Kubik Legend">🏆</span>
+</div>
+</div>
+<!-- CARDS -->
+<div class="container">
+<!-- KASUS 1 -->
+<div class="card" id="card1">
+<div class="card-header" onclick="toggle('cbody1','cchev1')">
+<div class="num" style="background:#6d28d9">1</div>
+<h2>Deret Aritmatika <span class="check-mark">✅</span></h2>
+<small>S = n/2 × (2a + (n−1)d)</small>
+<span class="chevron" id="cchev1">▾</span>
+</div>
+<div class="card-body" id="cbody1">
+<div class="formula">
+<b>Rumus:</b> S<sub>n</sub> = n/2 × (2a + (n−1)d)<br/>
+        a = suku pertama  ·  d = beda  ·  n = jumlah suku
+      </div>
+<div class="fields">
+<div class="field"><label>a (suku pertama)</label><input id="i_a1" type="number" value="2"/></div>
+<div class="field"><label>d (beda)</label><input id="i_d1" type="number" value="3"/></div>
+<div class="field"><label>n (jumlah suku)</label><input id="i_n1" min="1" type="number" value="5"/></div>
+<button class="btn" onclick="hitungAritmatika()">Hitung ▶</button>
+</div>
+<div class="result" id="result1">
+<div class="ans" id="ans1"></div>
+<div class="steps" id="steps1"></div>
+</div>
+</div>
+</div>
+<!-- KASUS 2 -->
+<div class="card" id="card2">
+<div class="card-header" onclick="toggle('cbody2','cchev2')">
+<div class="num" style="background:#be185d">2</div>
+<h2>Deret Geometri <span class="check-mark">✅</span></h2>
+<small>S = a(rⁿ−1) / (r−1)</small>
+<span class="chevron" id="cchev2">▾</span>
+</div>
+<div class="card-body" id="cbody2">
+<div class="formula" style="border-color:#f472b6">
+<b style="color:#f472b6">Rumus:</b> S<sub>n</sub> = a(r<sup>n</sup>−1) / (r−1)  [r ≠ 1]<br/>
+        a = suku pertama  ·  r = rasio  ·  n = jumlah suku
+      </div>
+<div class="fields">
+<div class="field"><label>a (suku pertama)</label><input id="i_a2" type="number" value="3"/></div>
+<div class="field"><label>r (rasio)</label><input id="i_r2" step="0.1" type="number" value="2"/></div>
+<div class="field"><label>n (jumlah suku)</label><input id="i_n2" min="1" type="number" value="4"/></div>
+<button class="btn" onclick="hitungGeometri()" style="background:#be185d">Hitung ▶</button>
+</div>
+<div class="result" id="result2" style="background:#1f0a14">
+<div class="ans" id="ans2"></div>
+<div class="steps" id="steps2"></div>
+</div>
+</div>
+</div>
+<!-- KASUS 3 -->
+<div class="card" id="card3">
+<div class="card-header" onclick="toggle('cbody3','cchev3')">
+<div class="num" style="background:#065f46">3</div>
+<h2>Deret Bilangan Asli (Gauss) <span class="check-mark">✅</span></h2>
+<small>S = n(n+1) / 2</small>
+<span class="chevron" id="cchev3">▾</span>
+</div>
+<div class="card-body" id="cbody3">
+<div class="formula" style="border-color:#34d399">
+<b style="color:#34d399">Rumus Gauss:</b> S = n(n+1) / 2<br/>
+        Menjumlahkan 1 + 2 + 3 + … + n
+      </div>
+<div class="fields">
+<div class="field"><label>n (batas atas)</label><input id="i_n3" min="1" type="number" value="10"/></div>
+<button class="btn" onclick="hitungGauss()" style="background:#065f46">Hitung ▶</button>
+</div>
+<div class="result" id="result3" style="background:#0a1f16">
+<div class="ans" id="ans3"></div>
+<div class="steps" id="steps3"></div>
+</div>
+</div>
+</div>
+<!-- KASUS 4 -->
+<div class="card" id="card4">
+<div class="card-header" onclick="toggle('cbody4','cchev4')">
+<div class="num" style="background:#92400e">4</div>
+<h2>Deret Kuadrat (∑ i²) <span class="check-mark">✅</span></h2>
+<small>S = n(n+1)(2n+1) / 6</small>
+<span class="chevron" id="cchev4">▾</span>
+</div>
+<div class="card-body" id="cbody4">
+<div class="formula" style="border-color:#fbbf24">
+<b style="color:#fbbf24">Rumus:</b> S = n(n+1)(2n+1) / 6<br/>
+        Menjumlahkan 1² + 2² + 3² + … + n²
+      </div>
+<div class="fields">
+<div class="field"><label>n (batas atas)</label><input id="i_n4" min="1" type="number" value="5"/></div>
+<button class="btn" onclick="hitungKuadrat()" style="background:#92400e">Hitung ▶</button>
+</div>
+<div class="result" id="result4" style="background:#1a1200">
+<div class="ans" id="ans4"></div>
+<div class="steps" id="steps4"></div>
+</div>
+</div>
+</div>
+<!-- KASUS 5 -->
+<div class="card" id="card5">
+<div class="card-header" onclick="toggle('cbody5','cchev5')">
+<div class="num" style="background:#1e3a8a">5</div>
+<h2>Deret Kubik (∑ i³) <span class="check-mark">✅</span></h2>
+<small>S = [n(n+1)/2]²</small>
+<span class="chevron" id="cchev5">▾</span>
+</div>
+<div class="card-body" id="cbody5">
+<div class="formula" style="border-color:#60a5fa">
+<b style="color:#60a5fa">Rumus:</b> S = [n(n+1)/2]²<br/>
+        Identitas: (∑i³) = (∑i)²  ·  Contoh: n=4 → 100 = 10²
+      </div>
+<div class="fields">
+<div class="field"><label>n (batas atas)</label><input id="i_n5" min="1" type="number" value="4"/></div>
+<button class="btn" onclick="hitungKubik()" style="background:#1e3a8a">Hitung ▶</button>
+</div>
+<div class="result" id="result5" style="background:#060e1f">
+<div class="ans" id="ans5"></div>
+<div class="steps" id="steps5"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+<script>
+  var xp = 0;
+  var skor = 0;
+  var done = {};
+
+  var XP_MAX = 500;
+  var XP_PER_KASUS = 100;
+
+  function toggle(bodyId, chevId) {
+    var body = document.getElementById(bodyId);
+    var chev = document.getElementById(chevId);
+    var isOpen = body.classList.toggle('open');
+    chev.classList.toggle('open', isOpen);
+  }
+
+  function getFloat(id) { return parseFloat(document.getElementById(id).value); }
+  function getInt(id)   { return parseInt(document.getElementById(id).value); }
+
+  function tampilkan(num, jawaban, langkah) {
+    document.getElementById('ans'   + num).innerHTML = jawaban;
+    document.getElementById('steps' + num).textContent = langkah;
+    var r = document.getElementById('result' + num);
+    r.classList.add('show');
+
+    // XP pop animasi
+    var pop = document.createElement('span');
+    pop.className = 'xp-pop';
+    pop.textContent = '+' + XP_PER_KASUS + ' XP';
+    r.style.position = 'relative';
+    r.appendChild(pop);
+    setTimeout(function() { if (pop.parentNode) pop.parentNode.removeChild(pop); }, 1700);
+  }
+
+  function ganjarXP(num, badgeMsg) {
+    if (done[num]) return;
+    done[num] = true;
+
+    xp = Math.min(xp + XP_PER_KASUS, XP_MAX);
+    skor += 100;
+
+    var jumlahDone = Object.keys(done).length;
+
+    document.getElementById('skor').textContent = skor;
+    document.getElementById('selesai').textContent = jumlahDone + ' / 5';
+    document.getElementById('xp-txt').textContent = xp + ' / ' + XP_MAX;
+    document.getElementById('xp-fill').style.width = (xp / XP_MAX * 100) + '%';
+
+    // badge
+    document.getElementById('b' + num).classList.add('earned');
+
+    // card done style
+    document.getElementById('card' + num).classList.add('done');
+
+    // toast
+    showToast(badgeMsg);
+
+    // semua selesai
+    if (jumlahDone === 5) {
+      setTimeout(function() { showToast('🏆 Semua kasus selesai! Kamu luar biasa!'); }, 1500);
+    }
+  }
+
+  function showToast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 2500);
+  }
+
+  // ── KASUS 1 ──────────────────────────────────────────
+  function hitungAritmatika() {
+    var a = getFloat('i_a1');
+    var d = getFloat('i_d1');
+    var n = getInt('i_n1');
+    if (isNaN(a) || isNaN(d) || isNaN(n) || n < 1) {
+      document.getElementById('ans1').innerHTML = '<span class="err">⚠ Input tidak valid!</span>';
+      document.getElementById('steps1').textContent = '';
+      document.getElementById('result1').classList.add('show');
+      return;
+    }
+    var S = (n / 2) * (2 * a + (n - 1) * d);
+    var suku = [];
+    for (var i = 1; i <= n; i++) suku.push(a + (i - 1) * d);
+    var deret = n > 7 ? suku.slice(0,4).join(' + ') + ' + ... + ' + suku[n-1] : suku.join(' + ');
+    var lang =
+      'Deret  : ' + deret + '\n' +
+      'Rumus  : S = n/2 x (2a + (n-1)d)\n' +
+      '       : S = ' + n + '/2 x (2x' + a + ' + (' + n + '-1)x' + d + ')\n' +
+      '       : S = ' + (n/2) + ' x ' + (2*a + (n-1)*d) + '\n' +
+      'Hasil  : S = ' + S;
+    tampilkan(1, 'S<sub>' + n + '</sub> = <b>' + S + '</b>', lang);
+    ganjarXP(1, '🥉 Badge Pecinta Aritmatika diraih!');
+  }
+
+  // ── KASUS 2 ──────────────────────────────────────────
+  function hitungGeometri() {
+    var a = getFloat('i_a2');
+    var r = getFloat('i_r2');
+    var n = getInt('i_n2');
+    if (isNaN(a) || isNaN(r) || isNaN(n) || n < 1) {
+      document.getElementById('ans2').innerHTML = '<span class="err">⚠ Input tidak valid!</span>';
+      document.getElementById('steps2').textContent = '';
+      document.getElementById('result2').classList.add('show');
+      return;
+    }
+    var S = (r === 1) ? a * n : a * (Math.pow(r, n) - 1) / (r - 1);
+    S = parseFloat(S.toFixed(6));
+    var suku = [];
+    for (var i = 0; i < n; i++) suku.push(parseFloat((a * Math.pow(r, i)).toFixed(4)));
+    var deret = n > 6 ? suku.slice(0,3).join(' + ') + ' + ... + ' + suku[n-1] : suku.join(' + ');
+    var lang;
+    if (r === 1) {
+      lang = 'Deret  : ' + deret + '\nr = 1  : S = a x n = ' + a + ' x ' + n + '\nHasil  : S = ' + S;
+    } else {
+      lang =
+        'Deret  : ' + deret + '\n' +
+        'Rumus  : S = a(r^n - 1) / (r - 1)\n' +
+        '       : S = ' + a + ' x (' + r + '^' + n + ' - 1) / (' + r + ' - 1)\n' +
+        'Hasil  : S = ' + S;
+    }
+    tampilkan(2, 'S<sub>' + n + '</sub> = <b>' + S + '</b>', lang);
+    ganjarXP(2, '🥈 Badge Master Geometri diraih!');
+  }
+
+  // ── KASUS 3 ──────────────────────────────────────────
+  function hitungGauss() {
+    var n = getInt('i_n3');
+    if (isNaN(n) || n < 1) {
+      document.getElementById('ans3').innerHTML = '<span class="err">⚠ Input tidak valid!</span>';
+      document.getElementById('steps3').textContent = '';
+      document.getElementById('result3').classList.add('show');
+      return;
+    }
+    var S = n * (n + 1) / 2;
+    var pr = [];
+    for (var i = 1; i <= Math.min(n, 6); i++) pr.push(i);
+    var deret = n > 6 ? pr.join(' + ') + ' + ... + ' + n : pr.join(' + ');
+    var lang =
+      'Deret  : ' + deret + '\n' +
+      'Rumus  : S = n(n+1) / 2  [Rumus Gauss]\n' +
+      '       : S = ' + n + ' x ' + (n+1) + ' / 2\n' +
+      '       : S = ' + (n*(n+1)) + ' / 2\n' +
+      'Hasil  : S = ' + S;
+    tampilkan(3, 'S = <b>' + S + '</b>', lang);
+    ganjarXP(3, '🥇 Badge Sahabat Gauss diraih!');
+  }
+
+  // ── KASUS 4 ──────────────────────────────────────────
+  function hitungKuadrat() {
+    var n = getInt('i_n4');
+    if (isNaN(n) || n < 1) {
+      document.getElementById('ans4').innerHTML = '<span class="err">⚠ Input tidak valid!</span>';
+      document.getElementById('steps4').textContent = '';
+      document.getElementById('result4').classList.add('show');
+      return;
+    }
+    var S = n * (n + 1) * (2 * n + 1) / 6;
+    var pr = [];
+    for (var i = 1; i <= Math.min(n, 5); i++) pr.push(i + 'x' + i + '=' + i*i);
+    var deret = n > 5 ? pr.join(', ') + ', ..., ' + n + 'x' + n + '=' + n*n : pr.join(', ');
+    var lang =
+      'Deret  : ' + deret + '\n' +
+      'Rumus  : S = n(n+1)(2n+1) / 6\n' +
+      '       : S = ' + n + ' x ' + (n+1) + ' x ' + (2*n+1) + ' / 6\n' +
+      '       : S = ' + (n*(n+1)*(2*n+1)) + ' / 6\n' +
+      'Hasil  : S = ' + S;
+    tampilkan(4, 'S = <b>' + S + '</b>', lang);
+    ganjarXP(4, '⭐ Badge Kuadrat Hero diraih!');
+  }
+
+  // ── KASUS 5 ──────────────────────────────────────────
+  function hitungKubik() {
+    var n = getInt('i_n5');
+    if (isNaN(n) || n < 1) {
+      document.getElementById('ans5').innerHTML = '<span class="err">⚠ Input tidak valid!</span>';
+      document.getElementById('steps5').textContent = '';
+      document.getElementById('result5').classList.add('show');
+      return;
+    }
+    var inner = n * (n + 1) / 2;
+    var S = inner * inner;
+    var pr = [];
+    for (var i = 1; i <= Math.min(n, 4); i++) pr.push(i + '^3=' + Math.pow(i,3));
+    var deret = n > 4 ? pr.join(', ') + ', ..., ' + n + '^3=' + Math.pow(n,3) : pr.join(', ');
+    var lang =
+      'Deret     : ' + deret + '\n' +
+      'Rumus     : S = [n(n+1)/2]^2\n' +
+      '          : S = [' + n + ' x ' + (n+1) + ' / 2]^2\n' +
+      '          : S = [' + inner + ']^2\n' +
+      'Identitas : (Sum i^3) = (Sum i)^2\n' +
+      'Hasil     : S = ' + S;
+    tampilkan(5, 'S = <b>' + S + '</b>', lang);
+    ganjarXP(5, '🏆 Badge Kubik Legend diraih!');
+  }
+
+  // buka kasus 1 by default
+  toggle('cbody1', 'cchev1');
+</script>
+</body>
+</html>

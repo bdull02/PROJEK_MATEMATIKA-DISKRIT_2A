@@ -1,0 +1,210 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+/* ─── Light Mode (Default) / Blogger-inspired Premium SaaS ────── */
+:root {
+  --bg-main: #fcfcf9;
+  --bg-card: #ffffff;
+  --bg-sidebar: #f7f7f5;
+  --bg-input: #f4f4f2;
+  --border-color: #e4e4e0;
+  
+  --text-main: #2d2e2c;
+  --text-muted: #6b6d6a;
+  --text-inverse: #ffffff;
+  
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-light: #e0e7ff;
+  
+  --badge-easy-bg: #ecfdf5;
+  --badge-easy-text: #047857;
+  --badge-easy-border: #a7f3d0;
+  
+  --badge-medium-bg: #fffbeb;
+  --badge-medium-text: #b45309;
+  --badge-medium-border: #fde68a;
+  
+  --badge-hard-bg: #fef2f2;
+  --badge-hard-text: #b91c1c;
+  --badge-hard-border: #fecaca;
+  
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.03);
+  --shadow-lg: 0 12px 24px rgba(0,0,0,0.06), 0 4px 8px rgba(0,0,0,0.04);
+}
+
+/* ─── Dark Mode (Applied via .dark class on html/body) ────────── */
+.dark {
+  --bg-main: #0b0c0e;
+  --bg-card: #131518;
+  --bg-sidebar: #181b1f;
+  --bg-input: #1f232a;
+  --border-color: #2b303b;
+  
+  --text-main: #eef1f6;
+  --text-muted: #9ba1b0;
+  --text-inverse: #0b0c0e;
+  
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --primary-light: #1e1b4b;
+  
+  --badge-easy-bg: rgba(16,185,129,0.1);
+  --badge-easy-text: #34d399;
+  --badge-easy-border: rgba(16,185,129,0.2);
+  
+  --badge-medium-bg: rgba(245,158,11,0.1);
+  --badge-medium-text: #fbbf24;
+  --badge-medium-border: rgba(245,158,11,0.2);
+  
+  --badge-hard-bg: rgba(239,68,68,0.1);
+  --badge-hard-text: #fca5a5;
+  --badge-hard-border: rgba(239,68,68,0.2);
+  
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.35);
+  --shadow-lg: 0 12px 24px rgba(0,0,0,0.45);
+}
+
+/* ─── Base Styles ───────────────────────────────────────────── */
+html, body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  transition: background-color 0.25s, color 0.25s, border-color 0.25s;
+  min-height: 100vh;
+}
+
+code, pre {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ─── Blogger-inspired Premium Layout Components ────────────── */
+.card-premium {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.card-premium:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary);
+}
+
+/* Premium Buttons */
+.btn-premium-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 14px;
+  background-color: var(--primary);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+}
+.btn-premium-primary:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.3);
+}
+
+.btn-premium-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 14px;
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-premium-secondary:hover {
+  background-color: var(--bg-sidebar);
+  border-color: var(--text-muted);
+  transform: translateY(-1px);
+}
+
+/* Badge classes */
+.badge-premium {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+/* Theme Toggle styles */
+.theme-toggle-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.theme-toggle-btn:hover {
+  background-color: var(--bg-sidebar);
+  border-color: var(--primary);
+}
+
+/* Floating Geometric Shapes (Illustration Decor) */
+.decor-bubble {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+}
+.dark .decor-bubble {
+  opacity: 0.08;
+}
+
+/* Simple Blogger/Notion Page Header styling */
+.page-title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--text-main);
+}
+.page-subtitle {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}

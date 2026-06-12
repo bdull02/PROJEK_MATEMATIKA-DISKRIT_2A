@@ -1,0 +1,2614 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AlgoVerse — Tree Traversal Interactive Lab</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&amp;family=Syne:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+/* ============================================================
+   DESIGN TOKENS & ROOT
+   ============================================================ */
+:root {
+  --bg-void: #04060d;
+  --bg-deep: #080c18;
+  --bg-card: #0d1224;
+  --bg-glass: rgba(13,18,36,0.7);
+  --bg-elevated: #111829;
+  --bg-hover: #161e30;
+
+  --neon-blue: #00d4ff;
+  --neon-green: #00ff9d;
+  --neon-amber: #ffb830;
+  --neon-red: #ff4060;
+  --neon-purple: #bf5fff;
+
+  --glow-blue: 0 0 20px rgba(0,212,255,0.4), 0 0 40px rgba(0,212,255,0.15);
+  --glow-green: 0 0 20px rgba(0,255,157,0.4), 0 0 40px rgba(0,255,157,0.15);
+  --glow-amber: 0 0 20px rgba(255,184,48,0.4), 0 0 40px rgba(255,184,48,0.15);
+
+  --text-primary: #e8edf8;
+  --text-secondary: #7a899e;
+  --text-muted: #3d4d63;
+
+  --border-subtle: rgba(255,255,255,0.06);
+  --border-active: rgba(0,212,255,0.3);
+
+  --font-display: 'Syne', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-body: 'Space Mono', monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  --pre-color: var(--neon-blue);
+  --in-color: var(--neon-green);
+  --post-color: var(--neon-amber);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-void);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   ANIMATED BACKGROUND
+   ============================================================ */
+.bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bg-grid {
+  position: absolute;
+  inset: -20%;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  transform: perspective(600px) rotateX(30deg);
+  animation: gridDrift 20s linear infinite;
+}
+
+@keyframes gridDrift {
+  0% { transform: perspective(600px) rotateX(30deg) translateY(0); }
+  100% { transform: perspective(600px) rotateX(30deg) translateY(60px); }
+}
+
+.bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.12;
+  animation: orbFloat 15s ease-in-out infinite alternate;
+}
+
+.bg-orb-1 { width: 500px; height: 500px; background: var(--neon-blue); top: -100px; left: -100px; animation-delay: 0s; }
+.bg-orb-2 { width: 400px; height: 400px; background: var(--neon-purple); bottom: -100px; right: -100px; animation-delay: -7s; }
+.bg-orb-3 { width: 300px; height: 300px; background: var(--neon-green); top: 50%; left: 50%; animation-delay: -3s; }
+
+@keyframes orbFloat {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(30px, 30px) scale(1.1); }
+}
+
+/* ============================================================
+   PARTICLES
+   ============================================================ */
+.particle {
+  position: fixed;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: var(--neon-blue);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1000;
+  animation: particleFly 1.5s ease-out forwards;
+}
+
+@keyframes particleFly {
+  0% { opacity: 1; transform: translate(0,0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.page-wrapper {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+/* ============================================================
+   HERO HEADER
+   ============================================================ */
+.hero {
+  padding: 60px 0 40px;
+  text-align: center;
+  position: relative;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 100px;
+  border: 1px solid rgba(0,212,255,0.25);
+  background: rgba(0,212,255,0.05);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--neon-blue);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  animation: fadeSlideDown 0.8s ease both;
+}
+
+.hero-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--neon-blue);
+  box-shadow: var(--glow-blue);
+  animation: pulse 2s ease infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -2px;
+  margin-bottom: 16px;
+  animation: fadeSlideDown 0.8s ease 0.1s both;
+}
+
+.hero-title .word-algo {
+  background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-purple) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-title .word-verse {
+  color: var(--text-primary);
+}
+
+.hero-sub {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-secondary);
+  max-width: 500px;
+  margin: 0 auto 32px;
+  animation: fadeSlideDown 0.8s ease 0.2s both;
+}
+
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  animation: fadeSlideDown 0.8s ease 0.3s both;
+}
+
+.stat-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.stat-num {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--neon-blue);
+}
+
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+@keyframes fadeSlideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   CARDS & GLASS
+   ============================================================ */
+.glass-card {
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.glass-card:hover {
+  border-color: rgba(0,212,255,0.15);
+}
+
+/* ============================================================
+   SECTION LAYOUT
+   ============================================================ */
+.section-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.section-full { margin-bottom: 20px; }
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-label::before {
+  content: '';
+  width: 20px;
+  height: 1px;
+  background: currentColor;
+}
+
+/* ============================================================
+   TRAVERSAL MODE TABS
+   ============================================================ */
+.mode-tabs {
+  display: flex;
+  gap: 4px;
+  background: rgba(0,0,0,0.4);
+  padding: 4px;
+  border-radius: var(--radius-lg);
+  margin-bottom: 24px;
+}
+
+.mode-tab {
+  flex: 1;
+  padding: 10px 8px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.mode-tab.active-pre {
+  background: rgba(0,212,255,0.1);
+  color: var(--neon-blue);
+  box-shadow: inset 0 0 20px rgba(0,212,255,0.05), 0 0 0 1px rgba(0,212,255,0.2);
+}
+
+.mode-tab.active-in {
+  background: rgba(0,255,157,0.1);
+  color: var(--neon-green);
+  box-shadow: inset 0 0 20px rgba(0,255,157,0.05), 0 0 0 1px rgba(0,255,157,0.2);
+}
+
+.mode-tab.active-post {
+  background: rgba(255,184,48,0.1);
+  color: var(--neon-amber);
+  box-shadow: inset 0 0 20px rgba(255,184,48,0.05), 0 0 0 1px rgba(255,184,48,0.2);
+}
+
+/* ============================================================
+   SVG TREE
+   ============================================================ */
+.tree-container {
+  position: relative;
+  background: rgba(0,0,0,0.3);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+
+#tree-svg {
+  width: 100%;
+  display: block;
+}
+
+/* Node styles */
+.tree-node circle {
+  transition: fill 0.35s ease, stroke 0.35s ease, filter 0.35s ease, r 0.2s ease;
+  cursor: pointer;
+}
+
+.tree-node text {
+  font-family: var(--font-mono);
+  pointer-events: none;
+  transition: fill 0.35s ease;
+}
+
+.tree-node:hover circle {
+  filter: brightness(1.3);
+  transform-origin: center;
+}
+
+.tree-edge {
+  transition: stroke 0.35s ease, stroke-width 0.35s ease, opacity 0.35s ease;
+}
+
+/* ============================================================
+   SEQUENCE PILLS
+   ============================================================ */
+.seq-bar {
+  background: rgba(0,0,0,0.4);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border-subtle);
+}
+
+.seq-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.seq-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  position: relative;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.03);
+}
+
+.pill.active {
+  transform: scale(1.2);
+  z-index: 2;
+}
+
+.pill.active-pre {
+  background: rgba(0,212,255,0.15);
+  color: var(--neon-blue);
+  border-color: var(--neon-blue);
+  box-shadow: var(--glow-blue);
+  animation: pillPulse 0.6s ease;
+}
+
+.pill.active-in {
+  background: rgba(0,255,157,0.15);
+  color: var(--neon-green);
+  border-color: var(--neon-green);
+  box-shadow: var(--glow-green);
+  animation: pillPulse 0.6s ease;
+}
+
+.pill.active-post {
+  background: rgba(255,184,48,0.15);
+  color: var(--neon-amber);
+  border-color: var(--neon-amber);
+  box-shadow: var(--glow-amber);
+  animation: pillPulse 0.6s ease;
+}
+
+.pill.done-pre { background: rgba(0,212,255,0.06); color: rgba(0,212,255,0.5); border-color: rgba(0,212,255,0.1); }
+.pill.done-in  { background: rgba(0,255,157,0.06); color: rgba(0,255,157,0.5); border-color: rgba(0,255,157,0.1); }
+.pill.done-post{ background: rgba(255,184,48,0.06); color: rgba(255,184,48,0.5); border-color: rgba(255,184,48,0.1); }
+
+.pill .order-num {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  font-size: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  background: var(--bg-deep);
+  border: 1px solid currentColor;
+}
+
+@keyframes pillPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.25); }
+  100% { transform: scale(1.2); }
+}
+
+/* ============================================================
+   CONTROLS
+   ============================================================ */
+.ctrl-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0);
+  transition: background 0.2s;
+}
+
+.btn:hover::after { background: rgba(255,255,255,0.05); }
+.btn:active::after { background: rgba(255,255,255,0.1); }
+
+.btn-primary {
+  background: linear-gradient(135deg, rgba(0,212,255,0.15) 0%, rgba(0,212,255,0.08) 100%);
+  color: var(--neon-blue);
+  border: 1px solid rgba(0,212,255,0.3);
+}
+
+.btn-primary:hover {
+  box-shadow: var(--glow-blue);
+  border-color: rgba(0,212,255,0.6);
+}
+
+.btn-ghost {
+  background: rgba(255,255,255,0.03);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
+.btn-ghost:hover {
+  background: rgba(255,255,255,0.06);
+  color: var(--text-primary);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, rgba(0,255,157,0.15), rgba(0,255,157,0.08));
+  color: var(--neon-green);
+  border: 1px solid rgba(0,255,157,0.3);
+}
+
+.btn-success:hover { box-shadow: var(--glow-green); }
+
+.btn-danger {
+  background: linear-gradient(135deg, rgba(255,64,96,0.15), rgba(255,64,96,0.08));
+  color: var(--neon-red);
+  border: 1px solid rgba(255,64,96,0.3);
+}
+
+.step-counter {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  padding: 8px 14px;
+  background: rgba(0,0,0,0.3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  min-width: 180px;
+}
+
+/* ============================================================
+   SPEED SLIDER
+   ============================================================ */
+.speed-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+input[type=range] {
+  -webkit-appearance: none;
+  height: 4px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  width: 100px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--neon-blue);
+  box-shadow: var(--glow-blue);
+  cursor: pointer;
+}
+
+/* ============================================================
+   EXPLANATION BOX
+   ============================================================ */
+.explain-panel {
+  background: rgba(0,0,0,0.3);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-top: 16px;
+  border-left: 2px solid var(--neon-blue);
+  font-size: 13px;
+  color: var(--text-secondary);
+  transition: border-color 0.3s;
+  line-height: 1.7;
+}
+
+/* ============================================================
+   QUIZ SECTION
+   ============================================================ */
+.quiz-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.quiz-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.difficulty-badge {
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.diff-easy   { background: rgba(0,255,157,0.1); color: var(--neon-green); border: 1px solid rgba(0,255,157,0.3); }
+.diff-medium { background: rgba(255,184,48,0.1); color: var(--neon-amber); border: 1px solid rgba(255,184,48,0.3); }
+.diff-hard   { background: rgba(255,64,96,0.1); color: var(--neon-red); border: 1px solid rgba(255,64,96,0.3); }
+
+.quiz-prompt {
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-bottom: 20px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text-primary);
+}
+
+.quiz-prompt strong {
+  color: var(--neon-blue);
+  font-size: 16px;
+}
+
+/* Answer input modes */
+.answer-mode-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.ans-mode-btn {
+  padding: 7px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ans-mode-btn.active {
+  background: rgba(0,212,255,0.1);
+  color: var(--neon-blue);
+  border-color: rgba(0,212,255,0.3);
+}
+
+/* Text input */
+.answer-input-wrap {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.answer-input {
+  width: 100%;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px 50px 14px 16px;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 15px;
+  letter-spacing: 3px;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.answer-input:focus {
+  border-color: rgba(0,212,255,0.4);
+  box-shadow: 0 0 0 3px rgba(0,212,255,0.05);
+}
+
+.answer-input.correct {
+  border-color: var(--neon-green) !important;
+  box-shadow: 0 0 0 3px rgba(0,255,157,0.1) !important;
+}
+
+.answer-input.wrong {
+  border-color: var(--neon-red) !important;
+  box-shadow: 0 0 0 3px rgba(255,64,96,0.1) !important;
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+/* Click-to-build answer */
+.click-answer-area {
+  background: rgba(0,0,0,0.4);
+  border: 1px dashed rgba(255,255,255,0.1);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  min-height: 56px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.click-answer-area:hover { border-color: rgba(0,212,255,0.2); }
+
+.click-answer-area .placeholder {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-style: italic;
+}
+
+.answer-chip {
+  padding: 4px 12px;
+  border-radius: 6px;
+  background: rgba(0,212,255,0.1);
+  color: var(--neon-blue);
+  border: 1px solid rgba(0,212,255,0.2);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  animation: chipIn 0.2s ease;
+}
+
+.answer-chip:hover {
+  background: rgba(255,64,96,0.1);
+  color: var(--neon-red);
+  border-color: rgba(255,64,96,0.3);
+}
+
+@keyframes chipIn {
+  from { transform: scale(0.7); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.node-palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.palette-node {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(255,255,255,0.03);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.palette-node:hover:not(.used) {
+  background: rgba(0,212,255,0.1);
+  color: var(--neon-blue);
+  border-color: rgba(0,212,255,0.3);
+  transform: scale(1.1);
+}
+
+.palette-node.used {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   RESULT PANEL
+   ============================================================ */
+.result-panel {
+  display: none;
+  animation: revealUp 0.4s ease;
+}
+
+.result-panel.show { display: block; }
+
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.result-header {
+  text-align: center;
+  padding: 28px 20px;
+  border-radius: var(--radius-lg);
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.result-header.correct-header {
+  background: linear-gradient(135deg, rgba(0,255,157,0.1) 0%, rgba(0,255,157,0.03) 100%);
+  border: 1px solid rgba(0,255,157,0.2);
+}
+
+.result-header.wrong-header {
+  background: linear-gradient(135deg, rgba(255,64,96,0.1) 0%, rgba(255,64,96,0.03) 100%);
+  border: 1px solid rgba(255,64,96,0.2);
+}
+
+.result-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  animation: iconBounce 0.5s ease;
+}
+
+@keyframes iconBounce {
+  0% { transform: scale(0); }
+  60% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.result-score-num {
+  font-family: var(--font-display);
+  font-size: 52px;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.score-correct { color: var(--neon-green); text-shadow: var(--glow-green); }
+.score-wrong   { color: var(--neon-red); }
+
+.result-msg {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-secondary);
+  letter-spacing: 1px;
+}
+
+/* Score breakdown */
+.score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.score-row:last-child { border-bottom: none; }
+
+.score-key { color: var(--text-muted); }
+.score-val { color: var(--text-primary); font-weight: 700; }
+
+/* Comparison view */
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.compare-box {
+  background: rgba(0,0,0,0.3);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  border: 1px solid var(--border-subtle);
+}
+
+.compare-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.compare-seq {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.cmp-pill {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.cmp-ok    { background: rgba(0,255,157,0.15); color: var(--neon-green); border: 1px solid rgba(0,255,157,0.2); }
+.cmp-wrong { background: rgba(255,64,96,0.15); color: var(--neon-red); border: 1px solid rgba(255,64,96,0.2); }
+.cmp-user  { background: rgba(255,255,255,0.05); color: var(--text-secondary); border: 1px solid var(--border-subtle); }
+
+/* Progress bar */
+.progress-bar-wrap {
+  background: rgba(255,255,255,0.05);
+  border-radius: 100px;
+  height: 8px;
+  overflow: hidden;
+  margin: 12px 0;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 100px;
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-green));
+  transition: width 1s ease;
+  box-shadow: 0 0 8px rgba(0,255,157,0.4);
+}
+
+/* ============================================================
+   WALKTHROUGH
+   ============================================================ */
+.walkthrough-step {
+  display: none;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border-subtle);
+  margin-bottom: 10px;
+  animation: fadeSlideRight 0.3s ease;
+}
+
+.walkthrough-step.show { display: block; }
+
+@keyframes fadeSlideRight {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: rgba(0,212,255,0.15);
+  color: var(--neon-blue);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  margin-right: 10px;
+  border: 1px solid rgba(0,212,255,0.25);
+}
+
+.step-text {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  display: inline;
+}
+
+.step-node-highlight {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  margin: 0 2px;
+}
+
+.walk-ctrl {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* ============================================================
+   SCOREBOARD
+   ============================================================ */
+.score-meter {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: rgba(0,0,0,0.4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  margin-bottom: 16px;
+}
+
+.xp-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: conic-gradient(var(--neon-blue) var(--pct, 0%), rgba(255,255,255,0.05) 0%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.xp-inner {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--bg-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--neon-blue);
+}
+
+.score-details { flex: 1; }
+
+.score-label-main {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+
+.score-val-main {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+/* ============================================================
+   ACHIEVEMENTS
+   ============================================================ */
+.badges-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(255,255,255,0.02);
+  color: var(--text-muted);
+  transition: all 0.3s;
+  opacity: 0.4;
+}
+
+.badge.earned {
+  opacity: 1;
+  animation: badgeEarn 0.5s ease;
+}
+
+.badge.earned-blue   { border-color: rgba(0,212,255,0.3); color: var(--neon-blue); background: rgba(0,212,255,0.05); }
+.badge.earned-green  { border-color: rgba(0,255,157,0.3); color: var(--neon-green); background: rgba(0,255,157,0.05); }
+.badge.earned-amber  { border-color: rgba(255,184,48,0.3); color: var(--neon-amber); background: rgba(255,184,48,0.05); }
+.badge.earned-purple { border-color: rgba(191,95,255,0.3); color: var(--neon-purple); background: rgba(191,95,255,0.05); }
+
+@keyframes badgeEarn {
+  0% { transform: scale(0.8); }
+  60% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* ============================================================
+   INFO CARDS — THEORY
+   ============================================================ */
+.theory-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.theory-card {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  transition: all 0.3s;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.theory-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.theory-card:hover::after { opacity: 1; }
+
+.tc-pre::after  { background: var(--neon-blue); }
+.tc-in::after   { background: var(--neon-green); }
+.tc-post::after { background: var(--neon-amber); }
+
+.tc-pre:hover  { border-color: rgba(0,212,255,0.25); }
+.tc-in:hover   { border-color: rgba(0,255,157,0.25); }
+.tc-post:hover { border-color: rgba(255,184,48,0.25); }
+
+.theory-icon {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.theory-name {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.tc-pre .theory-name  { color: var(--neon-blue); }
+.tc-in .theory-name   { color: var(--neon-green); }
+.tc-post .theory-name { color: var(--neon-amber); }
+
+.theory-desc {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.theory-order {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.tc-pre .theory-order  { color: rgba(0,212,255,0.6); }
+.tc-in .theory-order   { color: rgba(0,255,157,0.6); }
+.tc-post .theory-order { color: rgba(255,184,48,0.6); }
+
+/* Pseudocode */
+.pseudo-block {
+  background: rgba(0,0,0,0.5);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  position: relative;
+  overflow: hidden;
+}
+
+.pseudo-block::before {
+  content: attr(data-lang);
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+}
+
+.kw  { color: var(--neon-purple); }
+.fn  { color: var(--neon-blue); }
+.cm  { color: var(--text-muted); font-style: italic; }
+.st  { color: var(--neon-green); }
+.num { color: var(--neon-amber); }
+
+/* Complexity table */
+.complexity-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 0;
+  padding: 10px 14px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  align-items: center;
+}
+
+.complexity-row:last-child { border-bottom: none; }
+.complexity-row.header { font-size: 10px; color: var(--text-muted); letter-spacing: 1px; background: rgba(0,0,0,0.2); border-radius: var(--radius-sm) var(--radius-sm) 0 0; }
+
+/* ============================================================
+   TIMER
+   ============================================================ */
+.timer-display {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--neon-blue);
+  text-shadow: var(--glow-blue);
+  padding: 8px 16px;
+  background: rgba(0,212,255,0.05);
+  border: 1px solid rgba(0,212,255,0.15);
+  border-radius: var(--radius-md);
+}
+
+.timer-display.urgent {
+  color: var(--neon-red);
+  border-color: rgba(255,64,96,0.3);
+  background: rgba(255,64,96,0.05);
+  animation: timerUrgent 0.5s ease infinite;
+}
+
+@keyframes timerUrgent {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* ============================================================
+   CONFETTI
+   ============================================================ */
+.confetti-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  animation: confettiFall linear forwards;
+}
+
+@keyframes confettiFall {
+  0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* ============================================================
+   TOOLTIP
+   ============================================================ */
+.node-tooltip {
+  position: fixed;
+  pointer-events: none;
+  background: var(--bg-card);
+  border: 1px solid var(--border-active);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-primary);
+  z-index: 100;
+  opacity: 0;
+  transition: opacity 0.15s;
+  max-width: 180px;
+  box-shadow: var(--glow-blue);
+}
+
+.node-tooltip.visible { opacity: 1; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  text-align: center;
+  padding: 40px 0 20px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-subtle);
+  margin-top: 60px;
+}
+
+footer a { color: var(--neon-blue); text-decoration: none; }
+
+/* ============================================================
+   NOTIFICATION TOAST
+   ============================================================ */
+.toast {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  padding: 14px 20px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  z-index: 9000;
+  transform: translateX(150%);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-width: 300px;
+  border: 1px solid transparent;
+}
+
+.toast.show { transform: translateX(0); }
+
+.toast-success {
+  background: rgba(0,255,157,0.1);
+  color: var(--neon-green);
+  border-color: rgba(0,255,157,0.2);
+}
+
+.toast-error {
+  background: rgba(255,64,96,0.1);
+  color: var(--neon-red);
+  border-color: rgba(255,64,96,0.2);
+}
+
+.toast-info {
+  background: rgba(0,212,255,0.1);
+  color: var(--neon-blue);
+  border-color: rgba(0,212,255,0.2);
+}
+
+/* ============================================================
+   DIVIDER
+   ============================================================ */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-subtle), transparent);
+  margin: 32px 0;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .section-grid { grid-template-columns: 1fr; }
+  .theory-grid  { grid-template-columns: 1fr; }
+  .compare-grid { grid-template-columns: 1fr; }
+  .hero-title   { letter-spacing: -1px; }
+  .hero-stats   { gap: 20px; }
+  .complexity-row { font-size: 10px; gap: 0; }
+  .page-wrapper { padding: 0 16px 60px; }
+}
+
+@media (max-width: 480px) {
+  .mode-tab { font-size: 10px; padding: 8px 4px; }
+  .glass-card { padding: 18px; }
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.2); border-radius: 2px; }
+
+/* ============================================================
+   UTILITY
+   ============================================================ */
+.hidden { display: none !important; }
+.text-center { text-align: center; }
+.mt-8  { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.mb-16 { margin-bottom: 16px; }
+.flex-row { display: flex; align-items: center; gap: 10px; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+</style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Zamzam Firdaus_2500853</div>
+<!-- Background -->
+<div class="bg-canvas">
+<div class="bg-grid"></div>
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+<div class="bg-orb bg-orb-3"></div>
+</div>
+<!-- Tooltip -->
+<div class="node-tooltip" id="nodeTooltip"></div>
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+<!-- Confetti container -->
+<div class="confetti-container" id="confettiContainer"></div>
+<!-- ============================================================ -->
+<!-- MAIN CONTENT                                                  -->
+<!-- ============================================================ -->
+<div class="page-wrapper">
+<!-- HERO -->
+<header class="hero">
+<div class="hero-badge">⬡ AlgoVerse Interactive Lab</div>
+<h1 class="hero-title">
+<span class="word-algo">Tree</span><span class="word-verse"> Traversal</span>
+</h1>
+<p class="hero-sub">// Kuasai traversal pohon dengan simulasi interaktif, kuis adaptif, dan pembahasan mendalam</p>
+<div class="hero-stats">
+<div class="stat-chip"><span class="stat-num" id="statSolved">0</span><span class="stat-label">Solved</span></div>
+<div class="stat-chip"><span class="stat-num" id="statXP">0</span><span class="stat-label">XP</span></div>
+<div class="stat-chip"><span class="stat-num" id="statStreak">0</span><span class="stat-label">Streak 🔥</span></div>
+<div class="stat-chip"><span class="stat-num" id="statAccuracy">—</span><span class="stat-label">Accuracy</span></div>
+</div>
+</header>
+<!-- THEORY CARDS -->
+<div class="section-full">
+<div class="section-label">Konsep Dasar</div>
+<div class="theory-grid">
+<div class="theory-card tc-pre" onclick="setMode('pre')">
+<div class="theory-icon">🔵</div>
+<div class="theory-name">Preorder</div>
+<div class="theory-desc">Kunjungi akar terlebih dahulu, lalu anak-anak dari kiri ke kanan secara rekursif.</div>
+<div class="theory-order">AKAR → Kiri → Kanan</div>
+</div>
+<div class="theory-card tc-in" onclick="setMode('in')">
+<div class="theory-icon">🟢</div>
+<div class="theory-name">Inorder</div>
+<div class="theory-desc">Kunjungi anak pertama (paling kiri) dulu, lalu akar, kemudian sisa anak kiri ke kanan.</div>
+<div class="theory-order">Kiri → AKAR → Kanan</div>
+</div>
+<div class="theory-card tc-post" onclick="setMode('post')">
+<div class="theory-icon">🟠</div>
+<div class="theory-name">Postorder</div>
+<div class="theory-desc">Kunjungi semua anak terlebih dahulu (kiri ke kanan), lalu baru kunjungi akar.</div>
+<div class="theory-order">Kiri → Kanan → AKAR</div>
+</div>
+</div>
+</div>
+<!-- MAIN SECTION: TREE + CONTROLS -->
+<div class="section-grid">
+<!-- LEFT: TREE VISUALIZER -->
+<div class="glass-card">
+<div class="section-label">Visualisasi Pohon 4-ary</div>
+<!-- Mode Tabs -->
+<div class="mode-tabs">
+<button class="mode-tab active-pre" id="tab-pre" onclick="setMode('pre')">🔵 Preorder</button>
+<button class="mode-tab" id="tab-in" onclick="setMode('in')">🟢 Inorder</button>
+<button class="mode-tab" id="tab-post" onclick="setMode('post')">🟠 Postorder</button>
+</div>
+<!-- SVG Tree -->
+<div class="tree-container">
+<svg aria-label="Pohon 4-ary traversal" id="tree-svg" role="img" viewbox="0 0 680 285">
+<defs>
+<filter id="glow-filter">
+<fegaussianblur result="blur" stddeviation="3"></fegaussianblur>
+<femerge><femergenode in="blur"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge>
+</filter>
+</defs>
+<!-- Edges -->
+<line class="tree-edge" id="e-ab" x1="340" x2="140" y1="36" y2="96"></line>
+<line class="tree-edge" id="e-ac" x1="340" x2="340" y1="36" y2="96"></line>
+<line class="tree-edge" id="e-ad" x1="340" x2="540" y1="36" y2="96"></line>
+<line class="tree-edge" id="e-be" x1="140" x2="60" y1="116" y2="176"></line>
+<line class="tree-edge" id="e-bf" x1="140" x2="130" y1="116" y2="176"></line>
+<line class="tree-edge" id="e-bg" x1="140" x2="200" y1="116" y2="176"></line>
+<line class="tree-edge" id="e-ch" x1="340" x2="310" y1="116" y2="176"></line>
+<line class="tree-edge" id="e-di" x1="540" x2="420" y1="116" y2="176"></line>
+<line class="tree-edge" id="e-dj" x1="540" x2="470" y1="116" y2="176"></line>
+<line class="tree-edge" id="e-dk" x1="540" x2="530" y1="116" y2="176"></line>
+<line class="tree-edge" id="e-dl" x1="540" x2="590" y1="116" y2="176"></line>
+<line class="tree-edge" id="e-dm" x1="540" x2="642" y1="116" y2="176"></line>
+<line class="tree-edge" id="e-en" x1="60" x2="42" y1="196" y2="248"></line>
+<line class="tree-edge" id="e-eo" x1="60" x2="80" y1="196" y2="248"></line>
+<line class="tree-edge" id="e-kp" x1="530" x2="512" y1="196" y2="248"></line>
+<line class="tree-edge" id="e-kq" x1="530" x2="550" y1="196" y2="248"></line>
+<!-- NODES -->
+<g class="tree-node" data-level="0" data-node="a" id="nd-a">
+<circle cx="340" cy="20" r="17"></circle>
+<text dominant-baseline="central" font-size="14" font-weight="700" text-anchor="middle" x="340" y="20">a</text>
+</g>
+<g class="tree-node" data-level="1" data-node="b" id="nd-b">
+<circle cx="140" cy="106" r="16"></circle>
+<text dominant-baseline="central" font-size="13" font-weight="700" text-anchor="middle" x="140" y="106">b</text>
+</g>
+<g class="tree-node" data-level="1" data-node="c" id="nd-c">
+<circle cx="340" cy="106" r="16"></circle>
+<text dominant-baseline="central" font-size="13" font-weight="700" text-anchor="middle" x="340" y="106">c</text>
+</g>
+<g class="tree-node" data-level="1" data-node="d" id="nd-d">
+<circle cx="540" cy="106" r="16"></circle>
+<text dominant-baseline="central" font-size="13" font-weight="700" text-anchor="middle" x="540" y="106">d</text>
+</g>
+<g class="tree-node" data-level="2" data-node="e" id="nd-e">
+<circle cx="60" cy="186" r="14"></circle>
+<text dominant-baseline="central" font-size="12" font-weight="700" text-anchor="middle" x="60" y="186">e</text>
+</g>
+<g class="tree-node" data-level="2" data-node="f" id="nd-f">
+<circle cx="130" cy="186" r="14"></circle>
+<text dominant-baseline="central" font-size="12" font-weight="700" text-anchor="middle" x="130" y="186">f</text>
+</g>
+<g class="tree-node" data-level="2" data-node="g" id="nd-g">
+<circle cx="200" cy="186" r="14"></circle>
+<text dominant-baseline="central" font-size="12" font-weight="700" text-anchor="middle" x="200" y="186">g</text>
+</g>
+<g class="tree-node" data-level="2" data-node="h" id="nd-h">
+<circle cx="310" cy="186" r="14"></circle>
+<text dominant-baseline="central" font-size="12" font-weight="700" text-anchor="middle" x="310" y="186">h</text>
+</g>
+<g class="tree-node" data-level="2" data-node="i" id="nd-i">
+<circle cx="420" cy="186" r="14"></circle>
+<text dominant-baseline="central" font-size="12" font-weight="700" text-anchor="middle" x="420" y="186">i</text>
+</g>
+<g class="tree-node" data-level="2" data-node="j" id="nd-j">
+<circle cx="470" cy="186" r="14"></circle>
+<text dominant-baseline="central" font-size="12" font-weight="700" text-anchor="middle" x="470" y="186">j</text>
+</g>
+<g class="tree-node" data-level="2" data-node="k" id="nd-k">
+<circle cx="530" cy="186" r="14"></circle>
+<text dominant-baseline="central" font-size="12" font-weight="700" text-anchor="middle" x="530" y="186">k</text>
+</g>
+<g class="tree-node" data-level="2" data-node="l" id="nd-l">
+<circle cx="590" cy="186" r="14"></circle>
+<text dominant-baseline="central" font-size="12" font-weight="700" text-anchor="middle" x="590" y="186">l</text>
+</g>
+<g class="tree-node" data-level="2" data-node="m" id="nd-m">
+<circle cx="642" cy="186" r="14"></circle>
+<text dominant-baseline="central" font-size="12" font-weight="700" text-anchor="middle" x="642" y="186">m</text>
+</g>
+<g class="tree-node" data-level="3" data-node="n" id="nd-n">
+<circle cx="42" cy="256" r="13"></circle>
+<text dominant-baseline="central" font-size="11" font-weight="700" text-anchor="middle" x="42" y="256">n</text>
+</g>
+<g class="tree-node" data-level="3" data-node="o" id="nd-o">
+<circle cx="80" cy="256" r="13"></circle>
+<text dominant-baseline="central" font-size="11" font-weight="700" text-anchor="middle" x="80" y="256">o</text>
+</g>
+<g class="tree-node" data-level="3" data-node="p" id="nd-p">
+<circle cx="512" cy="256" r="13"></circle>
+<text dominant-baseline="central" font-size="11" font-weight="700" text-anchor="middle" x="512" y="256">p</text>
+</g>
+<g class="tree-node" data-level="3" data-node="q" id="nd-q">
+<circle cx="550" cy="256" r="13"></circle>
+<text dominant-baseline="central" font-size="11" font-weight="700" text-anchor="middle" x="550" y="256">q</text>
+</g>
+</svg>
+</div>
+<!-- Explain -->
+<div class="explain-panel" id="explainText">
+        📌 <strong>Preorder</strong> = Akar terlebih dahulu, baru anak-anak dari kiri ke kanan secara rekursif. Seperti membaca buku: mulai dari judul, baru ke isi!
+      </div>
+</div>
+<!-- RIGHT: ANIMATION + SEQUENCE -->
+<div>
+<!-- Sequence display -->
+<div class="glass-card mb-16" style="margin-bottom:16px">
+<div class="section-label">Urutan Traversal</div>
+<div class="seq-bar">
+<div class="seq-label" id="seqLabel">PREORDER SEQUENCE</div>
+<div class="seq-pills" id="seqPills"></div>
+</div>
+<!-- Controls -->
+<div class="ctrl-row mb-16" style="margin-bottom:12px">
+<button class="btn btn-primary" id="btnPlay" onclick="startAnim()">▶ Mulai Animasi</button>
+<button class="btn btn-ghost" onclick="stepForward()">⏭ Step</button>
+<button class="btn btn-ghost" onclick="resetAnim()">↺ Reset</button>
+</div>
+<div class="flex-between">
+<div class="step-counter" id="stepInfo">Tekan Mulai untuk memulai animasi</div>
+<div class="speed-control">
+<span>Kecepatan</span>
+<input id="speedSlider" max="5" min="1" oninput="updateSpeed(this.value)" type="range" value="3"/>
+<span id="speedLabel">3x</span>
+</div>
+</div>
+</div>
+<!-- Timer + Score meter -->
+<div class="glass-card">
+<div class="flex-between mb-16" style="margin-bottom:16px">
+<div>
+<div class="section-label" style="margin-bottom:4px">Progres Belajar</div>
+<div class="badges-row" id="badgeRow">
+<div class="badge" id="badge-first">🏆 First Blood</div>
+<div class="badge" id="badge-streak">🔥 Hot Streak</div>
+<div class="badge" id="badge-perfect">⭐ Perfect</div>
+<div class="badge" id="badge-master">🧠 Master</div>
+</div>
+</div>
+</div>
+<div class="score-meter">
+<div class="xp-circle" id="xpCircle" style="--pct:0%">
+<div class="xp-inner" id="xpLevel">Lv.1</div>
+</div>
+<div class="score-details">
+<div class="score-label-main">Total XP</div>
+<div class="score-val-main"><span id="totalXP">0</span> <span style="font-size:13px;color:var(--text-muted)">XP</span></div>
+</div>
+<div style="text-align:right">
+<div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);margin-bottom:4px">SOAL DIJAWAB</div>
+<div style="font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--text-primary)"><span id="quizCount">0</span></div>
+</div>
+</div>
+<div class="progress-bar-wrap">
+<div class="progress-bar-fill" id="xpBar" style="width:0%"></div>
+</div>
+<div style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);margin-top:4px"><span id="xpNext">100 XP ke level berikutnya</span></div>
+</div>
+</div>
+</div>
+<div class="section-divider"></div>
+<!-- ============================================================
+       QUIZ SECTION
+       ============================================================ -->
+<div class="section-full">
+<div class="section-label">Kuis Interaktif</div>
+<div class="glass-card">
+<div class="quiz-header">
+<h2 class="quiz-title">⚡ Quiz Mode</h2>
+<div class="flex-row">
+<div class="timer-display" id="timerDisplay">00:00</div>
+<button class="btn btn-primary" onclick="generateQuiz()">🎲 Soal Baru</button>
+</div>
+</div>
+<!-- Quiz prompt -->
+<div class="quiz-prompt" id="quizPrompt">
+        Tekan <strong>🎲 Soal Baru</strong> untuk memulai kuis traversal pohon!
+        <br/><br/>
+<span style="color:var(--text-muted);font-size:12px">Sistem akan memilih jenis traversal secara acak dan kamu harus menuliskan urutan kunjungan node yang benar.</span>
+</div>
+<!-- Mode selector -->
+<div class="flex-between mb-16" style="margin-bottom:14px">
+<div class="answer-mode-tabs">
+<button class="ans-mode-btn active" id="modeTyping" onclick="switchAnswerMode('typing')">⌨ Ketik</button>
+<button class="ans-mode-btn" id="modeClick" onclick="switchAnswerMode('click')">👆 Klik Node</button>
+</div>
+<div>
+<select id="diffSelect" style="background:rgba(0,0,0,0.4);border:1px solid var(--border-subtle);color:var(--text-secondary);padding:7px 12px;border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:12px;outline:none;cursor:pointer">
+<option value="easy">🟢 Easy</option>
+<option selected="" value="medium">🟡 Medium</option>
+<option value="hard">🔴 Hard</option>
+</select>
+</div>
+</div>
+<!-- Typing mode -->
+<div id="typingMode">
+<div class="answer-input-wrap">
+<input autocomplete="off" class="answer-input" id="answerInput" onkeydown="if(event.key==='Enter') submitAnswer()" placeholder="Ketik urutan node, contoh: a b e n o f g ..." spellcheck="false" type="text"/>
+</div>
+</div>
+<!-- Click mode -->
+<div class="hidden" id="clickMode">
+<div class="click-answer-area" id="clickArea">
+<span class="placeholder" id="clickPlaceholder">Klik node di bawah untuk menyusun jawaban...</span>
+</div>
+<div class="node-palette" id="nodePalette"></div>
+</div>
+<!-- Submit -->
+<div class="ctrl-row">
+<button class="btn btn-success" onclick="submitAnswer()">✓ Periksa Jawaban</button>
+<button class="btn btn-ghost" onclick="clearAnswer()">✕ Hapus</button>
+<button class="btn btn-ghost" onclick="showHint()">💡 Petunjuk</button>
+<div class="difficulty-badge diff-medium" id="diffBadge">MEDIUM</div>
+</div>
+<!-- Result panel -->
+<div class="result-panel" id="resultPanel">
+<div class="section-divider"></div>
+<div class="result-header" id="resultHeader">
+<div class="result-icon" id="resultIcon">—</div>
+<div class="result-score-num" id="resultScore">—</div>
+<div class="result-msg" id="resultMsg">—</div>
+</div>
+<div class="compare-grid">
+<div class="compare-box">
+<div class="compare-label" style="color:var(--neon-blue)">Jawaban Kamu</div>
+<div class="compare-seq" id="userAnswerDisplay"></div>
+</div>
+<div class="compare-box">
+<div class="compare-label" style="color:var(--neon-green)">Jawaban Benar</div>
+<div class="compare-seq" id="correctAnswerDisplay"></div>
+</div>
+</div>
+<div style="background:rgba(0,0,0,0.3);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:14px;margin-bottom:16px">
+<div class="score-row"><span class="score-key">Akurasi Per Karakter</span><span class="score-val" id="charAccuracy">—</span></div>
+<div class="score-row"><span class="score-key">XP Diperoleh</span><span class="score-val" id="xpEarned">—</span></div>
+<div class="score-row"><span class="score-key">Waktu</span><span class="score-val" id="timeTaken">—</span></div>
+<div class="score-row"><span class="score-key">Jenis Traversal</span><span class="score-val" id="traversalUsed">—</span></div>
+</div>
+<!-- Walkthrough -->
+<div>
+<div class="flex-between mb-16" style="margin-bottom:12px">
+<div class="section-label" style="margin:0">Pembahasan Langkah demi Langkah</div>
+<div class="walk-ctrl">
+<button class="btn btn-ghost" id="btnPrevStep" onclick="walkStep(-1)">← Prev</button>
+<span id="walkCounter" style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted)">0/0</span>
+<button class="btn btn-ghost" id="btnNextStep" onclick="walkStep(1)">Next →</button>
+<button class="btn btn-ghost" onclick="autoWalk()">▶ Auto</button>
+</div>
+</div>
+<div id="walkthroughContainer"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section-divider"></div>
+<!-- ============================================================
+       THEORY + PSEUDOCODE
+       ============================================================ -->
+<div class="section-grid">
+<div class="glass-card">
+<div class="section-label">Pseudocode</div>
+<div class="mode-tabs" style="margin-bottom:16px">
+<button class="mode-tab active-pre" id="ptab-pre" onclick="showPseudo('pre')">Preorder</button>
+<button class="mode-tab" id="ptab-in" onclick="showPseudo('in')">Inorder</button>
+<button class="mode-tab" id="ptab-post" onclick="showPseudo('post')">Postorder</button>
+</div>
+<div id="pseudoBlock"></div>
+</div>
+<div class="glass-card">
+<div class="section-label">Analisis Kompleksitas</div>
+<div style="border:1px solid var(--border-subtle);border-radius:var(--radius-md);overflow:hidden">
+<div class="complexity-row header">
+<span>Operasi</span><span>Waktu</span><span>Ruang</span><span>Keterangan</span>
+</div>
+<div class="complexity-row">
+<span style="color:var(--neon-blue)">Preorder</span>
+<span>O(n)</span>
+<span>O(h)</span>
+<span style="color:var(--text-muted)">h = tinggi pohon</span>
+</div>
+<div class="complexity-row">
+<span style="color:var(--neon-green)">Inorder</span>
+<span>O(n)</span>
+<span>O(h)</span>
+<span style="color:var(--text-muted)">n = jumlah node</span>
+</div>
+<div class="complexity-row">
+<span style="color:var(--neon-amber)">Postorder</span>
+<span>O(n)</span>
+<span>O(h)</span>
+<span style="color:var(--text-muted)">Rekursif stack</span>
+</div>
+</div>
+<div style="margin-top:20px">
+<div class="section-label">Kapan Digunakan?</div>
+<div style="font-family:var(--font-mono);font-size:12px;line-height:2;color:var(--text-secondary)">
+<div><span style="color:var(--neon-blue)">Preorder</span> → Copy/serialisasi pohon, prefix expression</div>
+<div><span style="color:var(--neon-green)">Inorder</span> → BST menghasilkan data terurut</div>
+<div><span style="color:var(--neon-amber)">Postorder</span> → Hapus pohon, evaluasi ekspresi postfix</div>
+</div>
+</div>
+<div style="margin-top:20px">
+<div class="section-label">Contoh Real-World</div>
+<div style="font-family:var(--font-mono);font-size:11px;line-height:2;color:var(--text-muted)">
+<div>📁 Filesystem traversal → Preorder</div>
+<div>🔢 Sorted data dari BST → Inorder</div>
+<div>🗑️ Garbage collection → Postorder</div>
+<div>🧮 Compiler expression tree → Postorder</div>
+</div>
+</div>
+</div>
+</div>
+</div><!-- /page-wrapper -->
+<!-- Footer -->
+<footer>
+<div class="page-wrapper">
+<div style="margin-bottom:8px">⬡ AlgoVerse Interactive Lab — Tree Traversal</div>
+<div>Pohon 4-ary dengan 17 node (a–q) · Preorder · Inorder · Postorder</div>
+</div>
+</footer>
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+/* ============================================================
+   DATA
+   ============================================================ */
+const ALL_NODES = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q'];
+
+const SEQUENCES = {
+  pre:  ['a','b','e','n','o','f','g','c','h','d','i','j','k','p','q','l','m'],
+  in:   ['n','e','o','b','f','g','c','h','a','i','d','j','p','k','q','l','m'],
+  post: ['n','o','e','f','g','b','h','c','i','j','p','q','k','l','m','d','a']
+};
+
+const MODE_COLORS = { pre: 'neon-blue', in: 'neon-green', post: 'neon-amber' };
+const MODE_HEX    = { pre: '#00d4ff',   in: '#00ff9d',    post: '#ffb830' };
+const MODE_NAMES  = { pre: 'Preorder',  in: 'Inorder',    post: 'Postorder' };
+
+const EXPLANATIONS = {
+  pre:  '📌 <strong style="color:var(--neon-blue)">Preorder</strong> — Kunjungi <em>AKAR</em> terlebih dahulu, kemudian rekursif ke anak pertama (kiri), baru anak berikutnya ke kanan. Berguna untuk membuat salinan pohon atau menghasilkan prefix expression.',
+  in:   '📌 <strong style="color:var(--neon-green)">Inorder</strong> — Kunjungi anak pertama (paling kiri) secara rekursif, lalu <em>AKAR</em>, lalu sisa anak kiri ke kanan. Pada BST menghasilkan data terurut secara ascending.',
+  post: '📌 <strong style="color:var(--neon-amber)">Postorder</strong> — Kunjungi semua anak (kiri ke kanan) terlebih dahulu secara rekursif, baru <em>AKAR</em> di akhir. Cocok untuk menghapus pohon atau evaluasi postfix expression.'
+};
+
+/* Walkthrough steps for each traversal */
+const WALKTHROUGHS = {
+  pre: [
+    { node:'a', text:'Mulai dari <node>a</node> (root). Preorder → kunjungi <strong>akar dulu</strong>. Node a = kunjungan ke-1.' },
+    { node:'b', text:'Pindah ke anak kiri pertama root, yaitu <node>b</node>. Karena preorder, kunjungi b dulu sebelum anak-anaknya. Node b = kunjungan ke-2.' },
+    { node:'e', text:'b punya anak: e, f, g. Preorder → kunjungi <node>e</node> (anak kiri b) dulu, sebelum ke anak-anak e. Node e = kunjungan ke-3.' },
+    { node:'n', text:'e punya dua anak: n dan o. Preorder → <node>n</node> (anak kiri e) dikunjungi dahulu. n adalah leaf node = kunjungan ke-4.' },
+    { node:'o', text:'Kembali ke e, lanjut ke anak kanan <node>o</node>. o adalah leaf node = kunjungan ke-5.' },
+    { node:'f', text:'Kembali ke b, lanjut ke anak kedua <node>f</node>. f adalah leaf node (tidak punya anak) = kunjungan ke-6.' },
+    { node:'g', text:'Kembali ke b, anak ketiga <node>g</node>. g juga leaf node = kunjungan ke-7.' },
+    { node:'c', text:'Subtree b selesai. Lanjut ke anak kedua root yaitu <node>c</node>. Preorder → kunjungi c dulu = kunjungan ke-8.' },
+    { node:'h', text:'c punya satu anak: <node>h</node>. h adalah leaf node = kunjungan ke-9.' },
+    { node:'d', text:'Subtree c selesai. Lanjut ke anak ketiga root yaitu <node>d</node> = kunjungan ke-10.' },
+    { node:'i', text:'d punya anak: i,j,k,l,m. Kunjungi <node>i</node> dulu (anak kiri d). i = leaf = kunjungan ke-11.' },
+    { node:'j', text:'Lanjut ke <node>j</node> (anak ke-2 d). j = leaf = kunjungan ke-12.' },
+    { node:'k', text:'Lanjut ke <node>k</node> (anak ke-3 d). k punya anak p, q. Preorder → kunjungi k dulu = kunjungan ke-13.' },
+    { node:'p', text:'k punya anak kiri <node>p</node>. p = leaf = kunjungan ke-14.' },
+    { node:'q', text:'Lanjut ke anak kanan k yaitu <node>q</node>. q = leaf = kunjungan ke-15.' },
+    { node:'l', text:'Kembali ke d, lanjut ke <node>l</node> (anak ke-4 d). l = leaf = kunjungan ke-16.' },
+    { node:'m', text:'Anak terakhir d: <node>m</node>. m = leaf = kunjungan ke-17. ✅ Traversal preorder selesai!' }
+  ],
+  in: [
+    { node:'n', text:'Inorder → selalu kunjungi subtree kiri dulu. Dari root a → b → e → anak kiri e = <node>n</node>. n = leaf → kunjungan ke-1.' },
+    { node:'e', text:'Kembali ke <node>e</node>. Anak kiri (n) sudah dikunjungi → sekarang kunjungi e sendiri = kunjungan ke-2.' },
+    { node:'o', text:'Anak kanan e = <node>o</node>. o = leaf → kunjungan ke-3.' },
+    { node:'b', text:'Subtree e selesai. Kembali ke <node>b</node>. Anak kiri pertama (subtree e) selesai → kunjungi b = kunjungan ke-4.' },
+    { node:'f', text:'Lanjut ke anak ke-2 b = <node>f</node>. f = leaf → kunjungan ke-5.' },
+    { node:'g', text:'Anak ke-3 b = <node>g</node>. g = leaf → kunjungan ke-6.' },
+    { node:'c', text:'Subtree b selesai. Pada 4-ary inorder, setelah anak ke-1, kunjungi <node>c</node> (anak ke-2 root) → kunjungan ke-7.' },
+    { node:'h', text:'<node>h</node> = satu-satunya anak c. h = leaf → kunjungan ke-8.' },
+    { node:'a', text:'Setelah anak ke-2 (subtree c) selesai, kunjungi <node>a</node> (root) = kunjungan ke-9. Ini titik tengah traversal!' },
+    { node:'i', text:'Lanjut ke subtree d (anak ke-3 root). Inorder → anak kiri pertama d = <node>i</node>. i = leaf → kunjungan ke-10.' },
+    { node:'d', text:'Kunjungi <node>d</node> sendiri = kunjungan ke-11.' },
+    { node:'j', text:'Anak ke-2 d = <node>j</node>. j = leaf → kunjungan ke-12.' },
+    { node:'p', text:'Anak ke-3 d = k. k punya anak kiri <node>p</node>. p = leaf → kunjungan ke-13.' },
+    { node:'k', text:'Kunjungi <node>k</node> setelah anak kirinya = kunjungan ke-14.' },
+    { node:'q', text:'Anak kanan k = <node>q</node>. q = leaf → kunjungan ke-15.' },
+    { node:'l', text:'Anak ke-4 d = <node>l</node>. l = leaf → kunjungan ke-16.' },
+    { node:'m', text:'Anak ke-5 d = <node>m</node>. m = leaf → kunjungan ke-17. ✅ Traversal inorder selesai!' }
+  ],
+  post: [
+    { node:'n', text:'Postorder → kunjungi anak dulu, baru akar. Terdalam kiri: e → anak kiri e = <node>n</node>. n = leaf → kunjungan ke-1.' },
+    { node:'o', text:'Saudara n: <node>o</node>. o = leaf → kunjungan ke-2.' },
+    { node:'e', text:'Semua anak e sudah dikunjungi → kunjungi <node>e</node> sendiri = kunjungan ke-3.' },
+    { node:'f', text:'Anak ke-2 b: <node>f</node>. f = leaf → kunjungan ke-4.' },
+    { node:'g', text:'Anak ke-3 b: <node>g</node>. g = leaf → kunjungan ke-5.' },
+    { node:'b', text:'Semua anak b (e,f,g) selesai → kunjungi <node>b</node> = kunjungan ke-6.' },
+    { node:'h', text:'Anak c: <node>h</node>. h = leaf → kunjungan ke-7.' },
+    { node:'c', text:'Anak c selesai → kunjungi <node>c</node> = kunjungan ke-8.' },
+    { node:'i', text:'Anak ke-1 d: <node>i</node>. i = leaf → kunjungan ke-9.' },
+    { node:'j', text:'Anak ke-2 d: <node>j</node>. j = leaf → kunjungan ke-10.' },
+    { node:'p', text:'Anak kiri k: <node>p</node>. p = leaf → kunjungan ke-11.' },
+    { node:'q', text:'Anak kanan k: <node>q</node>. q = leaf → kunjungan ke-12.' },
+    { node:'k', text:'Anak k selesai → kunjungi <node>k</node> = kunjungan ke-13.' },
+    { node:'l', text:'Anak ke-4 d: <node>l</node>. l = leaf → kunjungan ke-14.' },
+    { node:'m', text:'Anak ke-5 d: <node>m</node>. m = leaf → kunjungan ke-15.' },
+    { node:'d', text:'Semua anak d (i,j,k,l,m) selesai → kunjungi <node>d</node> = kunjungan ke-16.' },
+    { node:'a', text:'Semua anak root (b,c,d) selesai → kunjungi <node>a</node> (root) = kunjungan ke-17. ✅ Traversal postorder selesai!' }
+  ]
+};
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let currentMode = 'pre';
+let animTimer   = null;
+let animStep    = 0;
+let animSpeed   = 600; // ms per step
+
+// Quiz state
+let quizMode        = null;  // 'pre'|'in'|'post'
+let quizActive      = false;
+let quizStartTime   = null;
+let timerInterval   = null;
+let answerMode      = 'typing'; // 'typing'|'click'
+let clickedNodes    = [];
+let walkIndex       = 0;
+let walkSteps       = [];
+let autoWalkTimer   = null;
+
+// Stats
+let totalSolved   = 0;
+let totalXP       = 0;
+let streak        = 0;
+let totalAttempts = 0;
+let totalCorrect  = 0;
+const XP_PER_LEVEL = 100;
+
+/* ============================================================
+   PSEUDOCODE
+   ============================================================ */
+const PSEUDOCODES = {
+  pre: `<span class="kw">function</span> <span class="fn">preorder</span>(node):
+  <span class="kw">if</span> node <span class="kw">is</span> <span class="num">null</span>: <span class="kw">return</span>
+  
+  <span class="cm">// 1. Kunjungi akar</span>
+  visit(node)
+  
+  <span class="cm">// 2. Rekursi ke semua anak kiri ke kanan</span>
+  <span class="kw">for</span> child <span class="kw">in</span> node.children:
+    <span class="fn">preorder</span>(child)
+
+<span class="cm">// Hasil: a b e n o f g c h d i j k p q l m</span>`,
+
+  in: `<span class="kw">function</span> <span class="fn">inorder</span>(node):
+  <span class="kw">if</span> node <span class="kw">is</span> <span class="num">null</span>: <span class="kw">return</span>
+  
+  <span class="cm">// 1. Rekursi ke anak pertama</span>
+  <span class="fn">inorder</span>(node.children[<span class="num">0</span>])
+  
+  <span class="cm">// 2. Kunjungi akar</span>
+  visit(node)
+  
+  <span class="cm">// 3. Rekursi ke anak ke-2 dst</span>
+  <span class="kw">for</span> i <span class="kw">in range</span>(<span class="num">1</span>, len(node.children)):
+    <span class="fn">inorder</span>(node.children[i])
+
+<span class="cm">// Hasil: n e o b f g c h a i d j p k q l m</span>`,
+
+  post: `<span class="kw">function</span> <span class="fn">postorder</span>(node):
+  <span class="kw">if</span> node <span class="kw">is</span> <span class="num">null</span>: <span class="kw">return</span>
+  
+  <span class="cm">// 1. Rekursi ke semua anak dulu</span>
+  <span class="kw">for</span> child <span class="kw">in</span> node.children:
+    <span class="fn">postorder</span>(child)
+  
+  <span class="cm">// 2. Baru kunjungi akar</span>
+  visit(node)
+
+<span class="cm">// Hasil: n o e f g b h c i j p q k l m d a</span>`
+};
+
+/* ============================================================
+   INIT
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  renderPills(-1);
+  initNodeInteractions();
+  showPseudo('pre');
+  renderNodePalette();
+});
+
+/* ============================================================
+   MODE SWITCHING
+   ============================================================ */
+function setMode(m) {
+  currentMode = m;
+
+  // Tabs
+  ['pre','in','post'].forEach(t => {
+    const btn = document.getElementById('tab-' + t);
+    btn.className = 'mode-tab' + (t === m ? (' active-' + t) : '');
+  });
+
+  // Explain
+  document.getElementById('explainText').innerHTML = EXPLANATIONS[m];
+  document.getElementById('explainText').style.borderLeftColor = MODE_HEX[m];
+
+  // Seq label
+  document.getElementById('seqLabel').textContent = MODE_NAMES[m].toUpperCase() + ' SEQUENCE';
+
+  resetAnim();
+  renderPills(-1);
+}
+
+/* ============================================================
+   TREE RENDERING
+   ============================================================ */
+function applyNodeStyle(nodeName, state, mode) {
+  const el = document.getElementById('nd-' + nodeName);
+  if (!el) return;
+  const circle = el.querySelector('circle');
+  const txt    = el.querySelector('text');
+
+  const colors = { pre: '#00d4ff', in: '#00ff9d', post: '#ffb830' };
+  const bgLow  = { pre: 'rgba(0,212,255,0.08)', in: 'rgba(0,255,157,0.08)', post: 'rgba(255,184,48,0.08)' };
+  const bgHigh = { pre: 'rgba(0,212,255,0.2)', in: 'rgba(0,255,157,0.2)', post: 'rgba(255,184,48,0.2)' };
+  const glows  = { pre: '0 0 12px rgba(0,212,255,0.6)', in: '0 0 12px rgba(0,255,157,0.6)', post: '0 0 12px rgba(255,184,48,0.6)' };
+
+  if (state === 'active') {
+    circle.setAttribute('fill', bgHigh[mode]);
+    circle.setAttribute('stroke', colors[mode]);
+    circle.setAttribute('stroke-width', '2.5');
+    circle.style.filter = glows[mode] ? `drop-shadow(${glows[mode]})` : '';
+    txt.setAttribute('fill', colors[mode]);
+  } else if (state === 'done') {
+    circle.setAttribute('fill', bgLow[mode]);
+    circle.setAttribute('stroke', colors[mode]);
+    circle.setAttribute('stroke-width', '1.5');
+    circle.style.filter = '';
+    txt.setAttribute('fill', colors[mode]);
+  } else {
+    circle.setAttribute('fill', 'rgba(255,255,255,0.04)');
+    circle.setAttribute('stroke', 'rgba(255,255,255,0.12)');
+    circle.setAttribute('stroke-width', '1');
+    circle.style.filter = '';
+    txt.setAttribute('fill', 'rgba(255,255,255,0.6)');
+  }
+}
+
+function renderPills(current) {
+  const seq = SEQUENCES[currentMode];
+  const m   = currentMode;
+
+  // Render pills
+  let html = '';
+  seq.forEach((n, i) => {
+    let cls = 'pill';
+    let orderNum = '';
+    if (i < current) {
+      cls += ' done-' + m;
+      orderNum = `<span class="order-num">${i+1}</span>`;
+    } else if (i === current) {
+      cls += ' active active-' + m;
+      orderNum = `<span class="order-num">${i+1}</span>`;
+    }
+    html += `<span class="${cls}">${n}${orderNum}</span>`;
+  });
+  document.getElementById('seqPills').innerHTML = html;
+
+  // Color tree nodes
+  ALL_NODES.forEach(n => {
+    const idx = seq.indexOf(n);
+    if (idx === current) applyNodeStyle(n, 'active', m);
+    else if (idx < current && idx >= 0) applyNodeStyle(n, 'done', m);
+    else applyNodeStyle(n, 'idle', m);
+  });
+}
+
+/* ============================================================
+   ANIMATION
+   ============================================================ */
+function startAnim() {
+  if (animTimer) clearInterval(animTimer);
+  animStep = 0;
+  const seq = SEQUENCES[currentMode];
+  renderPills(0);
+  updateStepInfo(0, seq);
+  document.getElementById('btnPlay').textContent = '⏸ Berhenti';
+  document.getElementById('btnPlay').onclick = stopAnim;
+
+  animTimer = setInterval(() => {
+    animStep++;
+    if (animStep >= seq.length) {
+      clearInterval(animTimer); animTimer = null;
+      renderPills(seq.length);
+      document.getElementById('stepInfo').textContent = `✅ Selesai! ${seq.length} node dikunjungi`;
+      document.getElementById('btnPlay').textContent = '▶ Mulai Animasi';
+      document.getElementById('btnPlay').onclick = startAnim;
+      return;
+    }
+    renderPills(animStep);
+    updateStepInfo(animStep, seq);
+  }, animSpeed);
+}
+
+function stopAnim() {
+  if (animTimer) { clearInterval(animTimer); animTimer = null; }
+  document.getElementById('btnPlay').textContent = '▶ Mulai Animasi';
+  document.getElementById('btnPlay').onclick = startAnim;
+}
+
+function stepForward() {
+  stopAnim();
+  const seq = SEQUENCES[currentMode];
+  if (animStep < seq.length) {
+    renderPills(animStep);
+    updateStepInfo(animStep, seq);
+    animStep++;
+  }
+}
+
+function resetAnim() {
+  stopAnim();
+  animStep = 0;
+  renderPills(-1);
+  document.getElementById('stepInfo').textContent = 'Tekan Mulai untuk memulai animasi';
+}
+
+function updateStepInfo(step, seq) {
+  document.getElementById('stepInfo').textContent =
+    `Langkah ${step+1} / ${seq.length} — Node "${seq[step]}"`;
+}
+
+function updateSpeed(val) {
+  const speeds = { 1: 1200, 2: 900, 3: 600, 4: 350, 5: 150 };
+  animSpeed = speeds[val] || 600;
+  document.getElementById('speedLabel').textContent = val + 'x';
+  if (animTimer) { clearInterval(animTimer); startAnim(); }
+}
+
+/* ============================================================
+   NODE INTERACTIONS (TOOLTIP + HOVER)
+   ============================================================ */
+const NODE_INFO = {
+  a: 'Root • Level 0 • 3 anak (b,c,d)',
+  b: 'Internal • Level 1 • 3 anak (e,f,g)',
+  c: 'Internal • Level 1 • 1 anak (h)',
+  d: 'Internal • Level 1 • 5 anak (i,j,k,l,m)',
+  e: 'Internal • Level 2 • 2 anak (n,o)',
+  f: 'Leaf • Level 2 • 0 anak',
+  g: 'Leaf • Level 2 • 0 anak',
+  h: 'Leaf • Level 2 • 0 anak',
+  i: 'Leaf • Level 2 • 0 anak',
+  j: 'Leaf • Level 2 • 0 anak',
+  k: 'Internal • Level 2 • 2 anak (p,q)',
+  l: 'Leaf • Level 2 • 0 anak',
+  m: 'Leaf • Level 2 • 0 anak',
+  n: 'Leaf • Level 3 • 0 anak',
+  o: 'Leaf • Level 3 • 0 anak',
+  p: 'Leaf • Level 3 • 0 anak',
+  q: 'Leaf • Level 3 • 0 anak'
+};
+
+function initNodeInteractions() {
+  const tooltip = document.getElementById('nodeTooltip');
+
+  document.querySelectorAll('.tree-node').forEach(g => {
+    const nodeName = g.dataset.node;
+
+    g.addEventListener('mouseenter', (e) => {
+      const pre  = SEQUENCES.pre.indexOf(nodeName) + 1;
+      const ino  = SEQUENCES.in.indexOf(nodeName) + 1;
+      const post = SEQUENCES.post.indexOf(nodeName) + 1;
+      tooltip.innerHTML = `
+        <strong style="color:var(--neon-blue);font-size:14px">${nodeName.toUpperCase()}</strong><br>
+        <span style="color:var(--text-muted);font-size:10px">${NODE_INFO[nodeName]}</span><br>
+        <div style="margin-top:6px;font-size:10px;color:var(--text-muted)">
+          Pre: <span style="color:var(--neon-blue)">#${pre}</span> &nbsp;
+          In: <span style="color:var(--neon-green)">#${ino}</span> &nbsp;
+          Post: <span style="color:var(--neon-amber)">#${post}</span>
+        </div>`;
+      tooltip.classList.add('visible');
+    });
+
+    g.addEventListener('mousemove', (e) => {
+      tooltip.style.left = (e.clientX + 14) + 'px';
+      tooltip.style.top  = (e.clientY - 10) + 'px';
+    });
+
+    g.addEventListener('mouseleave', () => {
+      tooltip.classList.remove('visible');
+    });
+
+    g.addEventListener('click', () => {
+      spawnParticles(g.querySelector('circle'));
+      if (answerMode === 'click' && quizActive) {
+        addClickedNode(nodeName);
+      }
+    });
+  });
+}
+
+/* ============================================================
+   PARTICLES ON NODE CLICK
+   ============================================================ */
+function spawnParticles(circle) {
+  const rect = circle.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top  + rect.height / 2;
+  for (let i = 0; i < 10; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const angle = (Math.PI * 2 * i) / 10;
+    const dist  = 30 + Math.random() * 40;
+    p.style.left = cx + 'px';
+    p.style.top  = cy + 'px';
+    p.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+    p.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
+    p.style.background = MODE_HEX[currentMode];
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 1600);
+  }
+}
+
+/* ============================================================
+   PSEUDOCODE PANEL
+   ============================================================ */
+function showPseudo(m) {
+  ['pre','in','post'].forEach(t => {
+    const btn = document.getElementById('ptab-' + t);
+    if (btn) btn.className = 'mode-tab' + (t === m ? ' active-' + t : '');
+  });
+  document.getElementById('pseudoBlock').innerHTML =
+    `<div class="pseudo-block" data-lang="pseudocode"><pre style="margin:0;white-space:pre-wrap">${PSEUDOCODES[m]}</pre></div>`;
+}
+
+/* ============================================================
+   QUIZ SYSTEM
+   ============================================================ */
+function generateQuiz() {
+  const modes = ['pre','in','post'];
+  const diff  = document.getElementById('diffSelect').value;
+
+  quizMode   = modes[Math.floor(Math.random() * 3)];
+  quizActive = true;
+
+  // Update difficulty badge
+  const badge = document.getElementById('diffBadge');
+  badge.textContent = diff.toUpperCase();
+  badge.className = 'difficulty-badge diff-' + diff;
+
+  // Prompt
+  const promptMap = {
+    pre:  `Tuliskan hasil traversal <strong style="color:var(--neon-blue)">PREORDER</strong> dari pohon 4-ary di atas!`,
+    in:   `Tuliskan hasil traversal <strong style="color:var(--neon-green)">INORDER</strong> dari pohon 4-ary di atas!`,
+    post: `Tuliskan hasil traversal <strong style="color:var(--neon-amber)">POSTORDER</strong> dari pohon 4-ary di atas!`
+  };
+
+  let hintText = '';
+  if (diff === 'easy') {
+    const seq = SEQUENCES[quizMode];
+    hintText = `<br><span style="color:var(--text-muted);font-size:11px">💡 Petunjuk: ${seq.length} node harus dikunjungi. Node pertama: <strong>${seq[0]}</strong></span>`;
+  }
+
+  document.getElementById('quizPrompt').innerHTML =
+    promptMap[quizMode] + hintText +
+    `<br><small style="color:var(--text-muted);font-size:11px">Pisahkan node dengan spasi. Total 17 node.</small>`;
+
+  // Reset answer
+  clearAnswer();
+  document.getElementById('resultPanel').classList.remove('show');
+
+  // Start timer
+  startTimer();
+
+  // Update tree to show current quiz mode
+  setMode(quizMode);
+
+  showToast('🎲 Soal ' + MODE_NAMES[quizMode] + ' baru!', 'info');
+}
+
+function startTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  quizStartTime = Date.now();
+  timerInterval = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - quizStartTime) / 1000);
+    const m = String(Math.floor(elapsed / 60)).padStart(2,'0');
+    const s = String(elapsed % 60).padStart(2,'0');
+    const disp = document.getElementById('timerDisplay');
+    disp.textContent = `${m}:${s}`;
+    disp.className = 'timer-display' + (elapsed > 60 ? ' urgent' : '');
+  }, 1000);
+}
+
+function stopTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+}
+
+function submitAnswer() {
+  if (!quizActive) {
+    showToast('⚠ Generate soal dulu!', 'error');
+    return;
+  }
+
+  let userAnswer;
+  if (answerMode === 'typing') {
+    userAnswer = document.getElementById('answerInput').value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  } else {
+    userAnswer = [...clickedNodes];
+  }
+
+  if (userAnswer.length === 0) {
+    showToast('⚠ Jawaban tidak boleh kosong!', 'error');
+    return;
+  }
+
+  stopTimer();
+  quizActive = false;
+
+  const correct  = SEQUENCES[quizMode];
+  const timeTaken = quizStartTime ? Math.floor((Date.now() - quizStartTime) / 1000) : 0;
+
+  // Compare
+  let matches = 0;
+  const maxLen = Math.max(userAnswer.length, correct.length);
+  correct.forEach((n, i) => { if (userAnswer[i] === n) matches++; });
+  const accuracy = Math.round((matches / correct.length) * 100);
+  const isCorrect = accuracy === 100;
+
+  // XP
+  const diff = document.getElementById('diffSelect').value;
+  const xpMap = { easy: 10, medium: 25, hard: 50 };
+  let xpGained = isCorrect ? xpMap[diff] : Math.floor(xpMap[diff] * accuracy / 100 / 2);
+  if (timeTaken < 30 && isCorrect) xpGained += 10; // speed bonus
+
+  // Update stats
+  totalAttempts++;
+  if (isCorrect) { totalCorrect++; streak++; } else { streak = 0; }
+  totalSolved++;
+  totalXP += xpGained;
+  updateStats();
+  checkBadges(isCorrect, accuracy);
+
+  // Show result
+  showResult(isCorrect, accuracy, userAnswer, correct, xpGained, timeTaken);
+
+  // Confetti
+  if (isCorrect) launchConfetti();
+
+  // Input feedback
+  if (answerMode === 'typing') {
+    const inp = document.getElementById('answerInput');
+    inp.classList.add(isCorrect ? 'correct' : 'wrong');
+    setTimeout(() => inp.classList.remove('correct','wrong'), 2000);
+  }
+}
+
+function showResult(isCorrect, accuracy, userAns, correctAns, xp, time) {
+  const panel = document.getElementById('resultPanel');
+  panel.classList.add('show');
+
+  // Header
+  document.getElementById('resultHeader').className =
+    'result-header ' + (isCorrect ? 'correct-header' : 'wrong-header');
+  document.getElementById('resultIcon').textContent = isCorrect ? '🎉' : '❌';
+  document.getElementById('resultScore').textContent = accuracy + '%';
+  document.getElementById('resultScore').className =
+    'result-score-num ' + (isCorrect ? 'score-correct' : 'score-wrong');
+  document.getElementById('resultMsg').textContent =
+    isCorrect ? `Sempurna! Traversal ${MODE_NAMES[quizMode]} dikuasai!` :
+                `Hampir! ${accuracy}% tepat. Pelajari pembahasannya.`;
+
+  // Score breakdown
+  document.getElementById('charAccuracy').textContent = accuracy + '%';
+  document.getElementById('xpEarned').textContent = '+' + xp + ' XP';
+  document.getElementById('timeTaken').textContent = time + ' detik';
+  document.getElementById('traversalUsed').textContent = MODE_NAMES[quizMode];
+
+  // Compare pills
+  const userDisp = document.getElementById('userAnswerDisplay');
+  const corrDisp = document.getElementById('correctAnswerDisplay');
+  userDisp.innerHTML = '';
+  corrDisp.innerHTML = '';
+
+  correctAns.forEach((n, i) => {
+    const userN  = userAns[i] || '?';
+    const match  = userN === n;
+
+    const u = document.createElement('span');
+    u.className = 'cmp-pill ' + (match ? 'cmp-ok' : 'cmp-wrong');
+    u.textContent = userN;
+    userDisp.appendChild(u);
+
+    const c = document.createElement('span');
+    c.className = 'cmp-pill cmp-ok';
+    c.textContent = n;
+    corrDisp.appendChild(c);
+  });
+
+  // Extra user nodes
+  for (let i = correctAns.length; i < userAns.length; i++) {
+    const u = document.createElement('span');
+    u.className = 'cmp-pill cmp-wrong';
+    u.textContent = userAns[i];
+    userDisp.appendChild(u);
+  }
+
+  // Build walkthrough
+  buildWalkthrough(quizMode);
+
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ============================================================
+   WALKTHROUGH
+   ============================================================ */
+function buildWalkthrough(m) {
+  walkSteps = WALKTHROUGHS[m];
+  walkIndex = 0;
+  renderWalkStep();
+  document.getElementById('walkCounter').textContent = `0/${walkSteps.length}`;
+}
+
+function renderWalkStep() {
+  const container = document.getElementById('walkthroughContainer');
+  container.innerHTML = '';
+
+  const visibleCount = walkIndex + 1;
+  for (let i = 0; i <= Math.min(walkIndex, walkSteps.length - 1); i++) {
+    const s = walkSteps[i];
+    const div = document.createElement('div');
+    div.className = 'walkthrough-step show';
+    const nodeColor = MODE_HEX[quizMode || 'pre'];
+    const textFormatted = s.text.replace(/<node>(.*?)<\/node>/g,
+      `<span class="step-node-highlight" style="background:rgba(${hexToRgb(nodeColor)},0.15);color:${nodeColor};border:1px solid rgba(${hexToRgb(nodeColor)},0.3)">$1</span>`
+    );
+    div.innerHTML = `<span class="step-num">${i+1}</span><span class="step-text">${textFormatted}</span>`;
+    container.appendChild(div);
+  }
+
+  if (walkSteps.length > 0) {
+    document.getElementById('walkCounter').textContent = `${Math.min(walkIndex+1, walkSteps.length)}/${walkSteps.length}`;
+  }
+
+  // Highlight node in tree
+  if (walkIndex < walkSteps.length) {
+    const activeNode = walkSteps[walkIndex].node;
+    const doneNodes  = walkSteps.slice(0, walkIndex).map(s => s.node);
+    ALL_NODES.forEach(n => {
+      if (n === activeNode) applyNodeStyle(n, 'active', quizMode || 'pre');
+      else if (doneNodes.includes(n)) applyNodeStyle(n, 'done', quizMode || 'pre');
+      else applyNodeStyle(n, 'idle', quizMode || 'pre');
+    });
+  }
+}
+
+function walkStep(dir) {
+  if (autoWalkTimer) { clearInterval(autoWalkTimer); autoWalkTimer = null; }
+  walkIndex = Math.max(0, Math.min(walkIndex + dir, walkSteps.length - 1));
+  renderWalkStep();
+}
+
+function autoWalk() {
+  if (autoWalkTimer) { clearInterval(autoWalkTimer); autoWalkTimer = null; return; }
+  walkIndex = 0;
+  renderWalkStep();
+  autoWalkTimer = setInterval(() => {
+    if (walkIndex >= walkSteps.length - 1) {
+      clearInterval(autoWalkTimer); autoWalkTimer = null; return;
+    }
+    walkIndex++;
+    renderWalkStep();
+  }, 1200);
+}
+
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return `${r},${g},${b}`;
+}
+
+/* ============================================================
+   ANSWER MODES
+   ============================================================ */
+function switchAnswerMode(mode) {
+  answerMode = mode;
+  document.getElementById('modeTyping').className = 'ans-mode-btn' + (mode==='typing' ? ' active' : '');
+  document.getElementById('modeClick').className  = 'ans-mode-btn' + (mode==='click'  ? ' active' : '');
+  document.getElementById('typingMode').classList.toggle('hidden', mode !== 'typing');
+  document.getElementById('clickMode').classList.toggle('hidden',  mode !== 'click');
+}
+
+function renderNodePalette() {
+  const palette = document.getElementById('nodePalette');
+  palette.innerHTML = '';
+  ALL_NODES.forEach(n => {
+    const btn = document.createElement('button');
+    btn.className = 'palette-node';
+    btn.id = 'pal-' + n;
+    btn.textContent = n;
+    btn.onclick = () => addClickedNode(n);
+    palette.appendChild(btn);
+  });
+}
+
+function addClickedNode(n) {
+  if (!quizActive) return;
+  clickedNodes.push(n);
+
+  const area = document.getElementById('clickArea');
+  const placeholder = document.getElementById('clickPlaceholder');
+  if (placeholder) placeholder.style.display = 'none';
+
+  const chip = document.createElement('span');
+  chip.className = 'answer-chip';
+  chip.textContent = n;
+  chip.onclick = () => {
+    const idx = clickedNodes.lastIndexOf(n);
+    if (idx >= 0) clickedNodes.splice(idx, 1);
+    chip.remove();
+    if (clickedNodes.length === 0 && placeholder) placeholder.style.display = '';
+    document.getElementById('pal-' + n).classList.remove('used');
+  };
+  area.appendChild(chip);
+  document.getElementById('pal-' + n).classList.add('used');
+
+  spawnParticles(document.getElementById('nd-' + n).querySelector('circle'));
+}
+
+function clearAnswer() {
+  clickedNodes = [];
+  document.getElementById('answerInput').value = '';
+  document.getElementById('answerInput').classList.remove('correct','wrong');
+
+  const area = document.getElementById('clickArea');
+  area.innerHTML = '<span class="placeholder" id="clickPlaceholder">Klik node di bawah untuk menyusun jawaban...</span>';
+
+  document.querySelectorAll('.palette-node').forEach(b => b.classList.remove('used'));
+}
+
+function showHint() {
+  if (!quizMode) { showToast('⚠ Generate soal dulu!', 'error'); return; }
+  const seq = SEQUENCES[quizMode];
+  const shown = Math.min(3, seq.length);
+  showToast(`💡 Petunjuk: ${seq.slice(0, shown).join(' ')} ...`, 'info');
+}
+
+/* ============================================================
+   STATS & GAMIFICATION
+   ============================================================ */
+function updateStats() {
+  document.getElementById('statSolved').textContent   = totalSolved;
+  document.getElementById('statXP').textContent       = totalXP;
+  document.getElementById('statStreak').textContent   = streak;
+  document.getElementById('statAccuracy').textContent =
+    totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) + '%' : '—';
+
+  // XP bar
+  const level  = Math.floor(totalXP / XP_PER_LEVEL) + 1;
+  const xpInLevel = totalXP % XP_PER_LEVEL;
+  const pct    = (xpInLevel / XP_PER_LEVEL) * 100;
+
+  document.getElementById('xpBar').style.width = pct + '%';
+  document.getElementById('xpCircle').style.setProperty('--pct', pct + '%');
+  document.getElementById('xpLevel').textContent = 'Lv.' + level;
+  document.getElementById('totalXP').textContent  = totalXP;
+  document.getElementById('quizCount').textContent = totalSolved;
+  document.getElementById('xpNext').textContent = (XP_PER_LEVEL - xpInLevel) + ' XP ke level berikutnya';
+}
+
+function checkBadges(isCorrect, accuracy) {
+  if (totalSolved >= 1) earnBadge('badge-first', 'blue');
+  if (streak >= 3)      earnBadge('badge-streak', 'amber');
+  if (accuracy === 100) earnBadge('badge-perfect', 'green');
+  if (totalXP >= 100)   earnBadge('badge-master', 'purple');
+}
+
+function earnBadge(id, color) {
+  const badge = document.getElementById(id);
+  if (!badge.classList.contains('earned')) {
+    badge.classList.add('earned', 'earned-' + color);
+    showToast('🏆 Badge baru diraih!', 'success');
+  }
+}
+
+/* ============================================================
+   CONFETTI
+   ============================================================ */
+function launchConfetti() {
+  const container = document.getElementById('confettiContainer');
+  const colors = ['#00d4ff','#00ff9d','#ffb830','#bf5fff','#ff4060','#ffffff'];
+  for (let i = 0; i < 60; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + 'vw';
+    piece.style.top  = '-10px';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+    piece.style.animationDelay    = (Math.random() * 0.8) + 's';
+    piece.style.width  = (6 + Math.random() * 8) + 'px';
+    piece.style.height = (6 + Math.random() * 8) + 'px';
+    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    container.appendChild(piece);
+    setTimeout(() => piece.remove(), 4000);
+  }
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+let toastTimer = null;
+function showToast(msg, type = 'info') {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = 'toast toast-' + type + ' show';
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { toast.classList.remove('show'); }, 3000);
+}
+
+/* ============================================================
+   EDGE STYLING (default)
+   ============================================================ */
+document.querySelectorAll('.tree-edge').forEach(line => {
+  line.setAttribute('stroke', 'rgba(255,255,255,0.12)');
+  line.setAttribute('stroke-width', '1.2');
+  line.setAttribute('fill', 'none');
+});
+
+// Initial render
+renderPills(-1);
+</script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Teori Bilangan Bulat</title>
+<style>
+        body{
+            font-family: Arial, sans-serif;
+            margin:0;
+            background:#f4f6f9;
+            color:#333;
+        }
+
+        header{
+            background:#1e3a8a;
+            color:white;
+            text-align:center;
+            padding:30px;
+        }
+
+        section{
+            background:white;
+            margin:20px;
+            padding:20px;
+            border-radius:10px;
+            box-shadow:0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        h2{
+            color:#1e3a8a;
+        }
+
+        .case{
+            border-left:5px solid #1e3a8a;
+            padding-left:15px;
+            margin-bottom:20px;
+        }
+
+        footer{
+            text-align:center;
+            padding:15px;
+            background:#1e3a8a;
+            color:white;
+        }
+    </style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Fatia Nuri Ramdani_2502851</div>
+<header>
+<h1>Teori Bilangan Bulat</h1>
+<p>Materi Matematika Diskrit</p>
+</header>
+<section>
+<h2>Pengertian Bilangan Bulat</h2>
+<p>
+        Bilangan bulat adalah bilangan yang tidak memiliki pecahan desimal.
+        Contohnya: -5, -2, 0, 7, 15, dan 100.
+    </p>
+</section>
+<section>
+<h2>Sifat Pembagian</h2>
+<p>
+        Bilangan a membagi habis bilangan b jika terdapat bilangan bulat c
+        sehingga:
+    </p>
+<h3>b = a × c</h3>
+<p>Contoh: 4 membagi 12 karena 12 = 4 × 3.</p>
+</section>
+<section>
+<h2>Teorema Euclidean</h2>
+<p>
+        Jika m dibagi n maka:
+    </p>
+<h3>m = nq + r</h3>
+<p>
+        dengan syarat:
+        0 ≤ r &lt; n
+    </p>
+<p>
+        q = hasil bagi dan r = sisa pembagian.
+    </p>
+</section>
+<section>
+<h2>Pembagi Bersama Terbesar (PBB)</h2>
+<p>
+        PBB adalah bilangan terbesar yang dapat membagi habis dua bilangan.
+    </p>
+<p>
+        Contoh:
+        PBB(45,36) = 9
+    </p>
+</section>
+<section>
+<h2>Program Interaktif Bilangan Bulat</h2>
+<h3>1. Cek Habis Dibagi</h3>
+<input id="a" placeholder="Pembagi" type="number"/>
+<input id="b" placeholder="Bilangan" type="number"/>
+<button onclick="cekBagi()">Cek</button>
+<p id="hasilBagi"></p>
+<h3>2. Teorema Euclidean</h3>
+<input id="m" placeholder="m" type="number"/>
+<input id="n" placeholder="n" type="number"/>
+<button onclick="euclidean()">Hitung</button>
+<p id="hasilEuclid"></p>
+<h3>3. Hitung PBB</h3>
+<input id="x" placeholder="Bilangan 1" type="number"/>
+<input id="y" placeholder="Bilangan 2" type="number"/>
+<button onclick="hitungPBB()">Hitung PBB</button>
+<p id="hasilPBB"></p>
+<h3>4. Operasi Modulo</h3>
+<input id="modA" placeholder="Bilangan" type="number"/>
+<input id="modB" placeholder="Modulus" type="number"/>
+<button onclick="hitungMod()">Hitung Mod</button>
+<p id="hasilMod"></p>
+<h3>5. Menampilkan Bilangan Bulat</h3>
+<input id="awal" placeholder="Awal" type="number"/>
+<input id="akhir" placeholder="Akhir" type="number"/>
+<button onclick="tampilBilangan()">Tampilkan</button>
+<p id="hasilBilangan"></p>
+</section>
+<script>
+function cekBagi(){
+    let a = parseInt(document.getElementById('a').value);
+    let b = parseInt(document.getElementById('b').value);
+    document.getElementById('hasilBagi').innerHTML =
+        (b % a === 0)
+        ? a + " membagi habis " + b
+        : a + " tidak membagi habis " + b;
+}
+
+function euclidean(){
+    let m = parseInt(document.getElementById('m').value);
+    let n = parseInt(document.getElementById('n').value);
+    let q = Math.floor(m/n);
+    let r = m%n;
+    document.getElementById('hasilEuclid').innerHTML =
+        m + " = (" + n + " × " + q + ") + " + r;
+}
+
+function hitungPBB(){
+    let a = parseInt(document.getElementById('x').value);
+    let b = parseInt(document.getElementById('y').value);
+    let x=a,y=b;
+    while(y!==0){
+        let t=y;
+        y=x%y;
+        x=t;
+    }
+    document.getElementById('hasilPBB').innerHTML =
+        "PBB(" + a + "," + b + ") = " + x;
+}
+
+function hitungMod(){
+    let a = parseInt(document.getElementById('modA').value);
+    let b = parseInt(document.getElementById('modB').value);
+    document.getElementById('hasilMod').innerHTML =
+        a + " mod " + b + " = " + (a%b);
+}
+
+function tampilBilangan(){
+    let awal = parseInt(document.getElementById('awal').value);
+    let akhir = parseInt(document.getElementById('akhir').value);
+    let data=[];
+    for(let i=awal;i<=akhir;i++) data.push(i);
+    document.getElementById('hasilBilangan').innerHTML = data.join(', ');
+}
+</script>
+<section>
+<h2>5 Studi Kasus dan Penyelesaian</h2>
+<div class="case">
+<h3>Kasus 1: Apakah 5 membagi habis 45?</h3>
+<p><b>Penyelesaian:</b></p>
+<p>
+            45 ÷ 5 = 9 (bilangan bulat)
+        </p>
+<p>
+            Maka 5 | 45.
+        </p>
+<p><b>Jawaban:</b> Ya, 5 membagi habis 45.</p>
+</div>
+<div class="case">
+<h3>Kasus 2: Tentukan hasil pembagian 53 dengan 7 menggunakan Teorema Euclidean</h3>
+<p><b>Penyelesaian:</b></p>
+<p>
+            53 ÷ 7 = 7 sisa 4
+        </p>
+<p>
+            53 = (7 × 7) + 4
+        </p>
+<p><b>Jawaban:</b> q = 7 dan r = 4.</p>
+</div>
+<div class="case">
+<h3>Kasus 3: Tentukan PBB(24, 36)</h3>
+<p><b>Penyelesaian:</b></p>
+<p>
+            Faktor 24 = 1,2,3,4,6,8,12,24
+        </p>
+<p>
+            Faktor 36 = 1,2,3,4,6,9,12,18,36
+        </p>
+<p>
+            Faktor terbesar yang sama adalah 12.
+        </p>
+<p><b>Jawaban:</b> PBB(24,36) = 12.</p>
+</div>
+<div class="case">
+<h3>Kasus 4: Menampilkan Bilangan Bulat dari -3 sampai 3</h3>
+<p><b>Penyelesaian:</b></p>
+<p>
+            Bilangan bulat dari -3 hingga 3 ditampilkan secara berurutan.
+        </p>
+<p>
+            -3, -2, -1, 0, 1, 2, 3
+        </p>
+<p>
+            Studi kasus ini sesuai dengan fitur "Menampilkan Bilangan Bulat"
+            pada program interaktif.
+        </p>
+<p><b>Jawaban:</b> -3, -2, -1, 0, 1, 2, 3.</p>
+</div>
+<div class="case">
+<h3>Kasus 5: Hitung 29 mod 6</h3>
+<p><b>Penyelesaian:</b></p>
+<p>
+            29 = (4 × 6) + 5
+        </p>
+<p>
+            Sisa pembagian adalah 5.
+        </p>
+<p><b>Jawaban:</b> 29 mod 6 = 5.</p>
+</div>
+</section>
+<footer>
+<p>Website Sederhana Teori Bilangan Bulat © 2026</p>
+</footer>
+</body>
+</html>

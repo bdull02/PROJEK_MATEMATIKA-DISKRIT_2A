@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SubsetChecker - Simulasi Himpunan Bagian</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .tag-in  { background:#dcfce7; color:#166534; border:1.5px solid #4ade80; }
+        .tag-out { background:#fee2e2; color:#991b1b; border:1.5px solid #f87171; }
+        .fade-in { animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    </style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body class="bg-gray-50 min-h-screen py-10 px-4"><div class="author-badge">Muhamad Hanif Ramadhan_2502569</div>
+<div class="max-w-3xl mx-auto">
+<!-- HEADER CARD -->
+<div class="bg-white rounded-xl shadow-md overflow-hidden p-6 md:p-8 mb-6">
+<div class="text-center border-b border-gray-200 pb-6 mb-6">
+<h1 class="text-3xl font-bold text-blue-700 mb-2">🔢 SubsetChecker</h1>
+<p class="text-gray-500 font-medium">Materi: Himpunan Bagian (Subset) — Matematika Diskrit</p>
+<p class="text-sm text-gray-400 mt-1">Program Studi Pendidikan Sistem dan Teknologi Informasi</p>
+</div>
+<!-- DEFINISI -->
+<div class="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-6">
+<h3 class="font-bold text-blue-800 mb-2">📖 Definisi Himpunan Bagian</h3>
+<p class="text-sm text-blue-900 leading-relaxed">
+                    Himpunan <strong>A</strong> disebut <strong>himpunan bagian (subset)</strong> dari himpunan <strong>B</strong>
+                    apabila setiap anggota A merupakan anggota dari B.
+                </p>
+<div class="mt-3 text-center">
+<span class="inline-block bg-white border-2 border-blue-300 rounded-lg px-6 py-2 text-blue-800 font-bold text-lg">
+                        A ⊆ B
+                    </span>
+</div>
+</div>
+<!-- INPUT -->
+<div class="space-y-5">
+<div>
+<label class="block text-sm font-semibold text-gray-700 mb-2">
+                        1. Masukkan Himpunan A <span class="text-gray-400 font-normal">(yang akan dicek)</span>
+</label>
+<input class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-base" id="inputA" placeholder="Contoh: 1, 2, 3" type="text"/>
+<p class="text-xs text-gray-400 mt-1">Pisahkan elemen dengan koma. Bisa angka atau huruf.</p>
+</div>
+<div>
+<label class="block text-sm font-semibold text-gray-700 mb-2">
+                        2. Masukkan Himpunan B <span class="text-gray-400 font-normal">(sebagai acuan)</span>
+</label>
+<input class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-base" id="inputB" placeholder="Contoh: 1, 2, 3, 4, 5" type="text"/>
+<p class="text-xs text-gray-400 mt-1">Pisahkan elemen dengan koma.</p>
+</div>
+<button class="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 shadow text-base" onclick="cekSubset()">
+                    🔍 Cek Apakah A ⊆ B
+                </button>
+<button class="w-full bg-gray-100 hover:bg-gray-200 text-gray-600 font-medium py-2 px-4 rounded-lg transition duration-200 text-sm border border-gray-200" onclick="resetForm()">
+                    ↺ Reset
+                </button>
+</div>
+<!-- HASIL -->
+<div class="hidden mt-8 border-t border-gray-200 pt-6 fade-in" id="hasilSeksi">
+<h2 class="text-xl font-bold text-gray-800 mb-4">📊 Hasil Pengecekan</h2>
+<!-- Pengecekan per elemen -->
+<div class="mb-5">
+<h3 class="text-sm font-semibold text-gray-600 mb-3">Pengecekan setiap elemen A terhadap B:</h3>
+<div class="flex flex-wrap gap-2" id="elemenTags"></div>
+</div>
+<!-- Himpunan ditampilkan -->
+<div class="grid grid-cols-2 gap-4 mb-5">
+<div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+<p class="text-xs font-semibold text-gray-500 mb-1">Himpunan A</p>
+<p class="font-bold text-gray-800 text-sm" id="tampilA"></p>
+</div>
+<div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+<p class="text-xs font-semibold text-gray-500 mb-1">Himpunan B</p>
+<p class="font-bold text-gray-800 text-sm" id="tampilB"></p>
+</div>
+</div>
+<!-- Kotak Hasil Utama -->
+<div class="rounded-xl p-5 text-center" id="kotakHasil">
+<div class="text-4xl mb-2" id="hasilIcon"></div>
+<div class="text-lg font-bold mb-1" id="hasilTeks"></div>
+<div class="text-2xl font-bold mb-2" id="hasilNotasi"></div>
+<div class="text-sm" id="hasilDetail"></div>
+</div>
+</div>
+</div>
+<!-- CONTOH KASUS -->
+<div class="bg-white rounded-xl shadow-md p-6 md:p-8">
+<h2 class="text-xl font-bold text-gray-800 mb-1">⚡ 5 Contoh Kasus</h2>
+<p class="text-sm text-gray-400 mb-5">Klik salah satu untuk mengisi otomatis</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Kasus 1 -->
+<div class="border-2 border-gray-100 hover:border-blue-400 hover:bg-blue-50 rounded-xl p-4 cursor-pointer transition duration-200" onclick="isiContoh('1,2','1,2,3,4')">
+<div class="flex justify-between items-center mb-2">
+<span class="font-bold text-gray-700 text-sm">Kasus 1</span>
+<span class="text-xs font-bold text-green-600 bg-green-50 border border-green-200 px-2 py-0.5 rounded-full">A ⊆ B ✓</span>
+</div>
+<p class="text-sm text-gray-600">A = {1, 2}</p>
+<p class="text-sm text-gray-600">B = {1, 2, 3, 4}</p>
+<p class="text-xs text-gray-400 mt-1">Semua elemen A ada di B</p>
+</div>
+<!-- Kasus 2 -->
+<div class="border-2 border-gray-100 hover:border-blue-400 hover:bg-blue-50 rounded-xl p-4 cursor-pointer transition duration-200" onclick="isiContoh('2,5','1,2,3,4')">
+<div class="flex justify-between items-center mb-2">
+<span class="font-bold text-gray-700 text-sm">Kasus 2</span>
+<span class="text-xs font-bold text-red-600 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full">A ⊄ B ✗</span>
+</div>
+<p class="text-sm text-gray-600">A = {2, 5}</p>
+<p class="text-sm text-gray-600">B = {1, 2, 3, 4}</p>
+<p class="text-xs text-gray-400 mt-1">Elemen 5 tidak ada di B</p>
+</div>
+<!-- Kasus 3 -->
+<div class="border-2 border-gray-100 hover:border-blue-400 hover:bg-blue-50 rounded-xl p-4 cursor-pointer transition duration-200" onclick="isiContoh('a,b','a,b,c,d')">
+<div class="flex justify-between items-center mb-2">
+<span class="font-bold text-gray-700 text-sm">Kasus 3</span>
+<span class="text-xs font-bold text-green-600 bg-green-50 border border-green-200 px-2 py-0.5 rounded-full">A ⊆ B ✓</span>
+</div>
+<p class="text-sm text-gray-600">A = {a, b}</p>
+<p class="text-sm text-gray-600">B = {a, b, c, d}</p>
+<p class="text-xs text-gray-400 mt-1">Semua elemen A ada di B</p>
+</div>
+<!-- Kasus 4 -->
+<div class="border-2 border-gray-100 hover:border-blue-400 hover:bg-blue-50 rounded-xl p-4 cursor-pointer transition duration-200" onclick="isiContoh('7,8,9','7,8')">
+<div class="flex justify-between items-center mb-2">
+<span class="font-bold text-gray-700 text-sm">Kasus 4</span>
+<span class="text-xs font-bold text-red-600 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full">A ⊄ B ✗</span>
+</div>
+<p class="text-sm text-gray-600">A = {7, 8, 9}</p>
+<p class="text-sm text-gray-600">B = {7, 8}</p>
+<p class="text-xs text-gray-400 mt-1">Elemen 9 tidak ada di B</p>
+</div>
+<!-- Kasus 5 -->
+<div class="border-2 border-gray-100 hover:border-blue-400 hover:bg-blue-50 rounded-xl p-4 cursor-pointer transition duration-200 md:col-span-2" onclick="isiContoh('x,y','x,y,z')">
+<div class="flex justify-between items-center mb-2">
+<span class="font-bold text-gray-700 text-sm">Kasus 5</span>
+<span class="text-xs font-bold text-green-600 bg-green-50 border border-green-200 px-2 py-0.5 rounded-full">A ⊆ B ✓</span>
+</div>
+<p class="text-sm text-gray-600">A = {x, y}  |  B = {x, y, z}</p>
+<p class="text-xs text-gray-400 mt-1">Semua elemen A ada di B</p>
+</div>
+</div>
+</div>
+<p class="text-center text-xs text-gray-400 mt-6">© 2024 SubsetChecker — Matematika Diskrit | PSTI</p>
+</div>
+<script>
+        function cekSubset() {
+            const rawA = document.getElementById('inputA').value.trim();
+            const rawB = document.getElementById('inputB').value.trim();
+
+            if (!rawA) { alert('Mohon isi Himpunan A terlebih dahulu!'); return; }
+            if (!rawB) { alert('Mohon isi Himpunan B terlebih dahulu!'); return; }
+
+            const A = [...new Set(rawA.split(',').map(x => x.trim()).filter(x => x !== ''))];
+            const B = [...new Set(rawB.split(',').map(x => x.trim()).filter(x => x !== ''))];
+
+            const isSubset = A.every(x => B.includes(x));
+            const tidakAda = A.filter(x => !B.includes(x));
+
+            // Tampilkan himpunan
+            document.getElementById('tampilA').textContent = 'A = {' + A.join(', ') + '}';
+            document.getElementById('tampilB').textContent = 'B = {' + B.join(', ') + '}';
+
+            // Tag per elemen
+            const container = document.getElementById('elemenTags');
+            container.innerHTML = '';
+            A.forEach(el => {
+                const ada = B.includes(el);
+                const span = document.createElement('span');
+                span.className = 'inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-semibold ' + (ada ? 'tag-in' : 'tag-out');
+                span.textContent = el + (ada ? ' ✓' : ' ✗');
+                container.appendChild(span);
+            });
+
+            // Kotak hasil
+            const kotak  = document.getElementById('kotakHasil');
+            const icon   = document.getElementById('hasilIcon');
+            const teks   = document.getElementById('hasilTeks');
+            const notasi = document.getElementById('hasilNotasi');
+            const detail = document.getElementById('hasilDetail');
+
+            if (isSubset) {
+                kotak.className  = 'rounded-xl p-5 text-center bg-green-50 border-2 border-green-300';
+                icon.textContent  = '✅';
+                teks.textContent  = 'A merupakan Himpunan Bagian dari B';
+                teks.className    = 'text-lg font-bold mb-1 text-green-800';
+                notasi.textContent = 'A ⊆ B';
+                notasi.className  = 'text-2xl font-bold mb-2 text-green-700';
+                detail.textContent = 'Semua ' + A.length + ' elemen A ditemukan di dalam B.';
+                detail.className  = 'text-sm text-green-600';
+            } else {
+                kotak.className  = 'rounded-xl p-5 text-center bg-red-50 border-2 border-red-300';
+                icon.textContent  = '❌';
+                teks.textContent  = 'A bukan Himpunan Bagian dari B';
+                teks.className    = 'text-lg font-bold mb-1 text-red-800';
+                notasi.textContent = 'A ⊄ B';
+                notasi.className  = 'text-2xl font-bold mb-2 text-red-700';
+                detail.textContent = 'Elemen yang tidak ada di B: { ' + tidakAda.join(', ') + ' }';
+                detail.className  = 'text-sm text-red-600';
+            }
+
+            const hasil = document.getElementById('hasilSeksi');
+            hasil.classList.remove('hidden');
+            hasil.classList.add('fade-in');
+            hasil.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function resetForm() {
+            document.getElementById('inputA').value = '';
+            document.getElementById('inputB').value = '';
+            document.getElementById('hasilSeksi').classList.add('hidden');
+        }
+
+        function isiContoh(a, b) {
+            document.getElementById('inputA').value = a;
+            document.getElementById('inputB').value = b;
+            document.getElementById('hasilSeksi').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

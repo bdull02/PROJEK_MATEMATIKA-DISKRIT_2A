@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sistem Klosur Menghantar</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#0f172a,#1e293b,#312e81);
+    color:white;
+    min-height:100vh;
+}
+
+nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 8%;
+    backdrop-filter:blur(10px);
+}
+
+.logo{
+    font-size:24px;
+    font-weight:700;
+}
+
+.menu a{
+    text-decoration:none;
+    color:white;
+    margin-left:25px;
+}
+
+.hero{
+    text-align:center;
+    padding:80px 20px;
+}
+
+.hero h1{
+    font-size:50px;
+    margin-bottom:20px;
+}
+
+.hero p{
+    max-width:700px;
+    margin:auto;
+    opacity:.9;
+}
+
+.container{
+    width:90%;
+    max-width:1200px;
+    margin:auto;
+}
+
+.card{
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(15px);
+    border:1px solid rgba(255,255,255,0.15);
+    border-radius:20px;
+    padding:25px;
+    margin-bottom:30px;
+    box-shadow:0 8px 30px rgba(0,0,0,.3);
+}
+
+.card h2{
+    margin-bottom:15px;
+}
+
+input,textarea{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    margin-top:8px;
+    margin-bottom:15px;
+}
+
+button{
+    background:#4f46e5;
+    color:white;
+    border:none;
+    padding:12px 25px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+button:hover{
+    background:#6366f1;
+    transform:translateY(-2px);
+}
+
+.result{
+    margin-top:20px;
+    padding:15px;
+    border-radius:10px;
+    background:rgba(255,255,255,.08);
+}
+
+.case-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.case{
+    background:rgba(255,255,255,.08);
+    padding:20px;
+    border-radius:15px;
+}
+
+footer{
+    text-align:center;
+    padding:30px;
+    opacity:.8;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+td{
+    border:1px solid rgba(255,255,255,.2);
+    text-align:center;
+    padding:8px;
+}
+
+</style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Mufti Althof  Risdiyanto_2504012_2A</div>
+<nav>
+<div class="logo">Klosur Menghantar</div>
+<div class="menu">
+<a href="#materi">Materi</a>
+<a href="#kalkulator">Kalkulator</a>
+<a href="#kasus">Studi Kasus</a>
+</div>
+</nav>
+<section class="hero">
+<h1>Klosur Menghantar pada Relasi</h1>
+<p>
+        Sistem ini digunakan untuk menentukan
+        Transitive Closure (Klosur Menghantar)
+        menggunakan konsep Algoritma Warshall.
+    </p>
+</section>
+<div class="container">
+<div class="card" id="materi">
+<h2>📚 Pengertian</h2>
+<p>
+            Klosur Menghantar adalah penambahan pasangan
+            relasi sehingga memenuhi sifat transitif.
+            Jika (a,b) dan (b,c) terdapat dalam relasi,
+            maka harus terdapat (a,c).
+        </p>
+</div>
+<div class="card" id="kalkulator">
+<h2>🧮 Kalkulator Klosur Menghantar</h2>
+<label>Himpunan</label>
+<input id="setInput" placeholder="Contoh: 1,2,3,4" type="text"/>
+<label>Relasi</label>
+<textarea id="relationInput" placeholder="Contoh: (1,2),(2,3),(3,4)" rows="4">
+        </textarea>
+<button onclick="hitung()">
+            Hitung Klosur
+        </button>
+<div class="result" id="hasil"></div>
+</div>
+<div class="card" id="kasus">
+<h2>📝 5 Studi Kasus</h2>
+<div class="case-grid">
+<div class="case">
+<h3>Kasus 1</h3>
+<p>{1,2,3}</p>
+<p>(1,2),(2,3)</p>
+</div>
+<div class="case">
+<h3>Kasus 2</h3>
+<p>{1,2,3,4}</p>
+<p>(1,2),(2,3),(3,4)</p>
+</div>
+<div class="case">
+<h3>Kasus 3</h3>
+<p>{A,B,C}</p>
+<p>(A,B),(B,C)</p>
+</div>
+<div class="case">
+<h3>Kasus 4</h3>
+<p>{1,2,3}</p>
+<p>(1,2),(2,3),(3,1)</p>
+</div>
+<div class="case">
+<h3>Kasus 5</h3>
+<p>{1,2,3,4,5}</p>
+<p>(1,2),(2,3),(3,4),(4,5)</p>
+</div>
+</div>
+</div>
+</div>
+<footer>
+    Sistem Klosur Menghantar • Matematika Diskrit
+</footer>
+<script>
+
+function hitung(){
+
+let himpunan =
+document.getElementById("setInput")
+.value
+.split(",")
+.map(x=>x.trim());
+
+let relasi =
+document.getElementById("relationInput")
+.value;
+
+let n = himpunan.length;
+
+let matriks = [];
+
+for(let i=0;i<n;i++){
+    matriks[i]=[];
+    for(let j=0;j<n;j++){
+        matriks[i][j]=0;
+    }
+}
+
+let regex=/\(([^,]+),([^)]+)\)/g;
+let match;
+
+while((match=regex.exec(relasi))!==null){
+
+    let a=himpunan.indexOf(match[1].trim());
+    let b=himpunan.indexOf(match[2].trim());
+
+    if(a!=-1 && b!=-1){
+        matriks[a][b]=1;
+    }
+}
+
+let closure =
+JSON.parse(JSON.stringify(matriks));
+
+for(let k=0;k<n;k++){
+    for(let i=0;i<n;i++){
+        for(let j=0;j<n;j++){
+
+            if(
+                closure[i][k] &&
+                closure[k][j]
+            ){
+                closure[i][j]=1;
+            }
+
+        }
+    }
+}
+
+let hasilRelasi=[];
+
+for(let i=0;i<n;i++){
+    for(let j=0;j<n;j++){
+
+        if(closure[i][j]==1){
+            hasilRelasi.push(
+                `(${himpunan[i]},${himpunan[j]})`
+            );
+        }
+
+    }
+}
+
+let html=`
+<h3>Hasil Klosur Menghantar</h3>
+
+<p><b>Relasi Hasil:</b></p>
+
+<p>
+{ ${hasilRelasi.join(", ")} }
+</p>
+
+<h3>Matriks Klosur</h3>
+
+<table>
+`;
+
+for(let i=0;i<n;i++){
+
+html+="<tr>";
+
+for(let j=0;j<n;j++){
+
+html+=`
+<td>${closure[i][j]}</td>
+`;
+
+}
+
+html+="</tr>";
+}
+
+html+="</table>";
+
+document.getElementById("hasil")
+.innerHTML=html;
+
+}
+
+</script>
+</body>
+</html>

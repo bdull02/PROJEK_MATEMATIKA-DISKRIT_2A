@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Konversi Basis Bilangan — Matematika Diskrit</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&amp;family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<style>
+    :root {
+      --bg:       #f0f4ff;
+      --navy:     #0a1f5c;
+      --blue:     #1a3a9f;
+      --mid:      #2255cc;
+      --light-bg: #e8eeff;
+      --border:   #c0cce8;
+      --green:    #1a6e2e;
+      --green-bg: #d6f5dc;
+      --green-bd: #2e8b3e;
+      --orange:   #b84c00;
+      --orange-bg:#fff0e0;
+      --purple:   #4a1a8f;
+      --purple-bg:#ede8ff;
+      --teal:     #006b6b;
+      --teal-bg:  #d6f5f5;
+      --white:    #ffffff;
+      --text:     #111111;
+      --text2:    #333333;
+      --text3:    #555555;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 0 64px;
+    }
+    .hero {
+      width: 100%;
+      background: linear-gradient(135deg, #0a1f5c 0%, #1a3a9f 50%, #0d2d80 100%);
+      padding: 48px 24px 52px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(100,150,255,0.2) 0%, transparent 65%),
+                  radial-gradient(ellipse at 75% 20%, rgba(80,130,255,0.15) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .hero .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      color: #c8d8ff;
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      padding: 5px 16px; border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.25);
+      margin-bottom: 14px;
+    }
+    .hero h1 {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 900; color: #fff; line-height: 1.15; margin-bottom: 6px;
+    }
+    .hero h1 span { color: #7eb8ff; }
+    .hero .sub { color: rgba(255,255,255,0.65); font-size: 0.92rem; margin-bottom: 20px; }
+    .hero .identitas {
+      display: inline-flex; gap: 28px; flex-wrap: wrap; justify-content: center;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px; padding: 12px 28px;
+      font-size: 0.85rem; color: rgba(255,255,255,0.8);
+    }
+    .hero .identitas b { color: #fff; }
+    .section { width: 100%; max-width: 900px; padding: 0 20px; margin-top: 44px; }
+    .sec-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .sec-heading .num {
+      background: var(--navy); color: #fff; font-size: 0.75rem; font-weight: 800;
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .sec-heading h2 { font-size: 1.2rem; font-weight: 800; color: var(--navy); }
+    .sec-heading .line { flex: 1; height: 2px; background: linear-gradient(to right, var(--border), transparent); }
+    .pengertian-box {
+      background: var(--white); border: 2px solid var(--border);
+      border-left: 5px solid var(--blue); border-radius: 14px;
+      padding: 24px 28px; line-height: 1.75; color: var(--text2); font-size: 0.93rem;
+    }
+    .pengertian-box p { margin-bottom: 10px; }
+    .pengertian-box p:last-child { margin-bottom: 0; }
+    .pengertian-box b { color: var(--navy); }
+    .algo-box {
+      background: var(--navy); color: #fff;
+      border-radius: 14px; padding: 22px 28px; margin-top: 16px;
+    }
+    .algo-box h3 {
+      font-size: 0.95rem; font-weight: 700; color: #7eb8ff;
+      margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .algo-steps { display: flex; flex-direction: column; gap: 8px; }
+    .algo-step { display: flex; align-items: flex-start; gap: 12px; font-size: 0.88rem; color: rgba(255,255,255,0.88); }
+    .algo-step .step-n {
+      background: var(--mid); color: #fff; font-size: 0.7rem; font-weight: 800;
+      min-width: 22px; height: 22px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+    }
+    .konsep-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .konsep-card { border-radius: 14px; padding: 20px; border: 2px solid; }
+    .konsep-card.biner   { background: var(--light-bg);  border-color: var(--blue);   }
+    .konsep-card.oktal   { background: var(--orange-bg); border-color: var(--orange); }
+    .konsep-card.hex     { background: var(--purple-bg); border-color: var(--purple); }
+    .konsep-card.algo    { background: var(--teal-bg);   border-color: var(--teal);   }
+    .konsep-card .k-icon { font-size: 1.6rem; margin-bottom: 8px; }
+    .konsep-card h3 { font-size: 0.95rem; font-weight: 800; margin-bottom: 4px; }
+    .konsep-card.biner h3  { color: var(--blue);   }
+    .konsep-card.oktal h3  { color: var(--orange); }
+    .konsep-card.hex h3    { color: var(--purple); }
+    .konsep-card.algo h3   { color: var(--teal);   }
+    .konsep-card .k-basis {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; margin-bottom: 10px;
+    }
+    .konsep-card.biner .k-basis  { color: var(--blue);   }
+    .konsep-card.oktal .k-basis  { color: var(--orange); }
+    .konsep-card.hex .k-basis    { color: var(--purple); }
+    .konsep-card.algo .k-basis   { color: var(--teal);   }
+    .konsep-card p { font-size: 0.82rem; color: var(--text2); line-height: 1.6; }
+    .konsep-card .k-tag {
+      display: inline-block; margin-top: 10px; padding: 4px 12px;
+      border-radius: 20px; font-size: 0.72rem; font-weight: 700;
+      font-family: 'Fira Code', monospace;
+    }
+    .konsep-card.biner .k-tag  { background: var(--blue);   color: #fff; }
+    .konsep-card.oktal .k-tag  { background: var(--orange); color: #fff; }
+    .konsep-card.hex .k-tag    { background: var(--purple); color: #fff; }
+    .konsep-card.algo .k-tag   { background: var(--teal);   color: #fff; }
+    .calc-card {
+      background: var(--white); border: 2px solid var(--border);
+      border-radius: 18px; padding: 32px;
+      box-shadow: 0 8px 32px rgba(10,31,92,0.1);
+    }
+    .calc-title { text-align: center; font-size: 1.15rem; font-weight: 800; color: var(--navy); margin-bottom: 6px; }
+    .calc-title small {
+      display: block; font-size: 0.72rem; font-weight: 600; color: #888;
+      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px;
+    }
+    .calc-desc { text-align: center; font-size: 0.83rem; color: var(--text3); margin-bottom: 22px; }
+    .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+    @media(max-width:500px){ .input-row { grid-template-columns: 1fr; } }
+    .inp-group label { display: block; font-size: 0.82rem; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+    input[type="number"], select {
+      width: 100%; padding: 11px 14px; border: 2px solid var(--border);
+      border-radius: 10px; font-size: 0.95rem; font-family: 'Inter', sans-serif;
+      color: var(--text); outline: none; background: #f7f9ff; transition: border-color 0.2s;
+    }
+    input[type="number"]:focus, select:focus { border-color: var(--mid); background: #fff; }
+    .btn-konversi {
+      width: 100%; padding: 14px; background: var(--mid); color: #fff;
+      border: none; border-radius: 12px; font-size: 1rem; font-weight: 700;
+      font-family: 'Inter', sans-serif; cursor: pointer; letter-spacing: 0.03em;
+      transition: background 0.2s, transform 0.1s;
+      box-shadow: 0 4px 18px rgba(34,85,204,0.3);
+    }
+    .btn-konversi:hover  { background: var(--navy); }
+    .btn-konversi:active { transform: scale(0.98); }
+    #resultArea { margin-top: 18px; }
+    .result {
+      padding: 20px; border-radius: 12px;
+      background: var(--green-bg); border: 2px solid var(--green-bd);
+    }
+    .result h3 {
+      font-size: 1.2rem; font-weight: 700; color: var(--green);
+      font-family: 'Fira Code', monospace; margin-bottom: 4px;
+    }
+    .result .hint { font-size: 0.82rem; color: var(--text3); margin-bottom: 14px; }
+    .result .hint b { color: var(--green); }
+    .result table { width: 100%; border-collapse: collapse; }
+    .result th { background: var(--navy); color: #fff; padding: 9px 10px; font-size: 0.8rem; font-weight: 700; }
+    .result td { border: 1px solid #b8d4b8; padding: 8px 10px; text-align: center; font-size: 0.88rem; color: var(--text); }
+    .result td b { color: var(--green); font-family: 'Fira Code', monospace; font-size: 1rem; }
+    .result tr:nth-child(even) td { background: #c8f0cc; }
+    .result .kesimpulan {
+      margin-top: 12px; padding: 10px 14px; background: #fff;
+      border-radius: 8px; border-left: 4px solid var(--green);
+      font-size: 0.83rem; color: var(--text2);
+    }
+    .result .kesimpulan b { color: var(--navy); }
+    .cases-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .case-card {
+      background: var(--white); border: 2px solid var(--border);
+      border-radius: 14px; padding: 20px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .case-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(10,31,92,0.12); }
+    .case-num { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blue); margin-bottom: 6px; }
+    .case-card h3 { font-size: 0.97rem; font-weight: 800; color: var(--navy); margin-bottom: 12px; }
+    .case-io { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .io-box {
+      background: var(--light-bg); border: 1px solid var(--border);
+      border-radius: 8px; padding: 7px 14px;
+      font-family: 'Fira Code', monospace; font-size: 0.88rem; color: var(--navy); font-weight: 600;
+    }
+    .arrow { color: var(--mid); font-size: 1.1rem; font-weight: 700; }
+    .io-result {
+      background: var(--green-bg); border: 1px solid var(--green-bd);
+      border-radius: 8px; padding: 7px 14px;
+      font-family: 'Fira Code', monospace; font-size: 0.88rem; color: var(--green); font-weight: 700;
+    }
+    .case-conclusion { margin-top: 12px; font-size: 0.78rem; color: var(--text3); line-height: 1.55; }
+    .case-conclusion b { color: var(--green); }
+    .rekap-card {
+      background: var(--white); border: 2px solid var(--border);
+      border-radius: 16px; overflow: hidden;
+      box-shadow: 0 4px 16px rgba(10,31,92,0.08);
+    }
+    .rekap-card table { width: 100%; border-collapse: collapse; }
+    .rekap-card th {
+      background: var(--navy); color: #fff; padding: 13px 16px;
+      font-size: 0.82rem; font-weight: 700; text-align: center; letter-spacing: 0.05em;
+    }
+    .rekap-card td {
+      padding: 12px 16px; font-size: 0.88rem; color: var(--text);
+      text-align: center; border-top: 1px solid var(--border);
+    }
+    .rekap-card tr:nth-child(even) td { background: var(--light-bg); }
+    .rekap-card td:nth-child(4) { font-family: 'Fira Code', monospace; color: var(--green); font-weight: 700; }
+    .rekap-card td:last-child { color: var(--green); font-weight: 800; }
+    footer { margin-top: 48px; text-align: center; font-size: 0.78rem; color: var(--text3); padding: 0 20px; }
+    footer b { color: var(--navy); }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    .anim { animation: fadeUp 0.5s ease both; }
+  </style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Asna Nur Halimah_2502947</div>
+<div class="hero">
+<div class="badge">Projek Matematika Diskrit · PSTI 2A</div>
+<h1>Konversi <span>Basis Bilangan</span></h1>
+<div class="sub">Bilangan Teori · Dr. Suprih Widodo, S.Si., M.T.</div>
+<div class="identitas">
+<span>Nama : <b>Asna Nur Halimah</b></span>
+<span>NIM : <b>2502947</b></span>
+<span>Kelas : <b>PSTI 2A</b></span>
+</div>
+</div>
+<!-- 1. PENGERTIAN -->
+<div class="section anim">
+<div class="sec-heading">
+<div class="num">1</div>
+<h2>Pengertian Konversi Basis Bilangan</h2>
+<div class="line"></div>
+</div>
+<div class="pengertian-box">
+<p><b>Konversi basis bilangan</b> adalah proses mengubah representasi suatu bilangan dari satu sistem bilangan (basis) ke sistem bilangan lainnya, tanpa mengubah nilai sebenarnya dari bilangan tersebut.</p>
+<p>Setiap bilangan desimal dapat direpresentasikan dalam basis lain menggunakan <b>algoritma pembagian berulang</b> : bagi dengan basis target, catat sisa, ulangi hingga hasil bagi = 0, lalu baca sisa dari <b>bawah ke atas</b>.</p>
+<p>Sistem bilangan yang umum digunakan dalam ilmu komputer antara lain : <b>Desimal (basis 10)</b>, <b>Biner (basis 2)</b>, <b>Oktal (basis 8)</b>, dan <b>Heksadesimal (basis 16)</b>.</p>
+</div>
+<div class="algo-box">
+<h3>⚙ Algoritma Konversi (Pembagian Berulang)</h3>
+<div class="algo-steps">
+<div class="algo-step"><div class="step-n">1</div><span>Bagi bilangan desimal dengan basis target (2, 8, atau 16)</span></div>
+<div class="algo-step"><div class="step-n">2</div><span>Catat sisa pembagian (remainder) — ini menjadi digit hasil konversi</span></div>
+<div class="algo-step"><div class="step-n">3</div><span>Gunakan hasil bagi (quotient) sebagai bilangan baru, ulangi langkah 1–2</span></div>
+<div class="algo-step"><div class="step-n">4</div><span>Berhenti ketika hasil bagi = 0</span></div>
+<div class="algo-step"><div class="step-n">5</div><span>Baca semua sisa pembagian dari <b style="color:#7eb8ff">bawah ke atas</b> — itulah hasil konversi</span></div>
+</div>
+</div>
+</div>
+<!-- 2. KONSEP DASAR -->
+<div class="section anim" style="margin-top:36px;">
+<div class="sec-heading">
+<div class="num">2</div>
+<h2>Konsep Dasar Sistem Bilangan</h2>
+<div class="line"></div>
+</div>
+<div class="konsep-grid">
+<div class="konsep-card biner">
+<div class="k-icon">🔢</div>
+<div class="k-basis">Basis 2</div>
+<h3>Biner</h3>
+<p>Sistem bilangan yang hanya menggunakan digit <b>0</b> dan <b>1</b>. Merupakan bahasa dasar komputer dan elektronika digital.</p>
+<div class="k-tag">Bagi dengan 2 → catat sisa</div>
+</div>
+<div class="konsep-card oktal">
+<div class="k-icon">🔣</div>
+<div class="k-basis">Basis 8</div>
+<h3>Oktal</h3>
+<p>Menggunakan digit <b>0–7</b>. Sering digunakan dalam sistem Unix/Linux untuk izin file (permission).</p>
+<div class="k-tag">Bagi dengan 8 → catat sisa</div>
+</div>
+<div class="konsep-card hex">
+<div class="k-icon">🔠</div>
+<div class="k-basis">Basis 16</div>
+<h3>Heksadesimal</h3>
+<p>Menggunakan digit <b>0–9</b> dan huruf <b>A(10), B(11), C(12), D(13), E(14), F(15)</b>. Umum digunakan dalam pemrograman &amp; warna CSS.</p>
+<div class="k-tag">Bagi dengan 16 → A–F untuk 10–15</div>
+</div>
+<div class="konsep-card algo">
+<div class="k-icon">📐</div>
+<div class="k-basis">Algoritma Umum</div>
+<h3>Langkah Umum</h3>
+<p>Berlaku untuk semua basis : <b>bagi → catat sisa → ulangi → baca sisa terbalik</b> (dari bawah ke atas).</p>
+<div class="k-tag">Baca sisa : bawah → atas</div>
+</div>
+</div>
+</div>
+<!-- 3. KALKULATOR -->
+<div class="section anim" style="margin-top:36px;">
+<div class="sec-heading">
+<div class="num">3</div>
+<h2>Kalkulator Konversi Interaktif</h2>
+<div class="line"></div>
+</div>
+<div class="calc-card">
+<div class="calc-title">
+<small>Coba Sendiri</small>
+        Konversi Basis Bilangan
+      </div>
+<p class="calc-desc">Masukkan bilangan desimal, pilih basis tujuan, klik konversi.</p>
+<div class="input-row">
+<div class="inp-group">
+<label>Masukkan Bilangan Desimal :</label>
+<input id="inputDesimal" min="0" placeholder="Contoh: 45" type="number"/>
+</div>
+<div class="inp-group">
+<label>Pilih Basis Tujuan :</label>
+<select id="selectBasis">
+<option value="2">Biner (Basis 2)</option>
+<option value="8">Oktal (Basis 8)</option>
+<option value="16">Heksadesimal (Basis 16)</option>
+</select>
+</div>
+</div>
+<button class="btn-konversi" onclick="konversi()">⟶ Konversi Sekarang</button>
+<div id="resultArea"></div>
+</div>
+</div>
+<!-- 4. 5 STUDI KASUS -->
+<div class="section anim" style="margin-top:36px;">
+<div class="sec-heading">
+<div class="num">4</div>
+<h2>5 Studi Kasus</h2>
+<div class="line"></div>
+</div>
+<div class="cases-grid">
+<div class="case-card">
+<div class="case-num">Kasus 1 · Desimal → Biner</div>
+<h3>Konversi 45₁₀ ke Basis 2</h3>
+<div class="case-io">
+<div class="io-box">(45)₁₀</div><div class="arrow">→</div>
+<div class="io-result">(101101)₂</div>
+</div>
+<div class="case-conclusion">Sisa dibaca dari bawah ke atas menghasilkan <b>101101</b>. Maka (45)₁₀ = (101101)₂ ✓</div>
+</div>
+<div class="case-card">
+<div class="case-num">Kasus 2 · Desimal → Oktal</div>
+<h3>Konversi 156₁₀ ke Basis 8</h3>
+<div class="case-io">
+<div class="io-box">(156)₁₀</div><div class="arrow">→</div>
+<div class="io-result">(234)₈</div>
+</div>
+<div class="case-conclusion">Sisa dibaca dari bawah ke atas menghasilkan <b>234</b>. Maka (156)₁₀ = (234)₈ ✓</div>
+</div>
+<div class="case-card">
+<div class="case-num">Kasus 3 · Desimal → Heksadesimal</div>
+<h3>Konversi 255₁₀ ke Basis 16</h3>
+<div class="case-io">
+<div class="io-box">(255)₁₀</div><div class="arrow">→</div>
+<div class="io-result">(FF)₁₆</div>
+</div>
+<div class="case-conclusion">Sisa 15 → F. Dibaca dari bawah ke atas: <b>FF</b>. Maka (255)₁₀ = (FF)₁₆ ✓</div>
+</div>
+<div class="case-card">
+<div class="case-num">Kasus 4 · Desimal → Biner</div>
+<h3>Konversi 100₁₀ ke Basis 2</h3>
+<div class="case-io">
+<div class="io-box">(100)₁₀</div><div class="arrow">→</div>
+<div class="io-result">(1100100)₂</div>
+</div>
+<div class="case-conclusion">Sisa dibaca dari bawah ke atas menghasilkan <b>1100100</b>. Maka (100)₁₀ = (1100100)₂ ✓</div>
+</div>
+<div class="case-card">
+<div class="case-num">Kasus 5 · Desimal → Heksadesimal</div>
+<h3>Konversi 500₁₀ ke Basis 16</h3>
+<div class="case-io">
+<div class="io-box">(500)₁₀</div><div class="arrow">→</div>
+<div class="io-result">(1F4)₁₆</div>
+</div>
+<div class="case-conclusion">Sisa 15 → F. Dibaca dari bawah ke atas: <b>1F4</b>. Maka (500)₁₀ = (1F4)₁₆ ✓</div>
+</div>
+</div>
+</div>
+<!-- 5. REKAP -->
+<div class="section anim" style="margin-top:36px;">
+<div class="sec-heading">
+<div class="num">5</div>
+<h2>Rekap Hasil Pengujian</h2>
+<div class="line"></div>
+</div>
+<div class="rekap-card">
+<table>
+<thead>
+<tr><th>No</th><th>Input Desimal</th><th>Basis Target</th><th>Hasil Konversi</th><th>Status</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>45₁₀</td><td>Biner (Basis 2)</td><td>(101101)₂</td><td>✓ Benar</td></tr>
+<tr><td>2</td><td>156₁₀</td><td>Oktal (Basis 8)</td><td>(234)₈</td><td>✓ Benar</td></tr>
+<tr><td>3</td><td>255₁₀</td><td>Heksadesimal (Basis 16)</td><td>(FF)₁₆</td><td>✓ Benar</td></tr>
+<tr><td>4</td><td>100₁₀</td><td>Biner (Basis 2)</td><td>(1100100)₂</td><td>✓ Benar</td></tr>
+<tr><td>5</td><td>500₁₀</td><td>Heksadesimal (Basis 16)</td><td>(1F4)₁₆</td><td>✓ Benar</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<footer>
+    Projek Matematika Diskrit  ·  <b>Asna Nur Halimah</b>  ·  NIM 2502947  ·  PSTI 2A<br/>
+    Dosen Pengampu : Dr. Suprih Widodo, S.Si., M.T.
+  </footer>
+<script>
+    function konversi() {
+      const n    = parseInt(document.getElementById('inputDesimal').value);
+      const base = parseInt(document.getElementById('selectBasis').value);
+      if (isNaN(n) || n < 0) { alert("Masukkan bilangan desimal yang valid!"); return; }
+      const hexDigits = "0123456789ABCDEF";
+      let steps = [], num = n;
+      if (n === 0) {
+        steps.push({ bilangan: 0, hasilBagi: 0, sisa: "0" });
+      } else {
+        while (num > 0) {
+          const remainder = num % base;
+          const quotient  = Math.floor(num / base);
+          steps.push({ bilangan: num, hasilBagi: quotient, sisa: hexDigits[remainder] });
+          num = quotient;
+        }
+      }
+      const hasilAkhir = steps.map(s => s.sisa).reverse().join('');
+      tampilHasil(n, base, hasilAkhir, [...steps].reverse());
+    }
+    function tampilHasil(n, base, hasil, steps) {
+      let tabel = '<table><tr><th>Bilangan</th><th>÷ '+base+'</th><th>Hasil Bagi</th><th>Sisa</th></tr>';
+      steps.forEach(s => {
+        tabel += '<tr><td>'+s.bilangan+'</td><td>'+base+'</td><td>'+s.hasilBagi+'</td><td><b>'+s.sisa+'</b></td></tr>';
+      });
+      tabel += '</table>';
+      const baseSub = base===2?'₂':base===8?'₈':'₁₆';
+      document.getElementById('resultArea').innerHTML =
+        '<div class="result">'+
+        '<h3>('+n+')₁₀  =  ('+hasil+')'+baseSub+'</h3>'+
+        '<p class="hint">Baca sisa dari <b>bawah → atas</b></p>'+
+        tabel+
+        '<div class="kesimpulan">Karena sisa dibaca dari bawah ke atas menghasilkan <b>'+hasil+'</b>, maka <b>('+n+')₁₀ = ('+hasil+')'+baseSub+'</b> ✓</div>'+
+        '</div>';
+    }
+  </script>
+</body>
+</html>

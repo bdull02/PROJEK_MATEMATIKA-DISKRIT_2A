@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matematika Diskrit</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>📊 Sistem Operasi Hitung Matriks</h1>
+            <p class="subtitle">
+                Matematika Diskrit - Operasi Matriks Dinamis
+            </p>
+
+            <div class="info-box">
+                <h3>Tentang Matriks</h3>
+                <p>
+                    Matriks adalah susunan bilangan berbentuk baris dan kolom
+                    yang digunakan dalam berbagai operasi matematika seperti
+                    penjumlahan, pengurangan, perkalian skalar, dan perkalian matriks.
+                </p>
+            </div>
+
+            <div class="form-group">
+                <label>Pilih Operasi</label>
+                <select id="operation">
+                    <option value="add">Penjumlahan Matriks</option>
+                    <option value="subtract">Pengurangan Matriks</option>
+                    <option value="scalar">Perkalian Skalar</option>
+                    <option value="multiply">Perkalian Matriks</option>
+                </select>
+            </div>
+
+            <div class="matrix-size">
+
+                <div class="size-card">
+                    <h3>Matriks A</h3>
+                    <input type="number" id="rowsA" placeholder="Baris">
+                    <input type="number" id="colsA" placeholder="Kolom">
+                </div>
+
+                <div class="size-card" id="matrixBSize">
+                    <h3>Matriks B</h3>
+                    <input type="number" id="rowsB" placeholder="Baris">
+                    <input type="number" id="colsB" placeholder="Kolom">
+                </div>
+            </div>
+
+            <div class="scalar-box" id="scalarBox">
+                <label>Nilai Skalar</label>
+                <input type="number" id="scalarValue" placeholder="Masukkan nilai skalar">
+            </div>
+
+            <button onclick="generateMatrices()">
+                Buat Matriks
+            </button>
+
+            <div id="matrixInputs"></div>
+
+            <button id="calculateBtn" onclick="calculate()">
+                Hitung
+            </button>
+
+            <div id="result"></div>
+
+            <div class="footer">
+               &copy; Matematika Diskrit. Matriks.
+           </div>
+
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

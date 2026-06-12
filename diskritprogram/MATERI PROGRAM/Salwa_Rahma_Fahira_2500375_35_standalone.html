@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ISBN-10 Checker</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&amp;family=DM+Sans:wght@300;400;500;600&amp;family=DM+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body{
+      font-family:"DM Sans", sans-serif;
+      background:#fff7fa;
+      color:#4b3d46;
+      display:flex;
+      min-height:100vh;
+    }
+
+    .sidebar{
+      width:240px;
+      background:#ffeef4;
+      border-right:1px solid #f8ccd9;
+      position:fixed;
+      height:100vh;
+      padding:30px 0;
+    }
+
+    .brand{
+      padding:0 25px 25px;
+      border-bottom:1px solid #f8ccd9;
+    }
+
+    .brand small{
+      color:#d67c98;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      font-size:11px;
+      font-weight:600;
+    }
+
+    .brand h2{
+      font-family:"Lora", serif;
+      margin-top:10px;
+      color:#b85475;
+      line-height:1.4;
+    }
+
+    .menu{
+      list-style:none;
+      padding:20px 15px;
+    }
+
+    .menu li{
+      margin-bottom:10px;
+    }
+
+    .menu a{
+      text-decoration:none;
+      color:#8d5b6c;
+      padding:10px 12px;
+      display:block;
+      border-radius:8px;
+      transition:0.2s;
+      font-size:14px;
+    }
+
+    .menu a:hover{
+      background:#ffdce7;
+      color:#b85475;
+    }
+
+    .main{
+      margin-left:240px;
+      flex:1;
+    }
+
+    .hero{
+      padding:70px 70px 50px;
+      border-bottom:1px solid #f8ccd9;
+      background:linear-gradient(to right,#fff7fa,#ffeef4);
+    }
+
+    .hero small{
+      color:#d67c98;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      font-weight:600;
+      font-size:12px;
+    }
+
+    .hero h1{
+      font-family:"Lora", serif;
+      font-size:50px;
+      margin:15px 0;
+      color:#b85475;
+    }
+
+    .hero p{
+      max-width:650px;
+      line-height:1.8;
+      color:#7c6770;
+    }
+
+    .tags{
+      margin-top:25px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .tag{
+      background:#fff;
+      border:1px solid #f8ccd9;
+      padding:8px 14px;
+      border-radius:20px;
+      font-size:12px;
+      color:#b85475;
+      font-family:"DM Mono", monospace;
+    }
+
+    .content{
+      padding:60px 70px;
+      max-width:950px;
+    }
+
+    section{
+      margin-bottom:80px;
+    }
+
+    .sec-label{
+      color:#d67c98;
+      font-size:12px;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      margin-bottom:10px;
+      font-weight:600;
+    }
+
+    .sec-title{
+      font-family:"Lora", serif;
+      font-size:34px;
+      color:#b85475;
+      margin-bottom:15px;
+    }
+
+    .sec-text{
+      line-height:1.9;
+      color:#6f5a63;
+      margin-bottom:25px;
+    }
+
+    .box{
+      background:white;
+      border:1px solid #f8ccd9;
+      border-radius:14px;
+      padding:25px;
+      margin-top:20px;
+    }
+
+    .formula{
+      background:#fff0f5;
+      padding:20px;
+      border-radius:12px;
+      font-family:"DM Mono", monospace;
+      line-height:2;
+      color:#a44e6b;
+      overflow-x:auto;
+      margin-top:20px;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:20px;
+    }
+
+    th{
+      background:#ffe7ef;
+      color:#b85475;
+      padding:12px;
+      font-size:13px;
+    }
+
+    td{
+      padding:12px;
+      text-align:center;
+      border-bottom:1px solid #f9d8e3;
+      font-family:"DM Mono", monospace;
+    }
+
+    tr:hover{
+      background:#fff8fb;
+    }
+
+    .checker{
+      background:white;
+      border:1px solid #f8ccd9;
+      border-radius:15px;
+      padding:30px;
+      margin-top:25px;
+    }
+
+    input{
+      width:100%;
+      padding:14px;
+      border:2px solid #f8ccd9;
+      border-radius:10px;
+      margin-top:15px;
+      font-size:16px;
+      outline:none;
+    }
+
+    button{
+      margin-top:20px;
+      background:#f39ab7;
+      border:none;
+      color:white;
+      padding:14px 22px;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:15px;
+      transition:0.2s;
+    }
+
+    button:hover{
+      background:#e07f9f;
+    }
+
+    .hasil{
+      margin-top:25px;
+      background:#fff4f7;
+      border-radius:12px;
+      padding:20px;
+      line-height:1.8;
+      color:#7b4c5d;
+    }
+
+    footer{
+      border-top:1px solid #f8ccd9;
+      padding:30px 70px;
+      color:#9a7281;
+      font-size:14px;
+    }
+
+    @media(max-width:900px){
+
+      body{
+        display:block;
+      }
+
+      .sidebar{
+        position:relative;
+        width:100%;
+        height:auto;
+      }
+
+      .main{
+        margin-left:0;
+      }
+
+      .hero{
+        padding:50px 30px;
+      }
+
+      .content{
+        padding:40px 30px;
+      }
+
+      footer{
+        padding:30px;
+      }
+
+      .hero h1{
+        font-size:38px;
+      }
+    }
+  </style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Salwa Rahma Fahira_2500375</div>
+<aside class="sidebar">
+<div class="brand">
+<small>Matematika Diskrit</small>
+<h2>ISBN-10<br/>Checker</h2>
+</div>
+<ul class="menu">
+<li><a href="#pengertian">Pengertian</a></li>
+<li><a href="#rumus">Rumus ISBN</a></li>
+<li><a href="#contoh">Contoh Perhitungan</a></li>
+<li><a href="#checker">ISBN Checker</a></li>
+</ul>
+</aside>
+<div class="main">
+<header class="hero">
+<small>Matematika Diskrit · ISBN</small>
+<h1>ISBN-10 Validation</h1>
+<p>
+        ISBN-10 adalah sistem penomoran buku internasional yang terdiri dari
+        10 digit. Pada Matematika Diskrit, ISBN digunakan sebagai contoh
+        penerapan modulo dan validasi data menggunakan algoritma matematika.
+      </p>
+<div class="tags">
+<div class="tag">Modulo 11</div>
+<div class="tag">ISBN-10</div>
+<div class="tag">Matematika Diskrit</div>
+<div class="tag">Validasi Data</div>
+</div>
+</header>
+<div class="content">
+<section id="pengertian">
+<div class="sec-label">01</div>
+<h2 class="sec-title">Pengertian ISBN-10</h2>
+<p class="sec-text">
+          ISBN-10 merupakan kode unik untuk identitas buku yang terdiri dari
+          10 digit angka. Digit terakhir disebut check digit yang digunakan
+          untuk mengecek apakah ISBN valid atau tidak.
+        </p>
+<div class="box">
+          Pada ISBN-10, setiap digit dikalikan dengan urutan angka 1 sampai 10,
+          kemudian seluruh hasil dijumlahkan. Jika hasil modulo 11 sama dengan
+          0 maka ISBN dinyatakan valid.
+        </div>
+</section>
+<section id="rumus">
+<div class="sec-label">02</div>
+<h2 class="sec-title">Rumus ISBN-10</h2>
+<p class="sec-text">
+          Rumus validasi ISBN-10 menggunakan konsep modulo 11.
+        </p>
+<div class="formula">
+
+(1×d1 + 2×d2 + 3×d3 + 4×d4 + 5×d5 +<br/>
+6×d6 + 7×d7 + 8×d8 + 9×d9 + 10×d10) mod 11 = 0
+
+        </div>
+</section>
+<section id="contoh">
+<div class="sec-label">03</div>
+<h2 class="sec-title">Contoh Perhitungan</h2>
+<p class="sec-text">
+          Contoh ISBN yang valid adalah 0306406152.
+        </p>
+<table>
+<thead>
+<tr>
+<th>Posisi</th>
+<th>Digit</th>
+<th>Perkalian</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>0</td><td>1 × 0 = 0</td></tr>
+<tr><td>2</td><td>3</td><td>2 × 3 = 6</td></tr>
+<tr><td>3</td><td>0</td><td>3 × 0 = 0</td></tr>
+<tr><td>4</td><td>6</td><td>4 × 6 = 24</td></tr>
+<tr><td>5</td><td>4</td><td>5 × 4 = 20</td></tr>
+</tbody>
+</table>
+</section>
+<section id="checker">
+<div class="sec-label">04</div>
+<h2 class="sec-title">ISBN Checker</h2>
+<p class="sec-text">
+          Masukkan ISBN-10 untuk mengecek valid atau tidak.
+        </p>
+<div class="checker">
+<label>Input ISBN-10</label>
+<input id="isbn" placeholder="Contoh: 0306406152" type="text"/>
+<button onclick="cekISBN()">
+            Cek ISBN
+          </button>
+<div class="hasil" id="hasil">
+            Hasil pengecekan akan muncul di sini.
+          </div>
+</div>
+</section>
+</div>
+<footer>
+      ISBN-10 Validation · Matematika Diskrit · Modulo 11
+    </footer>
+</div>
+<script>
+
+    function cekISBN(){
+
+      let isbn = document.getElementById("isbn").value;
+      let hasil = document.getElementById("hasil");
+
+      isbn = isbn.replace(/-/g,'');
+
+      if(isbn.length !== 10){
+
+        hasil.innerHTML =
+        "<b>ISBN harus terdiri dari 10 digit.</b>";
+
+        return;
+      }
+
+      let total = 0;
+      let proses = "";
+
+      for(let i = 0; i < 10; i++){
+
+        let digit;
+
+        if(i === 9 && isbn[i].toUpperCase() === "X"){
+
+          digit = 10;
+
+        }else{
+
+          digit = parseInt(isbn[i]);
+
+        }
+
+        if(isNaN(digit)){
+
+          hasil.innerHTML =
+          "<b>Terdapat karakter tidak valid.</b>";
+
+          return;
+        }
+
+        total += (i + 1) * digit;
+
+        proses +=
+        `(${i + 1} × ${digit})`;
+
+        if(i < 9){
+          proses += " + ";
+        }
+
+      }
+
+      if(total % 11 === 0){
+
+        hasil.innerHTML = `
+          <b>ISBN VALID</b><br><br>
+          ${proses}<br><br>
+          Total = ${total}<br>
+          ${total} mod 11 = 0
+        `;
+
+      }else{
+
+        hasil.innerHTML = `
+          <b>ISBN TIDAK VALID</b><br><br>
+          ${proses}<br><br>
+          Total = ${total}<br>
+          ${total} mod 11 ≠ 0
+        `;
+      }
+
+    }
+
+  </script>
+</body>
+</html>

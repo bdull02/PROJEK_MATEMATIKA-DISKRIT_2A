@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Prinsip Induksi yang Dirampatkan</title>
+
+
+<style>
+
+    body{
+
+        font-family: Arial, sans-serif;
+
+        background:#f4f6f9;
+
+        margin:0;
+
+        padding:20px;
+
+    }
+
+
+    .container{
+
+        max-width:900px;
+
+        margin:auto;
+
+        background:white;
+
+        padding:25px;
+
+        border-radius:10px;
+
+        box-shadow:0 0 10px rgba(0,0,0,0.1);
+
+    }
+
+
+    h1{
+
+        text-align:center;
+
+        color:#2c3e50;
+
+    }
+
+
+    .form-group{
+
+        margin-bottom:15px;
+
+    }
+
+
+    label{
+
+        font-weight:bold;
+
+        display:block;
+
+        margin-bottom:5px;
+
+    }
+
+
+    select,input{
+
+        width:100%;
+
+        padding:10px;
+
+        border:1px solid #ccc;
+
+        border-radius:5px;
+
+    }
+
+
+    button{
+
+        width:100%;
+
+        padding:12px;
+
+        background:#3498db;
+
+        color:white;
+
+        border:none;
+
+        border-radius:5px;
+
+        cursor:pointer;
+
+        font-size:16px;
+
+    }
+
+
+    button:hover{
+
+        background:#2980b9;
+
+    }
+
+
+    .hasil{
+
+        margin-top:20px;
+
+        padding:15px;
+
+        background:#ecf0f1;
+
+        border-radius:5px;
+
+    }
+
+
+    .judul-kasus{
+
+        color:#2c3e50;
+
+        font-weight:bold;
+
+        margin-bottom:10px;
+
+    }
+
+</style>
+
+
+</head>
+
+<body>
+
+
+<div class="container">
+
+
+<h1>Prinsip Induksi yang Dirampatkan</h1>
+
+
+<div class="form-group">
+
+<label>Pilih Kasus:</label>
+
+<select id="kasus">
+
+    <option value="1">Kasus 1 - Deret Pangkat Dua</option>
+
+    <option value="2">Kasus 2 - n³ + 2n habis dibagi 3</option>
+
+    <option value="3">Kasus 3 - Jumlah Sudut Poligon</option>
+
+    <option value="4">Kasus 4 - Jumlah Jabat Tangan</option>
+
+    <option value="5">Kasus 5 - Perangko 3 dan 5 Sen</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label>Masukkan nilai n:</label>
+
+<input type="number" id="n" min="1">
+
+</div>
+
+
+<button onclick="hitung()">Hitung</button>
+
+
+<div class="hasil" id="hasil">
+
+Hasil akan muncul di sini...
+
+</div>
+
+
+</div>
+
+
+<script>
+
+
+function hitung(){
+
+
+    let kasus = document.getElementById("kasus").value;
+
+    let n = parseInt(document.getElementById("n").value);
+
+
+    if(isNaN(n)){
+
+        document.getElementById("hasil").innerHTML =
+
+        "Masukkan nilai n terlebih dahulu.";
+
+        return;
+
+    }
+
+
+    let output = "";
+
+
+    switch(kasus){
+
+
+        case "1":
+
+
+            let jumlah = Math.pow(2,n+1)-1;
+
+
+            output = `
+
+            <div class="judul-kasus">
+
+            Kasus 1 - Deret Pangkat Dua
+
+            </div>
+
+
+            Rumus:<br>
+
+            2⁰ + 2¹ + ... + 2ⁿ = 2ⁿ⁺¹ − 1
+
+            <br><br>
+
+
+            n = ${n}
+
+            <br><br>
+
+
+            Hasil:
+
+            <strong>${jumlah}</strong>
+
+            `;
+
+            break;
+
+
+        case "2":
+
+
+            let hasil2 = Math.pow(n,3)+(2*n);
+
+
+            output = `
+
+            <div class="judul-kasus">
+
+            Kasus 2 - n³ + 2n habis dibagi 3
+
+            </div>
+
+
+            n = ${n}
+
+            <br><br>
+
+
+            n³ + 2n = ${hasil2}
+
+            <br><br>
+
+
+            ${hasil2 % 3 === 0 ?
+
+            "<strong>Habis dibagi 3 ✓</strong>"
+
+            :
+
+            "<strong>Tidak habis dibagi 3 ✗</strong>"}
+
+            `;
+
+            break;
+
+
+        case "3":
+
+
+            let sudut = 180*(n-2);
+
+
+            output = `
+
+            <div class="judul-kasus">
+
+            Kasus 3 - Jumlah Sudut Dalam Poligon
+
+            </div>
+
+
+            n = ${n}
+
+            <br><br>
+
+
+            180(n−2)
+
+            <br>
+
+
+            = 180(${n}-2)
+
+            <br>
+
+
+            = ${sudut}°
+
+            `;
+
+            break;
+
+
+        case "4":
+
+
+            let jabat = n*(n-1)/2;
+
+
+            output = `
+
+            <div class="judul-kasus">
+
+            Kasus 4 - Jumlah Jabat Tangan
+
+            </div>
+
+
+            n = ${n}
+
+            <br><br>
+
+
+            n(n−1)/2
+
+            <br>
+
+
+            = ${n}(${n}-1)/2
+
+            <br>
+
+
+            = ${jabat}
+
+            `;
+
+            break;
+
+
+        case "5":
+
+
+            let ditemukan = false;
+
+            let kombinasi = "";
+
+
+            for(let a=0;a<=n;a++){
+
+                for(let b=0;b<=n;b++){
+
+
+                    if((3*a)+(5*b)===n){
+
+                        ditemukan=true;
+
+                        kombinasi=`${a} perangko 3 sen + ${b} perangko 5 sen`;
+
+                        break;
+
+                    }
+
+                }
+
+                if(ditemukan) break;
+
+            }
+
+
+            output = `
+
+            <div class="judul-kasus">
+
+            Kasus 5 - Perangko 3 dan 5 Sen
+
+            </div>
+
+
+            n = ${n}
+
+            <br><br>
+
+
+            ${
+
+                ditemukan
+
+                ?
+
+                `<strong>Dapat dibayar</strong><br><br>${kombinasi}`
+
+                :
+
+                `<strong>Tidak dapat dibayar</strong>`
+
+            }
+
+            `;
+
+            break;
+
+    }
+
+
+    document.getElementById("hasil").innerHTML = output;
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
+

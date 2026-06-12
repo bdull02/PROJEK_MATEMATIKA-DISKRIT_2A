@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RelationChecker - Pemeriksa Sifat Relasi Biner</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    </style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body class="bg-gray-50 min-h-screen py-10 px-4"><div class="author-badge">Sultan Maulana Akbar_2501304</div>
+<div class="max-w-3xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6 md:p-8">
+<div class="text-center border-b border-gray-200 pb-6 mb-6">
+<h1 class="text-3xl font-bold text-indigo-600 mb-2">🔍 RelationChecker</h1>
+<p class="text-gray-500">Materi: BAB 3 - Relasi dan Fungsi (Matematika Diskrit)</p>
+<p class="text-sm text-gray-400 mt-1">Periksa sifat Refleksif, Simetris, Transitif, Antisimetris, Ekuivalensi, &amp; POSET</p>
+</div>
+<div class="space-y-6">
+<div>
+<label class="block text-sm font-semibold text-gray-700 mb-2">
+                    1. Masukkan Anggota Himpunan A (pisahkan dengan koma):
+                </label>
+<input class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none" id="inputA" placeholder="Contoh: 1, 2, 3" type="text"/>
+<p class="text-xs text-gray-400 mt-1">Himpunan semesta tempat relasi didefinisikan.</p>
+</div>
+<div>
+<label class="block text-sm font-semibold text-gray-700 mb-2">
+                    2. Masukkan Pasangan Relasi R (format: x,y pisahkan antar pasangan dengan spasi atau baris baru):
+                </label>
+<textarea class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none" id="inputR" placeholder="Contoh:
+1,1
+2,2
+3,3
+1,2
+2,1" rows="3"></textarea>
+<p class="text-xs text-gray-400 mt-1">Pastikan elemen yang dimasukkan ada di Himpunan A.</p>
+</div>
+<button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 shadow" onclick="analisisRelasi()">
+                Analisis Relasi Sekarang
+            </button>
+</div>
+<div class="hidden mt-8 border-t border-gray-200 pt-6" id="hasilSeksi">
+<h2 class="text-xl font-bold text-gray-800 mb-4">📊 Hasil Analisis</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+<div class="p-4 rounded-lg border bg-gray-50 flex items-start space-x-3">
+<span class="text-xl" id="badgeRefleksif">⚪</span>
+<div>
+<h3 class="font-semibold text-gray-700">Refleksif</h3>
+<p class="text-sm text-gray-500" id="detailRefleksif">-</p>
+</div>
+</div>
+<div class="p-4 rounded-lg border bg-gray-50 flex items-start space-x-3">
+<span class="text-xl" id="badgeSimetris">⚪</span>
+<div>
+<h3 class="font-semibold text-gray-700">Simetris</h3>
+<p class="text-sm text-gray-500" id="detailSimetris">-</p>
+</div>
+</div>
+<div class="p-4 rounded-lg border bg-gray-50 flex items-start space-x-3">
+<span class="text-xl" id="badgeTransitif">⚪</span>
+<div>
+<h3 class="font-semibold text-gray-700">Transitif</h3>
+<p class="text-sm text-gray-500" id="detailTransitif">-</p>
+</div>
+</div>
+<div class="p-4 rounded-lg border bg-gray-50 flex items-start space-x-3">
+<span class="text-xl" id="badgeAntisimetris">⚪</span>
+<div>
+<h3 class="font-semibold text-gray-700">Antisimetris</h3>
+<p class="text-sm text-gray-500" id="detailAntisimetris">-</p>
+</div>
+</div>
+</div>
+<div class="p-5 rounded-lg bg-indigo-50 border border-indigo-100">
+<h3 class="font-bold text-indigo-900 mb-2">📌 Kesimpulan Karakteristik Relasi:</h3>
+<ul class="list-disc list-inside space-y-1 text-indigo-950 text-sm">
+<li>Relasi Ekuivalensi: <span class="font-semibold" id="kesimpulanEkuivalensi">-</span></li>
+<li>Partial Order Set (POSET): <span class="font-semibold" id="kesimpulanPOSET">-</span></li>
+</ul>
+</div>
+</div>
+</div>
+<script>
+        function analisisRelasi() {
+            // 1. Ambil & Bersihkan data Input Himpunan A
+            const txtA = document.getElementById('inputA').value.trim();
+            if (!txtA) { alert("Mohon isi Himpunan A terlebih dahulu!"); return; }
+            const A = [...new Set(txtA.split(',').map(x => x.trim()).filter(x => x !== ""))];
+
+            // 2. Ambil & Bersihkan data Input Relasi R
+            const txtR = document.getElementById('inputR').value.trim();
+            if (!txtR) { alert("Mohon isi Pasangan Relasi R terlebih dahulu!"); return; }
+            
+            // Memisahkan input berdasarkan spasi atau baris baru
+            const barisR = txtR.split(/[\s\n]+/);
+            const R = [];
+            
+            for (let baris of barisR) {
+                if (baris.trim() === "") continue;
+                const part = baris.split(',');
+                if (part.length !== 2) {
+                    alert(`Format pasangan salah pada "${baris}". Harus berupa x,y`);
+                    return;
+                }
+                const x = part[0].trim();
+                const y = part[1].trim();
+                
+                // Validasi apakah elemen ada di dalam himpunan A
+                if (!A.includes(x) || !A.includes(y)) {
+                    alert(`Error: Pasangan (${x},${y}) mengandung elemen yang tidak ada di Himpunan A!`);
+                    return;
+                }
+                R.push([x, y]);
+            }
+
+            // Fungsi pembantu untuk cek keberadaan pasangan di R
+            const hasPair = (x, y) => R.some(pair => pair[0] === x && pair[1] === y);
+
+            // ==========================
+            // Cek Sifat 1: REFLEKSIF
+            // Sembarang a ∈ A berlaku (a,a) ∈ R
+            // ==========================
+            let isRefleksif = true;
+            let infoRefleksif = "Memenuhi syarat. ";
+            let misalGagalRef = [];
+            for (let a of A) {
+                if (!hasPair(a, a)) {
+                    isRefleksif = false;
+                    misalGagalRef.push(`(${a},${a})`);
+                }
+            }
+            if (isRefleksif) {
+                infoRefleksif += "Semua elemen (a,a) ada di dalam relasi.";
+            } else {
+                infoRefleksif = `Bukan Refleksif karena tidak mengandung pasangan: ${misalGagalRef.join(', ')}`;
+            }
+
+            // ==========================
+            // Cek Sifat 2: SIMETRIS
+            // Jika (a,b) ∈ R maka (b,a) ∈ R
+            // ==========================
+            let isSimetris = true;
+            let infoSimetris = "Memenuhi syarat simetris.";
+            for (let pair of R) {
+                const [a, b] = pair;
+                if (!hasPair(b, a)) {
+                    isSimetris = false;
+                    infoSimetris = `Bukan Simetris karena ada (${a},${b}) tetapi tidak ada (${b},${a})`;
+                    break;
+                }
+            }
+
+            // ==========================
+            // Cek Sifat 3: TRANSITIF
+            // Jika (a,b) ∈ R dan (b,c) ∈ R maka (a,c) ∈ R
+            // ==========================
+            let isTransitif = true;
+            let infoTransitif = "Memenuhi syarat transitif.";
+            outerTransitif:
+            for (let pair1 of R) {
+                const [a, b] = pair1;
+                for (let pair2 of R) {
+                    const [b2, c] = pair2;
+                    if (b === b2) { // Menemukan rantai (a,b) dan (b,c)
+                        if (!hasPair(a, c)) {
+                            isTransitif = false;
+                            infoTransitif = `Bukan Transitif karena ada (${a},${b}) dan (${b},${c}) tetapi tidak ada (${a},${c})`;
+                            break outerTransitif;
+                        }
+                    }
+                }
+            }
+
+            // ==========================
+            // Cek Sifat 4: ANTISIMETRIS
+            // Jika (a,b) ∈ R dan (b,a) ∈ R maka a = b
+            // ==========================
+            let isAntisimetris = true;
+            let infoAntisimetris = "Memenuhi syarat antisimetris.";
+            for (let pair of R) {
+                const [a, b] = pair;
+                if (a !== b && hasPair(b, a)) {
+                    isAntisimetris = false;
+                    infoAntisimetris = `Bukan Antisimetris karena ditemukan (${a},${b}) dan (${b},${a}) padahal ${a} ≠ ${b}`;
+                    break;
+                }
+            }
+
+            // ==========================
+            // KESIMPULAN STRUKTUR
+            // ==========================
+            // Ekuivalensi = Refleksif + Simetris + Transitif
+            const isEkuivalensi = isRefleksif && isSimetris && isTransitif;
+            // POSET = Refleksif + Antisimetris + Transitif
+            const isPOSET = isRefleksif && isAntisimetris && isTransitif;
+
+            // ==========================
+            // UPDATE TAMPILAN WEB (DOM)
+            // ==========================
+            document.getElementById('hasilSeksi').classList.remove('hidden');
+
+            // Update UI komponen sifat dasar
+            updateSifatUI('Refleksif', isRefleksif, infoRefleksif);
+            updateSifatUI('Simetris', isSimetris, infoSimetris);
+            updateSifatUI('Transitif', isTransitif, infoTransitif);
+            updateSifatUI('Antisimetris', isAntisimetris, infoAntisimetris);
+
+            // Update UI Kesimpulan Makro
+            document.getElementById('kesimpulanEkuivalensi').textContent = isEkuivalensi ? "YA (Memenuhi syarat)" : "TIDAK";
+            document.getElementById('kesimpulanEkuivalensi').className = isEkuivalensi ? "font-bold text-green-600" : "font-bold text-red-500";
+
+            document.getElementById('kesimpulanPOSET').textContent = isPOSET ? "YA (Memenuhi syarat)" : "TIDAK";
+            document.getElementById('kesimpulanPOSET').className = isPOSET ? "font-bold text-green-600" : "font-bold text-red-500";
+        }
+
+        function updateSifatUI(idSifat, isValid, detailTeks) {
+            const badge = document.getElementById(`badge${idSifat}`);
+            const detail = document.getElementById(`detail${idSifat}`);
+            
+            if (isValid) {
+                badge.textContent = "✅";
+                detail.textContent = detailTeks;
+                detail.className = "text-sm text-green-600 font-medium";
+            } else {
+                badge.textContent = "❌";
+                detail.textContent = detailTeks;
+                detail.className = "text-sm text-red-500 font-medium";
+            }
+        }
+    </script>
+</body>
+</html>

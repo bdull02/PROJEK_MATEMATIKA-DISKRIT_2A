@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Petualangan Boli</title>
+<style>
+*{box-sizing:border-box}
+body{
+font-family:"Times New Roman",serif;
+margin:0;
+background:linear-gradient(135deg,#5c4033,#8b5a2b,#c19a6b);
+color:white;
+}
+header{text-align:center;padding:30px 15px}
+.boli{
+font-size:90px;
+animation:bounce 2s infinite;
+}
+@keyframes bounce{
+0%,100%{transform:translateY(0)}
+50%{transform:translateY(-12px)}
+}
+.container{max-width:1100px;margin:auto;padding:15px}
+.card{
+background:rgba(255,255,255,.12);
+backdrop-filter:blur(8px);
+padding:20px;
+border-radius:20px;
+margin:20px 0;
+box-shadow:0 5px 15px rgba(0,0,0,.3);
+}
+.option{
+width:100%;
+padding:14px;
+margin:10px 0;
+border:none;
+border-radius:12px;
+font-family:"Times New Roman",serif;
+font-size:18px;
+cursor:pointer;
+transition:all .3s ease;
+}
+.option:hover{
+transform:translateY(-3px) scale(1.02);
+box-shadow:0 6px 15px rgba(255,255,255,.25);
+}
+.option:active{
+transform:scale(.96);
+}
+.correct,.wrong,.explain{
+display:none;
+margin-top:10px;
+padding:15px;
+border-radius:12px;
+animation:fadeIn .5s ease;
+}
+.correct{background:#198754}
+.wrong{background:#b02a37}
+.explain{background:#f3f3f3;color:#222}
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(15px)}
+to{opacity:1;transform:translateY(0)}
+}
+#scoreBox{
+position:sticky;
+top:0;
+background:rgba(0,0,0,.5);
+padding:12px;
+text-align:center;
+font-size:22px;
+z-index:100;
+}
+#finalScreen{display:none;text-align:center}
+.restart{
+padding:12px 20px;
+border:none;
+border-radius:12px;
+font-size:18px;
+cursor:pointer;
+}
+@media(max-width:768px){
+.boli{font-size:65px}
+.option{font-size:16px}
+}
+</style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Zahra Mutia Rahmah_2500682</div>
+<div id="scoreBox">⭐ Skor Boli: <span id="score">0</span>/5</div>
+<header>
+<div class="boli">🤖</div>
+<h1>Petualangan Boli</h1>
+<h2>Hukum Aljabar Boolean: Dominansi &amp; Penyerapan</h2>
+<p>Bantu Boli menyelesaikan tantangan logika Boolean!</p>
+</header>
+<div class="container">
+<div class="card">
+<h2>Materi Singkat</h2>
+<h3>Hukum Dominansi:</h3>
+<p>x · 0 = 0</p>
+<p>x + 1 = 1</p>
+<h3>Hukum Penyerapan:</h3>
+<p>x · (x + y) = x</p>
+<p>x + (x · y) = x</p>
+</div>
+<div id="quiz"></div>
+<div class="card" id="finalScreen"></div>
+</div>
+<script>
+let score=0,answered=0;
+
+const soal=[
+["x · 0 = ?",
+[["0",true,"😊 Hebat! Pilihan cerdas. Menurut Hukum Dominansi AND, nilai 0 bersifat mutlak mendominasi. Apapun nilai variabel x, jika dikalikan (AND) dengan 0, hasilnya pasti 0."],
+["1",false,"💪 Jangan berkecil hati, ayo coba lagi! Angka 1 adalah identitas untuk operasi AND (x·1=x), bukan hasil dominansi dari x·0."],
+["x",false,"💪 Hampir tepat, terus asah analisismu! Variabel x tidak bisa bertahan karena tereliminasi oleh sifat dominasi angka 0 pada operasi AND."]],
+"x·0 = 0 (Hukum Dominansi AND)"],
+
+["y + 1 = ?",
+[["y",false,"💪 Tidak apa-apa salah, ini proses belajar! Variabel y kalah dominan karena operasi OR bertemu dengan angka 1."],
+["1",true,"😊 Luar biasa! Pemahamanmu mantap. Ini adalah Hukum Dominansi OR. Nilai 1 mendominasi operasi OR."],
+["0",false,"💪 Yuk fokus lagi, kamu pasti bisa! Hasil 0 hanya didapatkan pada dominansi AND."]],
+"y + 1 = 1 (Hukum Dominansi OR)"],
+
+["x · (x + y) = ?",
+[["x",true,"😊 Fantastis! Berdasarkan Hukum Penyerapan, variabel luar menyerap seluruh ekspresi di dalam kurung."],
+["y",false,"💪 Tenang, mari kita evaluasi bersama! Variabel y justru hilang terserap oleh x."],
+["x+y",false,"💪 Kurang tepat, tapi langkah awal yang baik! Bentuk ini masih bisa disederhanakan."]],
+"x·(x+y)=x"],
+
+["x + (x · z) = ?",
+[["z",false,"💪 Belum tepat, ayo bangkit di soal berikutnya! Variabel z tidak mendominasi."],
+["x·z",false,"💪 Sedikit lagi tepat! x·z akan diserap oleh x."],
+["x",true,"😊 Keren banget! Ini variasi Hukum Penyerapan yang menghasilkan x."]],
+"x+(x·z)=x"],
+
+["(x·0)+(y·(y+z)) = ?",
+[["0",false,"💪 Hampir menguasai! Angka 0 hanya hasil dari bagian kiri."],
+["y",true,"😊 Sempurna! x·0=0 dan y·(y+z)=y sehingga 0+y=y."],
+["x+y",false,"💪 Tetap semangat! Variabel x sudah tereliminasi total menjadi 0."]],
+"Langkah 1: x·0=0\nLangkah 2: y·(y+z)=y\nLangkah 3: 0+y=y"]
+];
+
+const quiz=document.getElementById("quiz");
+
+soal.forEach((s,i)=>{
+quiz.innerHTML+=`
+<div class="card">
+<h3>Soal ${i+1}</h3>
+<p><b>${s[0]}</b></p>
+${s[1].map(a=>`<button class="option" onclick="jawab(this,${a[1]},'${a[2]}',\`${s[2]}\`)">${a[0]}</button>`).join("")}
+<div class="correct"></div>
+<div class="wrong"></div>
+<div class="explain"></div>
+</div>`;
+});
+
+function jawab(btn,benar,pesan,langkah){
+const card=btn.parentElement;
+if(card.dataset.done)return;
+card.dataset.done=true;
+
+answered++;
+const box=card.querySelector(benar?".correct":".wrong");
+box.style.display="block";
+box.innerHTML=(benar?"✓ BENAR<br><br>":"✗ KELIRU<br><br>")+pesan;
+
+const exp=card.querySelector(".explain");
+exp.style.display="block";
+exp.innerHTML="<b>📖 Pembahasan</b><br><pre>"+langkah+"</pre>";
+
+if(benar){
+score++;
+document.getElementById("score").innerText=score;
+}
+
+card.querySelectorAll("button").forEach(b=>b.disabled=true);
+
+if(answered===5)hasil();
+}
+
+function hasil(){
+let teks="";
+if(score===5){
+teks="🎉🏆<h2>Master Dominansi & Penyerapan</h2><p>Kamu berhasil membantu Boli menyelesaikan seluruh tantangan Boolean!</p>";
+}else if(score>=4){
+teks="<h2>🥇 Sangat Baik</h2><p>Skor "+score+"/5</p>";
+}else if(score>=3){
+teks="<h2>🥈 Baik</h2><p>Skor "+score+"/5</p>";
+}else{
+teks="<h2>📚 Perlu Latihan</h2><p>Skor "+score+"/5</p>";
+}
+document.getElementById("finalScreen").style.display="block";
+document.getElementById("finalScreen").innerHTML=teks+"<br><button class='restart' onclick='location.reload()'>🔄 Ulangi Kuis</button>";
+}
+</script>
+</body>
+</html>

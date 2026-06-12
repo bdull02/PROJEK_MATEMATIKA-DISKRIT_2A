@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<!--
+  ============================================================
+    SISTEM SIMULASI INDUKSI MATEMATIKA SEDERHANA
+    Mata Kuliah : Matematika Diskrit
+    Materi      : Induksi Sederhana
+    Referensi   : Rinaldi Munir / IF1220 Matematika Diskrit
+  ============================================================
+  -->
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sistem Induksi Matematika Sederhana</title>
+<!-- Google Fonts: Syne (display) + Source Serif 4 (body math) + JetBrains Mono (code/formula) -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&amp;family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<!-- ===================== CSS ===================== -->
+<style>
+    /* ── DESIGN TOKENS ──────────────────────────────────── */
+    :root {
+      --bg:          #f5f2eb;        /* warm parchment */
+      --bg-deep:     #ede9e0;
+      --ink:         #1a1612;        /* near-black ink */
+      --ink-soft:    #5a5044;
+      --ink-faint:   #9c9080;
+      --rule:        #d4cec3;
+
+      --blue:        #1a4e8a;        /* academic navy */
+      --blue-lt:     #2a6fc4;
+      --blue-pale:   #dce8f7;
+      --blue-ghost:  #eef4fc;
+
+      --amber:       #c97a10;        /* proof gold */
+      --amber-pale:  #fdf3e0;
+
+      --green:       #1a6e45;
+      --green-pale:  #e2f4ec;
+
+      --red:         #b83030;
+      --red-pale:    #fce8e8;
+
+      --mono:        'JetBrains Mono', monospace;
+      --serif:       'Source Serif 4', serif;
+      --display:     'Syne', sans-serif;
+
+      --radius:      6px;
+      --shadow-sm:   0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+      --shadow-md:   0 4px 16px rgba(0,0,0,.10);
+      --shadow-lg:   0 12px 40px rgba(0,0,0,.12);
+      --transition:  all .22s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ── RESET ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: 16px;
+      line-height: 1.75;
+      min-height: 100vh;
+    }
+
+    /* ── PAGE LOAD ANIMATION ────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal { animation: fadeUp .55s ease both; }
+    .reveal-1 { animation-delay: .05s; }
+    .reveal-2 { animation-delay: .15s; }
+    .reveal-3 { animation-delay: .25s; }
+    .reveal-4 { animation-delay: .35s; }
+
+    /* ── LAYOUT ─────────────────────────────────────────── */
+    .container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── SITE HEADER ────────────────────────────────────── */
+    .site-header {
+      background: var(--blue);
+      color: #fff;
+      padding: 56px 24px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    /* decorative grid overlay */
+    .site-header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+    /* diagonal accent stripe */
+    .site-header::after {
+      content: '';
+      position: absolute; right: -80px; bottom: -80px;
+      width: 320px; height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,.06) 0%, transparent 70%);
+    }
+    .header-inner { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; }
+    .header-kode {
+      font-family: var(--mono);
+      font-size: .72rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.55);
+      margin-bottom: 12px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .header-kode::before {
+      content: '';
+      display: inline-block; width: 24px; height: 1px;
+      background: rgba(255,255,255,.4);
+    }
+    h1.site-title {
+      font-family: var(--display);
+      font-size: clamp(1.9rem, 5vw, 3rem);
+      font-weight: 800;
+      line-height: 1.1;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+    .site-subtitle {
+      font-family: var(--serif);
+      font-size: .95rem;
+      font-style: italic;
+      color: rgba(255,255,255,.65);
+      max-width: 460px;
+    }
+
+    /* ── NAV TABS ───────────────────────────────────────── */
+    .tab-nav {
+      background: var(--ink);
+      padding: 0 24px;
+      display: flex;
+      overflow-x: auto;
+      gap: 0;
+      position: sticky; top: 0; z-index: 50;
+      scrollbar-width: none;
+    }
+    .tab-nav::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      font-family: var(--display);
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.45);
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      padding: 14px 18px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: var(--transition);
+    }
+    .tab-btn:hover { color: rgba(255,255,255,.8); }
+    .tab-btn.active {
+      color: #fff;
+      border-bottom-color: #fff;
+    }
+
+    /* ── SECTIONS ───────────────────────────────────────── */
+    .tab-section { display: none; padding: 48px 24px 80px; }
+    .tab-section.active { display: block; }
+    .section-inner { max-width: 860px; margin: 0 auto; }
+
+    /* ── TYPOGRAPHY ─────────────────────────────────────── */
+    h2.section-title {
+      font-family: var(--display);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    h2.section-title span { color: var(--blue-lt); }
+    .section-desc {
+      font-size: .92rem;
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3.sub-title {
+      font-family: var(--display);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 10px;
+      letter-spacing: .02em;
+    }
+    p { margin-bottom: 12px; color: var(--ink-soft); }
+    p:last-child { margin-bottom: 0; }
+    strong { color: var(--ink); font-weight: 600; }
+
+    /* ── CARDS ──────────────────────────────────────────── */
+    .card {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+    .card-accent { border-top: 3px solid var(--blue); }
+    .card-amber  { border-top: 3px solid var(--amber); }
+    .card-green  { border-top: 3px solid var(--green); }
+
+    /* ── FORMULA / CODE BLOCK ───────────────────────────── */
+    .formula {
+      font-family: var(--mono);
+      font-size: .88rem;
+      background: var(--bg-deep);
+      border: 1px solid var(--rule);
+      border-left: 4px solid var(--blue-lt);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 14px 18px;
+      margin: 14px 0;
+      line-height: 1.9;
+      color: var(--ink);
+      white-space: pre-wrap;
+      overflow-x: auto;
+    }
+    .formula.amber { border-left-color: var(--amber); }
+    .formula.green { border-left-color: var(--green); }
+    .formula .hi   { color: var(--blue-lt); font-weight: 700; }
+    .formula .ok   { color: var(--green);  font-weight: 700; }
+    .formula .note { color: var(--ink-faint); font-style: italic; }
+
+    /* ── PROOF STEP CARDS ───────────────────────────────── */
+    .proof-steps { display: flex; flex-direction: column; gap: 16px; }
+    .proof-step {
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      background: #fff;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+    .proof-step:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+    .proof-step-header {
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px 20px;
+      cursor: pointer;
+      user-select: none;
+      background: var(--bg-deep);
+      border-bottom: 1px solid transparent;
+    }
+    .proof-step.open .proof-step-header { border-bottom-color: var(--rule); }
+    .step-badge {
+      flex-shrink: 0;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--display);
+      font-weight: 800; font-size: .85rem;
+      color: #fff;
+    }
+    .badge-b { background: var(--blue); }
+    .badge-h { background: var(--amber); }
+    .badge-i { background: var(--green); }
+    .badge-k { background: var(--ink); }
+    .step-label {
+      font-family: var(--display);
+      font-weight: 700; font-size: .95rem;
+      color: var(--ink); flex: 1;
+    }
+    .step-tag {
+      font-family: var(--mono); font-size: .68rem;
+      padding: 2px 9px; border-radius: 20px;
+      background: var(--blue-pale); color: var(--blue);
+      font-weight: 700; letter-spacing: .05em;
+    }
+    .step-tag.amber { background: var(--amber-pale); color: var(--amber); }
+    .step-tag.green { background: var(--green-pale); color: var(--green); }
+    .step-chevron {
+      font-size: .75rem; color: var(--ink-faint);
+      transition: transform .2s;
+    }
+    .proof-step.open .step-chevron { transform: rotate(180deg); }
+    .proof-step-body {
+      padding: 20px 24px;
+      display: none;
+      animation: fadeUp .25s ease;
+    }
+    .proof-step.open .proof-step-body { display: block; }
+
+    /* ── INTERACTIVE SIMULATOR ──────────────────────────── */
+    .sim-panel {
+      background: #fff;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+    .sim-header {
+      background: var(--blue);
+      padding: 20px 28px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .sim-header-title {
+      font-family: var(--display);
+      font-weight: 700; font-size: 1rem;
+      color: #fff;
+    }
+    .sim-header-sub {
+      font-family: var(--mono); font-size: .72rem;
+      color: rgba(255,255,255,.55);
+    }
+    .sim-body { padding: 28px; }
+
+    /* formula selector */
+    .formula-selector {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; margin-bottom: 24px;
+    }
+    @media (max-width: 540px) { .formula-selector { grid-template-columns: 1fr; } }
+    .formula-card {
+      border: 2px solid var(--rule);
+      border-radius: var(--radius);
+      padding: 16px;
+      cursor: pointer;
+      transition: var(--transition);
+      background: var(--bg);
+    }
+    .formula-card:hover { border-color: var(--blue-lt); background: var(--blue-ghost); }
+    .formula-card.selected {
+      border-color: var(--blue);
+      background: var(--blue-pale);
+      box-shadow: 0 0 0 3px rgba(26,78,138,.12);
+    }
+    .formula-card-id {
+      font-family: var(--mono); font-size: .68rem;
+      text-transform: uppercase; letter-spacing: .12em;
+      color: var(--ink-faint); margin-bottom: 6px;
+    }
+    .formula-card.selected .formula-card-id { color: var(--blue); }
+    .formula-card-label {
+      font-family: var(--display); font-weight: 700; font-size: .9rem;
+      color: var(--ink); margin-bottom: 6px;
+    }
+    .formula-card-expr {
+      font-family: var(--mono); font-size: .78rem;
+      color: var(--blue-lt);
+    }
+    .formula-card.selected .formula-card-expr { color: var(--blue); }
+
+    /* input group */
+    .input-group { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
+    .field { flex: 1; min-width: 120px; }
+    .field label {
+      display: block;
+      font-family: var(--display); font-size: .75rem;
+      font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--ink-soft);
+      margin-bottom: 6px;
+    }
+    .field input[type="number"] {
+      width: 100%;
+      font-family: var(--mono); font-size: 1.1rem;
+      font-weight: 700; color: var(--ink);
+      background: var(--bg-deep);
+      border: 2px solid var(--rule);
+      border-radius: var(--radius);
+      padding: 10px 16px;
+      outline: none;
+      transition: var(--transition);
+      -moz-appearance: textfield;
+    }
+    .field input::-webkit-outer-spin-button,
+    .field input::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .field input:focus { border-color: var(--blue-lt); background: #fff; }
+    .field input.error { border-color: var(--red); }
+
+    .field .hint {
+      font-size: .72rem; color: var(--ink-faint);
+      margin-top: 4px;
+      font-family: var(--mono);
+    }
+    .field .hint.err { color: var(--red); }
+
+    .btn-run {
+      font-family: var(--display); font-weight: 700;
+      font-size: .9rem; letter-spacing: .04em;
+      background: var(--blue);
+      color: #fff; border: none;
+      border-radius: var(--radius);
+      padding: 12px 28px;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+    .btn-run:hover { background: var(--blue-lt); box-shadow: var(--shadow-md); }
+    .btn-run:active { transform: scale(.97); }
+
+    .btn-clear {
+      font-family: var(--display); font-weight: 600;
+      font-size: .85rem;
+      background: none;
+      color: var(--ink-faint);
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .btn-clear:hover { color: var(--ink); border-color: var(--ink-soft); }
+
+    /* ── OUTPUT / RESULT AREA ───────────────────────────── */
+    #output-area { margin-top: 28px; }
+
+    .result-header {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 20px;
+    }
+    .result-badge {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-family: var(--display); font-weight: 700;
+      font-size: .82rem; letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .result-badge.ok  { background: var(--green-pale); color: var(--green); }
+    .result-badge.err { background: var(--red-pale);   color: var(--red); }
+    .result-n {
+      font-family: var(--mono); font-size: .85rem;
+      color: var(--ink-faint);
+    }
+
+    /* step output blocks */
+    .out-steps { display: flex; flex-direction: column; gap: 12px; }
+    .out-step {
+      border-radius: var(--radius);
+      border: 1px solid var(--rule);
+      overflow: hidden;
+    }
+    .out-step-head {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 16px;
+      background: var(--bg-deep);
+      border-bottom: 1px solid var(--rule);
+    }
+    .out-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .out-step-title {
+      font-family: var(--display); font-weight: 700;
+      font-size: .82rem; color: var(--ink);
+    }
+    .out-step-body {
+      padding: 14px 16px;
+      font-family: var(--mono); font-size: .82rem;
+      line-height: 1.9; background: #fff;
+      color: var(--ink-soft); white-space: pre-wrap;
+    }
+    .out-step-body .c-blue   { color: var(--blue-lt); font-weight: 700; }
+    .out-step-body .c-green  { color: var(--green);   font-weight: 700; }
+    .out-step-body .c-amber  { color: var(--amber);   font-weight: 700; }
+    .out-step-body .c-faint  { color: var(--ink-faint); }
+    .out-step-body .c-ink    { color: var(--ink);     font-weight: 600; }
+
+    /* ── VISUALIZER (domino / number line) ──────────────── */
+    .vis-wrap {
+      margin-top: 20px;
+      padding: 20px 0;
+      border-top: 1px solid var(--rule);
+    }
+    .vis-title {
+      font-family: var(--display); font-weight: 700;
+      font-size: .8rem; text-transform: uppercase;
+      letter-spacing: .1em; color: var(--ink-faint);
+      margin-bottom: 14px;
+    }
+    .term-list {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      align-items: center;
+    }
+    .term-chip {
+      font-family: var(--mono); font-size: .78rem;
+      padding: 5px 11px; border-radius: 4px;
+      background: var(--blue-pale); color: var(--blue);
+      border: 1px solid rgba(26,78,138,.15);
+      animation: fadeUp .2s ease both;
+    }
+    .term-chip.last { background: var(--blue); color: #fff; }
+    .term-plus { color: var(--ink-faint); font-size: .8rem; }
+    .term-equals { font-family: var(--mono); color: var(--ink-faint); }
+    .term-result {
+      font-family: var(--mono); font-size: 1rem; font-weight: 700;
+      color: var(--green); padding: 5px 14px;
+      background: var(--green-pale);
+      border-radius: 4px;
+      border: 1px solid rgba(26,110,69,.15);
+    }
+
+    /* ── MATERI CARDS (section 1) ───────────────────────── */
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 580px) { .info-grid { grid-template-columns: 1fr; } }
+
+    .info-card {
+      background: #fff; border: 1px solid var(--rule);
+      border-radius: var(--radius); padding: 22px 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .info-card-num {
+      font-family: var(--display); font-weight: 800;
+      font-size: 2.4rem; line-height: 1;
+      color: var(--blue-pale);
+      margin-bottom: 10px;
+    }
+    .info-card-title {
+      font-family: var(--display); font-weight: 700;
+      font-size: .95rem; color: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    /* domino animation */
+    .domino-scene {
+      display: flex; align-items: flex-end; gap: 10px;
+      justify-content: center;
+      padding: 32px 0 16px;
+    }
+    .dn {
+      width: 24px; height: 52px;
+      background: linear-gradient(160deg, #e2dbd0, #cec6b8);
+      border-radius: 3px; border: 1px solid #bdb5a8;
+      transform-origin: bottom center;
+      transition: transform .35s ease;
+      box-shadow: 2px 2px 5px rgba(0,0,0,.15);
+    }
+    .dn.fall { transform: rotate(75deg) translateX(6px); }
+    .dn-arrow { font-size: 1.2rem; color: var(--blue-lt); align-self: center; }
+
+    /* ── QUIZ ───────────────────────────────────────────── */
+    .quiz-progress {
+      display: flex; gap: 6px; margin-bottom: 24px;
+    }
+    .qp-dot {
+      height: 4px; flex: 1; border-radius: 2px;
+      background: var(--rule); transition: background .3s;
+    }
+    .qp-dot.done  { background: var(--green); }
+    .qp-dot.active { background: var(--blue); }
+
+    .quiz-card {
+      background: #fff; border: 1px solid var(--rule);
+      border-radius: var(--radius); padding: 28px 32px;
+      box-shadow: var(--shadow-sm);
+    }
+    .quiz-num {
+      font-family: var(--mono); font-size: .72rem;
+      text-transform: uppercase; letter-spacing: .1em;
+      color: var(--ink-faint); margin-bottom: 10px;
+    }
+    .quiz-q {
+      font-family: var(--serif); font-size: 1.05rem;
+      color: var(--ink); margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .quiz-opts { display: flex; flex-direction: column; gap: 8px; }
+    .quiz-opt {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 16px; border-radius: var(--radius);
+      border: 1.5px solid var(--rule);
+      background: var(--bg); cursor: pointer;
+      transition: var(--transition);
+      font-family: var(--serif); font-size: .95rem;
+      color: var(--ink-soft);
+    }
+    .quiz-opt:hover:not(.locked) { border-color: var(--blue-lt); background: var(--blue-ghost); color: var(--ink); }
+    .quiz-opt.locked { cursor: default; }
+    .quiz-opt.correct { border-color: var(--green); background: var(--green-pale); color: var(--green); }
+    .quiz-opt.wrong   { border-color: var(--red);   background: var(--red-pale);   color: var(--red); }
+    .opt-letter {
+      font-family: var(--mono); font-size: .75rem; font-weight: 700;
+      width: 22px; height: 22px; border-radius: 4px;
+      background: var(--rule); color: var(--ink-soft);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .quiz-opt.correct .opt-letter { background: var(--green); color: #fff; }
+    .quiz-opt.wrong   .opt-letter { background: var(--red);   color: #fff; }
+    .quiz-feedback {
+      margin-top: 16px; padding: 12px 16px;
+      border-radius: var(--radius); font-size: .9rem;
+      display: none;
+    }
+    .quiz-feedback.show { display: block; animation: fadeUp .2s ease; }
+    .quiz-feedback.ok   { background: var(--green-pale); color: var(--green); }
+    .quiz-feedback.wrong { background: var(--red-pale);  color: var(--red); }
+    .quiz-actions { display: flex; justify-content: flex-end; margin-top: 20px; gap: 10px; }
+
+    .btn-quiz {
+      font-family: var(--display); font-weight: 700;
+      font-size: .85rem; letter-spacing: .04em;
+      padding: 10px 22px; border-radius: var(--radius);
+      border: none; cursor: pointer; transition: var(--transition);
+    }
+    .btn-next   { background: var(--ink); color: #fff; }
+    .btn-next:hover   { background: var(--blue); }
+    .btn-restart { background: var(--green); color: #fff; }
+    .btn-restart:hover { opacity: .88; }
+
+    .score-card {
+      background: #fff; border: 1px solid var(--rule);
+      border-radius: var(--radius); padding: 36px;
+      text-align: center; box-shadow: var(--shadow-md);
+    }
+    .score-big {
+      font-family: var(--display); font-size: 4rem;
+      font-weight: 800; color: var(--blue); line-height: 1;
+      margin-bottom: 8px;
+    }
+    .score-label { color: var(--ink-soft); margin-bottom: 24px; }
+
+    /* ── FOOTER ─────────────────────────────────────────── */
+    .site-footer {
+      background: var(--ink); color: rgba(255,255,255,.35);
+      padding: 24px; text-align: center;
+      font-family: var(--mono); font-size: .72rem;
+      letter-spacing: .08em;
+    }
+
+    /* ── UTILITIES ──────────────────────────────────────── */
+    .divider { border: none; border-top: 1px solid var(--rule); margin: 28px 0; }
+    .tag-inline {
+      display: inline-block;
+      font-family: var(--mono); font-size: .72rem;
+      padding: 1px 8px; border-radius: 3px;
+      background: var(--blue-pale); color: var(--blue);
+      font-weight: 700;
+    }
+    .tag-inline.g { background: var(--green-pale); color: var(--green); }
+    .tag-inline.a { background: var(--amber-pale); color: var(--amber); }
+    .hidden { display: none !important; }
+
+    /* scrollbar (webkit) */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--ink-faint); }
+  </style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Qeisya Dwi Hermawan_2501675</div>
+<!-- ══════════════════════════════════════════
+     SITE HEADER
+════════════════════════════════════════════ -->
+<header class="site-header">
+<div class="header-inner reveal">
+<div class="header-kode">Matematika Diskrit</div>
+<h1 class="site-title">Induksi Matematika<br/>Sederhana</h1>
+<p class="site-subtitle">Sistem simulasi &amp; pembuktian berbasis web — Prinsip Induksi Sederhana</p>
+</div>
+</header>
+<!-- ══════════════════════════════════════════
+     NAVIGATION TABS
+════════════════════════════════════════════ -->
+<nav aria-label="Tab navigasi" class="tab-nav" role="navigation">
+<button class="tab-btn active" onclick="switchTab('materi',   this)">📚 Materi</button>
+<button class="tab-btn" onclick="switchTab('contoh',  this)">∑ Contoh</button>
+<button class="tab-btn" onclick="switchTab('simulasi', this)">⚙ Simulasi</button>
+<button class="tab-btn" onclick="switchTab('kuis',     this)">✎ Kuis</button>
+</nav>
+<!-- ══════════════════════════════════════════
+     TAB 1 — MATERI
+════════════════════════════════════════════ -->
+<section class="tab-section active" id="tab-materi">
+<div class="section-inner">
+<h2 class="section-title reveal reveal-1">Prinsip <span>Induksi Sederhana</span></h2>
+<p class="section-desc reveal reveal-2">
+      Metode pembuktian matematis untuk pernyataan yang melibatkan semua bilangan bulat positif.
+    </p>
+<!-- Definisi -->
+<div class="card card-accent reveal reveal-2">
+<h3 class="sub-title">Definisi</h3>
+<p>
+        Misalkan <span class="tag-inline">p(n)</span> adalah pernyataan perihal bilangan bulat positif.
+        Kita ingin membuktikan bahwa <strong>p(n) benar untuk semua bilangan bulat positif n</strong>.
+      </p>
+<p>
+        Untuk itu, cukup ditunjukkan dua hal:
+      </p>
+<div class="formula" style="margin-top:12px">
+<span class="hi">(1) Basis Induksi :</span>  p(1) benar
+<span class="hi">(2) Langkah Induksi:</span>  Jika p(n) benar, maka p(n+1) juga benar
+                             untuk setiap n ≥ 1
+
+<span class="ok">Maka → p(n) benar untuk semua n ∈ ℤ⁺</span>
+</div>
+</div>
+<!-- 2-column info grid -->
+<div class="info-grid reveal reveal-3">
+<div class="info-card">
+<div class="info-card-num">01</div>
+<div class="info-card-title">Basis Induksi</div>
+<p style="font-size:.9rem">
+          Buktikan <span class="tag-inline">p(1)</span> benar — yaitu pernyataan berlaku untuk nilai awal <em>n = 1</em>.
+          Ini adalah "domino pertama" yang kita dorong.
+        </p>
+</div>
+<div class="info-card">
+<div class="info-card-num" style="color:var(--amber-pale)">02</div>
+<div class="info-card-title">Hipotesis Induksi</div>
+<p style="font-size:.9rem">
+          Asumsikan <span class="tag-inline a">p(n)</span> benar untuk suatu bilangan bulat positif <em>n</em> tertentu.
+          Asumsi ini disebut <strong>hipotesis induksi</strong>.
+        </p>
+</div>
+<div class="info-card">
+<div class="info-card-num" style="color:var(--green-pale)">03</div>
+<div class="info-card-title">Langkah Induksi</div>
+<p style="font-size:.9rem">
+          Gunakan hipotesis induksi untuk membuktikan bahwa <span class="tag-inline g">p(n+1)</span> juga benar.
+          Ini adalah inti dari metode induksi.
+        </p>
+</div>
+<div class="info-card">
+<div class="info-card-num">04</div>
+<div class="info-card-title">Kesimpulan</div>
+<p style="font-size:.9rem">
+          Bila kedua langkah (basis &amp; induksi) telah dibuktikan,
+          maka <strong>p(n) terbukti benar untuk semua n bilangan bulat positif</strong>.
+        </p>
+</div>
+</div>
+<!-- Domino visual -->
+<div class="card reveal reveal-4" style="margin-top:20px; text-align:center">
+<h3 class="sub-title">Analogi: Efek Domino</h3>
+<p style="font-size:.9rem; color:var(--ink-soft)">
+        Induksi matematika bekerja seperti barisan domino.
+        Dorong domino pertama (<em>basis</em>), dan semua berikutnya akan jatuh (<em>langkah induksi</em>).
+      </p>
+<div class="domino-scene" id="dominoScene">
+<span class="dn-arrow">→</span>
+<div class="dn" id="dn0"></div>
+<div class="dn" id="dn1"></div>
+<div class="dn" id="dn2"></div>
+<div class="dn" id="dn3"></div>
+<div class="dn" id="dn4"></div>
+<div class="dn" id="dn5"></div>
+<div class="dn" id="dn6"></div>
+<div class="dn" id="dn7"></div>
+</div>
+<div style="display:flex; gap:10px; justify-content:center; margin-top:4px; flex-wrap:wrap">
+<button class="btn-run" onclick="doDomino()" style="padding:9px 22px; font-size:.82rem">▶ Jalankan</button>
+<button class="btn-clear" onclick="resetDomino()">↺ Reset</button>
+</div>
+</div>
+</div>
+</section>
+<!-- ══════════════════════════════════════════
+     TAB 2 — CONTOH
+════════════════════════════════════════════ -->
+<section class="tab-section" id="tab-contoh">
+<div class="section-inner">
+<h2 class="section-title">Contoh <span>: Jumlah Bilangan Bulat</span></h2>
+<p class="section-desc">
+      Buktikan bahwa jumlah n bilangan bulat positif pertama adalah n(n+1)/2.
+    </p>
+<!-- Proposisi -->
+<div class="card card-accent">
+<h3 class="sub-title">Proposisi</h3>
+<div class="formula amber">
+<span class="hi">p(n) :</span>  1 + 2 + 3 + … + n  =  n(n+1) / 2
+
+Berlaku untuk semua n ∈ ℤ⁺  (bilangan bulat positif)
+      </div>
+</div>
+<!-- Proof steps (collapsible) -->
+<div class="proof-steps">
+<!-- STEP 1: BASIS -->
+<div class="proof-step open" id="ps1">
+<div class="proof-step-header" onclick="toggleStep('ps1')">
+<div class="step-badge badge-b">i</div>
+<div class="step-label">Basis Induksi</div>
+<span class="step-tag">n = 1</span>
+<span class="step-chevron">▼</span>
+</div>
+<div class="proof-step-body">
+<p>Tunjukkan bahwa <span class="tag-inline">p(1)</span> benar:</p>
+<div class="formula">
+<span class="c-faint">Ruas kiri  :</span>  1
+
+<span class="c-faint">Ruas kanan :</span>  1 · (1 + 1) / 2
+                =  1 · 2 / 2
+                =  2 / 2
+                =  1
+
+<span class="c-green">✓  Ruas kiri = Ruas kanan  →  p(1) terbukti benar</span>
+</div>
+</div>
+</div>
+<!-- STEP 2: HIPOTESIS -->
+<div class="proof-step" id="ps2">
+<div class="proof-step-header" onclick="toggleStep('ps2')">
+<div class="step-badge badge-h">ii</div>
+<div class="step-label">Hipotesis Induksi</div>
+<span class="step-tag amber">asumsi p(n)</span>
+<span class="step-chevron">▼</span>
+</div>
+<div class="proof-step-body">
+<p>
+            Misalkan <span class="tag-inline a">p(n)</span> benar untuk suatu bilangan bulat positif <em>n</em>,
+            yaitu kita asumsikan:
+          </p>
+<div class="formula amber">
+1 + 2 + 3 + … + n  =  n(n+1) / 2   … <span class="note">(hipotesis induksi)</span>
+</div>
+</div>
+</div>
+<!-- STEP 3: LANGKAH INDUKSI -->
+<div class="proof-step" id="ps3">
+<div class="proof-step-header" onclick="toggleStep('ps3')">
+<div class="step-badge badge-i">iii</div>
+<div class="step-label">Langkah Induksi</div>
+<span class="step-tag green">buktikan p(n+1)</span>
+<span class="step-chevron">▼</span>
+</div>
+<div class="proof-step-body">
+<p>
+            Harus diperlihatkan bahwa <span class="tag-inline g">p(n+1)</span> juga benar, yaitu:
+          </p>
+<div class="formula green">
+1 + 2 + … + n + (n+1)  =  (n+1)[(n+1)+1] / 2
+                        =  (n+1)(n+2) / 2
+          </div>
+<p><strong>Pembuktian:</strong></p>
+<div class="formula green">
+1 + 2 + … + n + (n+1)
+    = [1 + 2 + … + n] + (n+1)          <span class="note">← pengelompokan suku</span>
+    = n(n+1)/2 + (n+1)                  <span class="note">← gunakan hipotesis induksi</span>
+    = (n+1) · [n/2 + 1]                 <span class="note">← faktorkan (n+1)</span>
+    = (n+1) · [(n + 2) / 2]
+    = (n+1)(n+2) / 2                    <span class="note">← sama dengan target p(n+1)</span>
+<span class="c-green">✓  p(n+1) terbukti benar</span>
+</div>
+</div>
+</div>
+<!-- STEP 4: KESIMPULAN -->
+<div class="proof-step" id="ps4">
+<div class="proof-step-header" onclick="toggleStep('ps4')">
+<div class="step-badge badge-k">iv</div>
+<div class="step-label">Kesimpulan</div>
+<span class="step-tag">Q.E.D.</span>
+<span class="step-chevron">▼</span>
+</div>
+<div class="proof-step-body">
+<p>
+            Karena langkah <span class="tag-inline">basis p(1)</span> dan
+            langkah <span class="tag-inline g">induksi p(n) → p(n+1)</span>
+            keduanya telah dibuktikan benar, maka:
+          </p>
+<div class="formula amber">
+<span class="c-amber">  1 + 2 + 3 + … + n  =  n(n+1) / 2</span>
+
+berlaku untuk semua bilangan bulat positif n.    ■
+          </div>
+</div>
+</div>
+</div><!-- /.proof-steps -->
+</div>
+</section>
+<!-- ══════════════════════════════════════════
+     TAB 3 — SIMULASI INTERAKTIF
+════════════════════════════════════════════ -->
+<section class="tab-section" id="tab-simulasi">
+<div class="section-inner">
+<h2 class="section-title">Simulasi <span>Interaktif</span></h2>
+<p class="section-desc">
+      Masukkan nilai n. Sistem akan menampilkan langkah-langkah
+      pembuktian induksi secara otomatis dan terverifikasi.
+    </p>
+<div class="sim-panel">
+<!-- Panel header -->
+<div class="sim-header">
+<div>
+<div class="sim-header-title">Kalkulator Induksi Matematika</div>
+<div class="sim-header-sub">Pembuktian langkah demi langkah dengan verifikasi numerik</div>
+</div>
+<div style="font-family:var(--mono); font-size:1.4rem; color:rgba(255,255,255,.15); font-weight:800">∑</div>
+</div>
+<div class="sim-body">
+<!-- Pilih rumus -->
+<h3 class="sub-title" style="margin-bottom:12px">1. Rumus yang digunakan:</h3>
+<div class="formula-selector">
+<div class="formula-card selected" id="fc1" onclick="selectFormula(1)">
+<div class="formula-card-id">Rumus F1</div>
+<div class="formula-card-label">Jumlah Bilangan Bulat</div>
+<div class="formula-card-expr">1+2+…+n = n(n+1)/2</div>
+</div>
+<hr class="divider"/>
+<!-- Input n -->
+<h3 class="sub-title" style="margin-bottom:14px">2. Masukkan Nilai n</h3>
+<div class="input-group">
+<div class="field">
+<label for="inputN">Nilai n</label>
+<input autocomplete="off" id="inputN" max="200" min="1" placeholder="cth: 10" type="number"/>
+<div class="hint" id="inputHint">Masukkan bilangan bulat positif (1 – 200)</div>
+</div>
+<button class="btn-run" onclick="runSimulation()">Buktikan ▶</button>
+<button class="btn-clear" onclick="clearOutput()">✕ Hapus</button>
+</div>
+<!-- OUTPUT -->
+<div class="hidden" id="output-area">
+<hr class="divider"/>
+<h3 class="sub-title" style="margin-bottom:16px">3. Hasil Pembuktian</h3>
+<!-- Status badge -->
+<div class="result-header">
+<div class="result-badge ok" id="res-badge">
+<span id="res-icon">✓</span>
+<span id="res-text">TERBUKTI BENAR</span>
+</div>
+<div class="result-n" id="res-n-label"></div>
+</div>
+<!-- Step blocks -->
+<div class="out-steps" id="out-steps"></div>
+<!-- Visualizer -->
+<div class="vis-wrap">
+<div class="vis-title">Visualisasi Suku</div>
+<div class="term-list" id="termList"></div>
+</div>
+</div><!-- /#output-area -->
+</div><!-- /.sim-body -->
+</div><!-- /.sim-panel -->
+</div>
+</div></section>
+<!-- ══════════════════════════════════════════
+     TAB 4 — KUIS
+════════════════════════════════════════════ -->
+<section class="tab-section" id="tab-kuis">
+<div class="section-inner">
+<h2 class="section-title">Kuis <span>Pemahaman</span></h2>
+<p class="section-desc">
+      Uji pemahamanmu tentang Induksi Matematika Sederhana dengan 5 soal pilihan ganda berikut.
+    </p>
+<div class="quiz-progress" id="quizProgress"></div>
+<div id="quizContent"></div>
+</div>
+</section>
+<!-- FOOTER -->
+<footer class="site-footer">
+  SISTEM INDUKSI MATEMATIKA SEDERHANA  ·  MATEMATIKA DISKRIT  · 
+  Referensi: Rinaldi Munir / Matematika Diskrit
+</footer>
+<!-- ===================== JAVASCRIPT ===================== -->
+<script>
+/*
+ * ============================================================
+ *   SISTEM INDUKSI MATEMATIKA SEDERHANA
+ *   Script utama: tab switching, proof steps, simulasi, kuis
+ * ============================================================
+ */
+
+/* ── 1. TAB SWITCHING ──────────────────────────────────── */
+/**
+ * Mengganti tab yang aktif berdasarkan id seksi.
+ * @param {string} id  - id tanpa prefix "tab-"
+ * @param {HTMLElement} btn - elemen tombol yang diklik
+ */
+function switchTab(id, btn) {
+  // Sembunyikan semua section
+  document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+  // Non-aktifkan semua tombol
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+  // Tampilkan section dan aktifkan tombol yang dipilih
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+
+/* ── 2. PROOF STEP TOGGLE (accordion) ─────────────────── */
+/**
+ * Toggle buka/tutup satu langkah pembuktian.
+ * @param {string} id - id elemen .proof-step
+ */
+function toggleStep(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+
+/* ── 3. DOMINO ANIMATION ───────────────────────────────── */
+let dominoTimer = null;
+
+/** Jalankan animasi domino satu per satu */
+function doDomino() {
+  resetDomino();
+  const doms = document.querySelectorAll('.dn');
+  let i = 0;
+  (function fall() {
+    if (i < doms.length) {
+      doms[i].classList.add('fall');
+      i++;
+      dominoTimer = setTimeout(fall, 260);
+    }
+  })();
+}
+
+/** Reset semua domino ke posisi tegak */
+function resetDomino() {
+  clearTimeout(dominoTimer);
+  document.querySelectorAll('.dn').forEach(d => d.classList.remove('fall'));
+}
+
+
+/* ── 4. FORMULA SELECTOR ───────────────────────────────── */
+let selectedFormula = 1; // 1 = bilangan bulat
+
+/**
+ * Memilih rumus yang akan disimulasikan.
+ * @param {number} num - nomor rumus
+ */
+function selectFormula(num) {
+  selectedFormula = num;
+  document.getElementById('fc1').classList.toggle('selected', num === 1);
+  clearOutput(); // bersihkan output lama saat ganti rumus
+}
+
+
+/* ── 5. INPUT VALIDATION ───────────────────────────────── */
+/**
+ * Validasi input n. Mengembalikan nilai n jika valid, atau null jika tidak.
+ * @returns {number|null}
+ */
+function validateInput() {
+  const input = document.getElementById('inputN');
+  const hint  = document.getElementById('inputHint');
+  const raw   = input.value.trim();
+
+  // Kosong
+  if (raw === '') {
+    input.classList.add('error');
+    hint.textContent = '⚠ Nilai n tidak boleh kosong.';
+    hint.classList.add('err');
+    return null;
+  }
+
+  const n = parseInt(raw, 10);
+
+  // Bukan bilangan bulat
+  if (isNaN(n) || !Number.isInteger(parseFloat(raw))) {
+    input.classList.add('error');
+    hint.textContent = '⚠ Masukkan bilangan bulat, bukan desimal.';
+    hint.classList.add('err');
+    return null;
+  }
+
+  // Di luar rentang
+  if (n < 1 || n > 200) {
+    input.classList.add('error');
+    hint.textContent = '⚠ Nilai n harus antara 1 dan 200.';
+    hint.classList.add('err');
+    return null;
+  }
+
+  // Valid
+  input.classList.remove('error');
+  hint.textContent = '✓ Nilai valid';
+  hint.classList.remove('err');
+  hint.style.color = 'var(--green)';
+  return n;
+}
+
+
+/* ── 6. SIMULASI UTAMA ─────────────────────────────────── */
+/** Jalankan simulasi berdasarkan rumus dan nilai n yang dipilih */
+function runSimulation() {
+  const n = validateInput();
+  if (n === null) return; // berhenti jika input tidak valid
+
+  if (selectedFormula === 1) runFormula1(n);
+  else                        runFormula2(n);
+}
+
+/**
+ * Simulasi Rumus F1: 1+2+…+n = n(n+1)/2
+ * @param {number} n
+ */
+function runFormula1(n) {
+  /* ── Hitung nilai aktual dan nilai rumus ── */
+  let actualSum = 0;
+  for (let i = 1; i <= n; i++) actualSum += i;
+  const formulaVal = n * (n + 1) / 2;
+  const isValid    = actualSum === formulaVal;
+
+  /* ── Bangun deret suku ── */
+  const terms = buildTerms(n, i => i, i => i);
+
+  /* ── Teks langkah-langkah ── */
+  const steps = [
+    {
+      color: 'var(--blue)',
+      title: '① Basis Induksi  (n = 1)',
+      body: `Periksa p(1):
+
+  Ruas kiri  : 1
+  Ruas kanan : 1·(1+1)/2 = 1·2/2 = 1
+
+  [OK]  p(1) benar  ✓`
+    },
+    {
+      color: 'var(--amber)',
+      title: '② Hipotesis Induksi',
+      body: `Diasumsikan p(n) benar untuk n = ${n}:
+
+  1 + 2 + 3 + … + ${n}  =  ${n}·(${n}+1)/2
+                         =  ${formulaVal}
+
+  [INFO]  Hipotesis induksi: p(${n}) = ${formulaVal}`
+    },
+    {
+      color: 'var(--green)',
+      title: `③ Langkah Induksi  →  Buktikan p(${n+1})`,
+      body: `Target: 1 + 2 + … + ${n} + ${n+1} = ${n+1}·${n+2}/2 = ${(n+1)*(n+2)/2}
+
+  LHS = [1 + 2 + … + ${n}] + ${n+1}
+      = ${formulaVal} + ${n+1}                  ← hipotesis induksi
+      = ${formulaVal + (n+1)}
+
+  RHS = (${n+1})·(${n+2})/2 = ${(n+1)*(n+2)/2}
+
+  [OK]  LHS = RHS = ${(n+1)*(n+2)/2}  →  p(${n+1}) terbukti benar  ✓`
+    },
+    {
+      color: 'var(--ink)',
+      title: `④ Verifikasi Numerik untuk n = ${n}`,
+      body: `Jumlah aktual  1+2+…+${n}  = ${actualSum}
+  Hasil rumus n(n+1)/2     = ${formulaVal}
+
+  ${isValid ? '[✓]  COCOK  —  p(' + n + ') terverifikasi benar' : '[✗]  TIDAK COCOK  —  ada kesalahan perhitungan'}`
+    },
+    {
+      color: '#555',
+      title: '⑤ Kesimpulan',
+      body: `Karena basis p(1) dan langkah induksi p(n)→p(n+1) keduanya benar,
+
+  maka: 1 + 2 + 3 + … + n = n(n+1)/2
+
+  berlaku untuk SEMUA bilangan bulat positif n.    ■`
+    }
+  ];
+
+  renderOutput(n, isValid, steps, terms, `n = ${n}  |  Rumus: 1+2+…+n = n(n+1)/2  |  Hasil: ${formulaVal}`);
+}
+
+
+/* ── 7. RENDER OUTPUT ──────────────────────────────────── */
+/**
+ * Render semua blok output ke DOM.
+ * @param {number}  n
+ * @param {boolean} isValid
+ * @param {Array}   steps
+ * @param {Array}   terms  - array objek {val, isLast}
+ * @param {string}  nLabel
+ */
+function renderOutput(n, isValid, steps, terms, nLabel) {
+  /* Status badge */
+  const badge = document.getElementById('res-badge');
+  badge.className = 'result-badge ' + (isValid ? 'ok' : 'err');
+  document.getElementById('res-icon').textContent = isValid ? '✓' : '✗';
+  document.getElementById('res-text').textContent = isValid ? 'TERBUKTI BENAR' : 'TIDAK VALID';
+  document.getElementById('res-n-label').textContent = nLabel;
+
+  /* Step blocks */
+  const stepsEl = document.getElementById('out-steps');
+  stepsEl.innerHTML = '';
+  steps.forEach((s, idx) => {
+    /* Warnai teks khusus dalam body */
+    const bodyHTML = s.body
+      .replace(/\[OK\]/g,   '<span class="c-green">[✓]</span>')
+      .replace(/\[INFO\]/g, '<span class="c-amber">[i]</span>')
+      .replace(/\[✓\]/g,    '<span class="c-green">[✓]</span>')
+      .replace(/\[✗\]/g,    '<span class="c-blue">[✗]</span>');
+
+    stepsEl.innerHTML += `
+      <div class="out-step" style="animation-delay:${idx * 0.07}s">
+        <div class="out-step-head">
+          <div class="out-dot" style="background:${s.color}"></div>
+          <div class="out-step-title">${s.title}</div>
+        </div>
+        <div class="out-step-body">${bodyHTML}</div>
+      </div>`;
+  });
+
+  /* Term visualizer (maks 16 suku ditampilkan) */
+  const termList = document.getElementById('termList');
+  termList.innerHTML = '';
+  const displayed = terms.slice(0, 16);
+  const hasMore   = terms.length > 16;
+  const total     = terms.reduce((a, t) => a + t.val, 0);
+
+  displayed.forEach((t, i) => {
+    if (i > 0) {
+      const plus = document.createElement('span');
+      plus.className = 'term-plus'; plus.textContent = '+';
+      termList.appendChild(plus);
+    }
+    const chip = document.createElement('span');
+    chip.className = 'term-chip' + (t.isLast && !hasMore ? ' last' : '');
+    chip.textContent = t.val;
+    chip.style.animationDelay = (i * 0.04) + 's';
+    termList.appendChild(chip);
+  });
+
+  if (hasMore) {
+    const etc = document.createElement('span');
+    etc.className = 'term-plus'; etc.textContent = '+ … +';
+    termList.appendChild(etc);
+    const last = document.createElement('span');
+    last.className = 'term-chip last'; last.textContent = terms[terms.length-1].val;
+    termList.appendChild(last);
+  }
+
+  const eq = document.createElement('span'); eq.className = 'term-equals'; eq.textContent = '=';
+  termList.appendChild(eq);
+  const res = document.createElement('span'); res.className = 'term-result'; res.textContent = total;
+  termList.appendChild(res);
+
+  /* Tampilkan output area */
+  document.getElementById('output-area').classList.remove('hidden');
+  // Scroll ke output dengan smooth
+  document.getElementById('output-area').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+/**
+ * Bangun array suku untuk visualizer.
+ * @param {number}   n
+ * @param {Function} termFn  - fungsi (i) → nilai suku ke-i
+ * @returns {Array} array {val, isLast}
+ */
+function buildTerms(n, termFn) {
+  const arr = [];
+  for (let i = 1; i <= n; i++) {
+    arr.push({ val: termFn(i), isLast: i === n });
+  }
+  return arr;
+}
+
+/** Bersihkan output area */
+function clearOutput() {
+  document.getElementById('output-area').classList.add('hidden');
+  document.getElementById('inputN').value = '';
+  document.getElementById('inputN').classList.remove('error');
+  const hint = document.getElementById('inputHint');
+  hint.textContent = 'Masukkan bilangan bulat positif (1 – 200)';
+  hint.classList.remove('err');
+  hint.style.color = '';
+}
+
+
+/* ── 8. KUIS ────────────────────────────────────────────── */
+/** Data soal kuis */
+const quizData = [
+  {
+    q: 'Dalam induksi matematika, apa yang dimaksud dengan <em>basis induksi</em>?',
+    opts: [
+      'Membuktikan p(n) berlaku untuk semua n sekaligus',
+      'Membuktikan p(1) benar sebagai nilai awal',
+      'Mengasumsikan p(n) benar untuk n sembarang',
+      'Membuktikan p(n+1) benar dari p(n)'
+    ],
+    ans: 1,
+    expl: 'Basis induksi adalah langkah pertama: membuktikan pernyataan benar untuk nilai awal, yaitu n = 1. Ini adalah "domino pertama" yang kita dorong.'
+  },
+  {
+    q: 'Apa nama asumsi bahwa p(n) benar pada langkah induksi?',
+    opts: ['Basis induksi', 'Prinsip induksi', 'Hipotesis induksi', 'Langkah rekursi'],
+    ans: 2,
+    expl: 'Asumsi bahwa p(n) benar disebut <em>hipotesis induksi</em>. Dari hipotesis ini kita kemudian membuktikan p(n+1).'
+  },
+  {
+    q: 'Berapa nilai p(5) dari rumus <code>1+2+3+…+n = n(n+1)/2</code>?',
+    opts: ['10', '15', '12', '20'],
+    ans: 1,
+    expl: 'p(5) = 5×6/2 = 30/2 = 15. Verifikasi: 1+2+3+4+5 = 15 ✓'
+  },
+  {
+    q: 'Berapa jumlah 6 bilangan ganjil positif pertama (1+3+5+7+9+11)?',
+    opts: ['25', '36', '30', '49'],
+    ans: 1,
+    expl: 'Menurut rumus n² dengan n=6: 6² = 36. Verifikasi: 1+3+5+7+9+11 = 36 ✓'
+  },
+  {
+    q: 'Induksi matematika TIDAK bisa digunakan untuk membuktikan:',
+    opts: [
+      'Rumus deret aritmatika',
+      'Keterbagian bilangan bulat',
+      'Pernyataan tentang semua bilangan riil positif',
+      'Rumus deret geometri'
+    ],
+    ans: 2,
+    expl: 'Induksi matematika hanya berlaku untuk bilangan bulat positif (atau bilangan asli), bukan untuk semua bilangan riil positif yang kontinu.'
+  }
+];
+
+let quizCurrent = 0;
+let quizScore   = 0;
+let quizDone    = false;
+
+/** Inisialisasi tampilan kuis */
+function initQuiz() {
+  quizCurrent = 0;
+  quizScore   = 0;
+  quizDone    = false;
+  renderQuizQuestion();
+}
+
+/** Render satu pertanyaan kuis */
+function renderQuizQuestion() {
+  updateProgressDots();
+
+  if (quizCurrent >= quizData.length) {
+    renderQuizScore();
+    return;
+  }
+
+  const q = quizData[quizCurrent];
+  const letters = ['A', 'B', 'C', 'D'];
+
+  let optsHTML = q.opts.map((o, i) => `
+    <div class="quiz-opt" id="qopt${i}" onclick="selectAnswer(${i})">
+      <span class="opt-letter">${letters[i]}</span>
+      <span>${o}</span>
+    </div>`).join('');
+
+  document.getElementById('quizContent').innerHTML = `
+    <div class="quiz-card">
+      <div class="quiz-num">Pertanyaan ${quizCurrent + 1} dari ${quizData.length}</div>
+      <div class="quiz-q">${q.q}</div>
+      <div class="quiz-opts">${optsHTML}</div>
+      <div class="quiz-feedback" id="quizFeedback"></div>
+      <div class="quiz-actions">
+        <button class="btn-quiz btn-next hidden" id="btnNext" onclick="nextQuestion()">
+          ${quizCurrent < quizData.length - 1 ? 'Berikutnya →' : 'Lihat Skor'}
+        </button>
+      </div>
+    </div>`;
+}
+
+/**
+ * Proses jawaban yang dipilih.
+ * @param {number} idx - indeks jawaban (0-3)
+ */
+function selectAnswer(idx) {
+  /* Cegah jawab ulang */
+  if (document.getElementById('qopt0').classList.contains('locked')) return;
+
+  const q = quizData[quizCurrent];
+  const fb = document.getElementById('quizFeedback');
+
+  /* Kunci semua opsi */
+  for (let i = 0; i < q.opts.length; i++) {
+    const el = document.getElementById('qopt' + i);
+    el.classList.add('locked');
+    if (i === q.ans) el.classList.add('correct');
+  }
+
+  if (idx === q.ans) {
+    quizScore++;
+    fb.className = 'quiz-feedback show ok';
+    fb.innerHTML = `<strong>✓ Benar!</strong> ${q.expl}`;
+  } else {
+    document.getElementById('qopt' + idx).classList.add('wrong');
+    fb.className = 'quiz-feedback show wrong';
+    fb.innerHTML = `<strong>✗ Salah.</strong> Jawaban yang benar: <strong>${['A','B','C','D'][q.ans]}</strong>. ${q.expl}`;
+  }
+
+  /* Tampilkan tombol next */
+  document.getElementById('btnNext').classList.remove('hidden');
+  updateProgressDots();
+}
+
+/** Lanjut ke soal berikutnya */
+function nextQuestion() {
+  quizCurrent++;
+  renderQuizQuestion();
+}
+
+/** Tampilkan skor akhir */
+function renderQuizScore() {
+  const pct  = Math.round(quizScore / quizData.length * 100);
+  const msg  = pct >= 84 ? '🎓 Luar Biasa!' : pct >= 67 ? '👍 Cukup Baik!' : '📚 Terus Belajar!';
+  const color = pct >= 84 ? 'var(--green)' : pct >= 50 ? 'var(--amber)' : 'var(--red)';
+
+  document.getElementById('quizContent').innerHTML = `
+    <div class="score-card">
+      <div class="score-big" style="color:${color}">${quizScore}/${quizData.length}</div>
+      <div class="score-label" style="font-size:1.1rem; font-family:var(--display); font-weight:700">${msg}</div>
+      <p>Skor kamu: <strong>${pct}%</strong></p>
+      <p style="font-size:.9rem">
+        ${pct >= 84 ? 'Pemahaman induksi matematikamu sudah sangat baik!' :
+          pct >= 67 ? 'Ulangi bagian yang masih ragu dan coba lagi.' :
+          'Pelajari lagi materi dan contoh sebelum mencoba kuis.'}
+      </p>
+      <button class="btn-quiz btn-restart" style="margin-top:24px" onclick="initQuiz()">↺ Coba Lagi</button>
+    </div>`;
+  updateProgressDots();
+}
+
+/** Update progress dot indicator */
+function updateProgressDots() {
+  const wrap = document.getElementById('quizProgress');
+  wrap.innerHTML = '';
+  for (let i = 0; i < quizData.length; i++) {
+    const d = document.createElement('div');
+    d.className = 'qp-dot';
+    if (i < quizCurrent)  d.classList.add('done');
+    if (i === quizCurrent && !quizDone) d.classList.add('active');
+    wrap.appendChild(d);
+  }
+}
+
+/* ── 9. INIT ────────────────────────────────────────────── */
+// Jalankan inisialisasi kuis saat halaman siap
+document.addEventListener('DOMContentLoaded', function () {
+  initQuiz();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kalkulator Multiset - Matematika Diskrit</title>
+<style>
+
+body{
+font-family:Arial,sans-serif;
+background:#f4f6f9;
+padding:40px;
+}
+
+.container{
+max-width:800px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:12px;
+box-shadow:0px 0px 15px rgba(0,0,0,0.2);
+}
+
+h1{
+text-align:center;
+color:#2c3e50;
+}
+
+input{
+width:100%;
+padding:12px;
+margin-top:10px;
+margin-bottom:20px;
+font-size:16px;
+}
+
+button{
+padding:12px 20px;
+background:#3498db;
+border:none;
+color:white;
+font-size:16px;
+border-radius:8px;
+cursor:pointer;
+}
+
+button:hover{
+background:#2980b9;
+}
+
+.result{
+margin-top:20px;
+padding:20px;
+background:#ecf0f1;
+border-radius:10px;
+}
+
+</style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Shafa Aulia_2510165</div>
+<div class="container">
+<h1>Kalkulator Himpunan Ganda (Multiset)</h1>
+<label>Masukkan Multiset A (pisahkan dengan koma)</label>
+<input id="A" placeholder="contoh: 1,1,2,3,3" type="text"/>
+<label>Masukkan Multiset B (pisahkan dengan koma)</label>
+<input id="B" placeholder="contoh: 1,2,2,4" type="text"/>
+<button onclick="hitung()">Hitung</button>
+<div class="result" id="hasil"></div>
+</div>
+<script>
+
+function frequency(arr){
+
+let freq={};
+
+arr.forEach(item=>{
+
+freq[item]=(freq[item]||0)+1;
+
+});
+
+return freq;
+
+}
+
+function hitung(){
+
+let A=document.getElementById("A").value.split(",");
+let B=document.getElementById("B").value.split(",");
+
+let freqA=frequency(A);
+let freqB=frequency(B);
+
+let union=[];
+let intersection=[];
+
+let semuaElemen=new Set([...A,...B]);
+
+semuaElemen.forEach(item=>{
+
+let a=freqA[item]||0;
+let b=freqB[item]||0;
+
+for(let i=0;i<Math.max(a,b);i++){
+union.push(item);
+}
+
+for(let i=0;i<Math.min(a,b);i++){
+intersection.push(item);
+}
+
+});
+
+let hasil=`
+
+<h3>Hasil Perhitungan</h3>
+
+<p><b>Multiset A:</b> {${A}}</p>
+
+<p><b>Multiset B:</b> {${B}}</p>
+
+<p><b>Union:</b> {${union}}</p>
+
+<p><b>Intersection:</b> {${intersection}}</p>
+
+<p><b>Kardinalitas A:</b> ${A.length}</p>
+
+<p><b>Kardinalitas B:</b> ${B.length}</p>
+
+<p><b>Total Kardinalitas:</b> ${A.length+B.length}</p>
+
+`;
+
+document.getElementById("hasil").innerHTML=hasil;
+
+}
+
+</script>
+</body>
+</html>

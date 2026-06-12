@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Relasi Invers &amp; Fungsi — Matematika Diskrit</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&amp;family=Source+Code+Pro:wght@400;600&amp;family=DM+Sans:wght@300;400;500&amp;display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d0f14;
+    --surface: #161921;
+    --surface2: #1e2230;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.15);
+    --text: #e8eaf0;
+    --muted: #8b90a0;
+    --accent: #6c8dfa;
+    --accent2: #a78bfa;
+    --gold: #f5c842;
+    --teal: #34d399;
+    --coral: #f87171;
+    --rose: #fb7185;
+    --amber: #fbbf24;
+    --r: 12px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #131829 50%, #0d0f14 100%);
+    border-bottom: 1px solid var(--border2);
+    padding: 3rem 2rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(108,141,250,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .badge {
+    display: inline-block;
+    background: rgba(108,141,250,0.15);
+    border: 1px solid rgba(108,141,250,0.35);
+    color: var(--accent);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 999px;
+    margin-bottom: 1.2rem;
+    font-weight: 500;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    background: linear-gradient(135deg, #e8eaf0 30%, #6c8dfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.6rem;
+    line-height: 1.2;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .theory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    padding: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .theory-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 1.4rem;
+  }
+  .theory-card .tc-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+  .theory-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    margin-bottom: 0.6rem;
+    color: var(--text);
+  }
+  .theory-card p { font-size: 0.87rem; color: var(--muted); }
+  .formula {
+    margin-top: 0.8rem;
+    background: var(--surface2);
+    border-left: 3px solid var(--accent);
+    padding: 0.6rem 0.9rem;
+    border-radius: 0 8px 8px 0;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.85rem;
+    color: var(--gold);
+  }
+
+  .tab-wrap { max-width: 1100px; margin: 0 auto; padding: 0 2rem 3rem; }
+  .tab-nav {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border2);
+    margin-bottom: 2rem;
+    padding-bottom: 0;
+  }
+  .tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 400;
+    padding: 0.6rem 1.1rem;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.2s;
+    border-radius: 6px 6px 0 0;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { color: var(--text); background: var(--surface); }
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    background: var(--surface);
+    font-weight: 500;
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .case-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .case-num {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .case-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    color: var(--text);
+    margin-bottom: 0.2rem;
+  }
+  .case-header p { font-size: 0.88rem; color: var(--muted); }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    margin-bottom: 1.2rem;
+  }
+  @media(max-width:700px) { .two-col { grid-template-columns: 1fr; } }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 1.3rem;
+  }
+  .panel-title {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.9rem;
+    font-weight: 500;
+  }
+
+  .input-group { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1rem; }
+  label { font-size: 0.85rem; color: var(--muted); }
+  input[type=text] {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.9rem;
+    padding: 0.55rem 0.9rem;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input[type=text]:focus { border-color: var(--accent); }
+
+  .btn-calc {
+    width: 100%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.7rem;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+  .btn-calc:hover { opacity: 0.88; }
+  .btn-calc:active { transform: scale(0.98); }
+
+  .result-box {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    margin-top: 1rem;
+    display: none;
+  }
+  .result-box.show { display: block; }
+  .result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.3rem 0;
+    font-size: 0.88rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .result-row:last-child { border-bottom: none; }
+  .result-row .rk { color: var(--muted); }
+  .result-row .rv { font-family: 'Source Code Pro', monospace; color: var(--gold); font-size: 0.9rem; }
+  .status-ok { color: var(--teal); font-weight: 500; }
+  .status-no { color: var(--coral); font-weight: 500; }
+
+  .steps-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 1.3rem;
+    margin-top: 1.2rem;
+  }
+  .step {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.9rem;
+    align-items: flex-start;
+  }
+  .step-n {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    color: var(--accent);
+    font-size: 0.78rem;
+    font-weight: 600;
+    min-width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-body { font-size: 0.87rem; color: var(--muted); line-height: 1.6; }
+  .step-body strong { color: var(--text); font-weight: 500; }
+  .mono { font-family: 'Source Code Pro', monospace; color: var(--gold); }
+
+  .pair-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 0.6rem;
+  }
+  .pair-chip {
+    background: rgba(108,141,250,0.12);
+    border: 1px solid rgba(108,141,250,0.25);
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.82rem;
+    color: var(--accent);
+  }
+  .pair-chip.inv {
+    background: rgba(167,139,250,0.12);
+    border-color: rgba(167,139,250,0.25);
+    color: var(--accent2);
+  }
+
+  .sumtable { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 1rem; }
+  .sumtable th {
+    text-align: left;
+    padding: 0.5rem 0.8rem;
+    background: var(--surface2);
+    color: var(--muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+  }
+  .sumtable td { padding: 0.55rem 0.8rem; border-bottom: 1px solid var(--border); color: var(--text); }
+  .sumtable tr:last-child td { border-bottom: none; }
+  .sumtable td:first-child { font-family: 'Source Code Pro', monospace; color: var(--gold); }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+    padding: 2rem 2rem 0;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .section-sub {
+    color: var(--muted);
+    font-size: 0.88rem;
+    padding: 0 2rem 1.2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+</style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Ginta Ramadhani_2509925</div>
+<div class="hero">
+<div class="badge">Matematika Diskrit</div>
+<h1>Relasi Invers &amp; Fungsi</h1>
+<p>Eksplorasi interaktif relasi, invers, dan pengujian sifat fungsi — lengkap dengan perhitungan manual tiap kasus</p>
+</div>
+<div class="theory-grid">
+<div class="theory-card">
+<div class="tc-label">Definisi</div>
+<h3>Relasi</h3>
+<p>Relasi R dari himpunan A ke B adalah himpunan pasangan terurut (a,b) dimana a ∈ A dan b ∈ B.</p>
+<div class="formula">R ⊆ A × B</div>
+</div>
+<div class="theory-card">
+<div class="tc-label">Definisi</div>
+<h3>Relasi Invers</h3>
+<p>Relasi invers R⁻¹ diperoleh dengan membalik setiap pasangan terurut dalam R.</p>
+<div class="formula">R⁻¹ = {(b,a) | (a,b) ∈ R}</div>
+</div>
+<div class="theory-card">
+<div class="tc-label">Syarat</div>
+<h3>Fungsi</h3>
+<p>Relasi f adalah fungsi jika setiap elemen domain tepat dipetakan ke satu elemen kodomain.</p>
+<div class="formula">∀a ∈ A, ∃! b ∈ B : (a,b) ∈ f</div>
+</div>
+<div class="theory-card">
+<div class="tc-label">Syarat</div>
+<h3>Fungsi Bijektif</h3>
+<p>Fungsi bijektif (injektif + surjektif) menjamin invers R⁻¹ juga merupakan fungsi.</p>
+<div class="formula">f⁻¹ ada ⟺ f bijeksi</div>
+</div>
+</div>
+<p class="section-title">5 Kasus Uji Interaktif</p>
+<p class="section-sub">Klik tab, masukkan data, hitung — lalu bandingkan dengan perhitungan manual di bawah.</p>
+<div class="tab-wrap">
+<nav class="tab-nav">
+<button class="tab-btn active" onclick="switchTab(0)">Kasus 1 — Fungsi Bijektif</button>
+<button class="tab-btn" onclick="switchTab(1)">Kasus 2 — Bukan Fungsi</button>
+<button class="tab-btn" onclick="switchTab(2)">Kasus 3 — Fungsi Injektif</button>
+<button class="tab-btn" onclick="switchTab(3)">Kasus 4 — Fungsi Surjektif</button>
+<button class="tab-btn" onclick="switchTab(4)">Kasus 5 — Relasi Umum</button>
+</nav>
+<!-- CASE 1 -->
+<div class="tab-panel active" id="panel-0">
+<div class="case-header">
+<div class="case-num">1</div>
+<div>
+<h2>Fungsi Bijektif — Invers adalah Fungsi</h2>
+<p>R = {(1,a),(2,b),(3,c)} — bijeksi sempurna, invers R⁻¹ juga fungsi</p>
+</div>
+</div>
+<div class="two-col">
+<div class="panel">
+<div class="panel-title">Input Relasi</div>
+<div class="input-group">
+<label>Pasangan terurut (pisahkan koma)</label>
+<input id="c1-input" type="text" value="(1,a),(2,b),(3,c)"/>
+</div>
+<div class="input-group">
+<label>Domain A</label>
+<input id="c1-dom" type="text" value="1,2,3"/>
+</div>
+<div class="input-group">
+<label>Kodomain B</label>
+<input id="c1-cod" type="text" value="a,b,c"/>
+</div>
+<button class="btn-calc" onclick="calculate(1)">Hitung &amp; Analisis</button>
+<div class="result-box" id="c1-result"></div>
+</div>
+<div class="panel">
+<div class="panel-title">Diagram Pasangan Terurut</div>
+<div class="pair-grid" id="c1-pairs"></div>
+<div style="margin-top:1rem; font-size:0.82rem; color:var(--muted)">Invers R⁻¹:</div>
+<div class="pair-grid" id="c1-inv-pairs"></div>
+</div>
+</div>
+<div class="steps-box">
+<div class="panel-title">📝 Perhitungan Manual — Kasus 1</div>
+<div class="step"><div class="step-n">1</div>
+<div class="step-body"><strong>Tulis relasi R:</strong><br/>
+<span class="mono">R = {(1,a), (2,b), (3,c)}</span><br/>
+          Domain A = {1,2,3}  |  Kodomain B = {a,b,c}
+        </div>
+</div>
+<div class="step"><div class="step-n">2</div>
+<div class="step-body"><strong>Uji: Apakah R fungsi?</strong><br/>
+          • 1 → a ✓ (tepat satu)   • 2 → b ✓ (tepat satu)   • 3 → c ✓ (tepat satu)<br/>
+          ∴ <strong>R adalah FUNGSI</strong>
+</div>
+</div>
+<div class="step"><div class="step-n">3</div>
+<div class="step-body"><strong>Uji injektif (satu-satu):</strong><br/>
+          f(1)=a, f(2)=b, f(3)=c — semua nilai di kodomain berbeda.<br/>
+          ∴ <strong>R INJEKTIF</strong>
+</div>
+</div>
+<div class="step"><div class="step-n">4</div>
+<div class="step-body"><strong>Uji surjektif (onto):</strong><br/>
+          Range R = {a,b,c} = Kodomain B = {a,b,c} — setiap elemen terpetakan.<br/>
+          ∴ <strong>R SURJEKTIF</strong>
+</div>
+</div>
+<div class="step"><div class="step-n">5</div>
+<div class="step-body"><strong>Hitung Relasi Invers R⁻¹:</strong><br/>
+          Balik setiap pasangan (a,b) → (b,a):<br/>
+<span class="mono">R⁻¹ = {(a,1), (b,2), (c,3)}</span>
+</div>
+</div>
+<div class="step"><div class="step-n">6</div>
+<div class="step-body"><strong>Apakah R⁻¹ juga fungsi?</strong><br/>
+          a→1 ✓   b→2 ✓   c→3 ✓ — setiap elemen tepat satu pemetaan.<br/>
+          ∴ <strong>R⁻¹ adalah FUNGSI</strong> (karena R bijeksi)
+        </div>
+</div>
+<div style="background:rgba(52,211,153,0.08); border:1px solid rgba(52,211,153,0.25); border-radius:8px; padding:0.8rem 1rem; margin-top:0.5rem; font-size:0.87rem;">
+        ✅ <strong>Kesimpulan:</strong> R bijektif, sehingga R⁻¹ ada dan merupakan fungsi. Range(R⁻¹) = {1,2,3} = A.
+      </div>
+</div>
+</div>
+<!-- CASE 2 -->
+<div class="tab-panel" id="panel-1">
+<div class="case-header">
+<div class="case-num">2</div>
+<div>
+<h2>Bukan Fungsi — Elemen Domain Ganda</h2>
+<p>R = {(1,a),(1,b),(2,c)} — elemen 1 dipetakan ke dua nilai, bukan fungsi</p>
+</div>
+</div>
+<div class="two-col">
+<div class="panel">
+<div class="panel-title">Input Relasi</div>
+<div class="input-group">
+<label>Pasangan terurut</label>
+<input id="c2-input" type="text" value="(1,a),(1,b),(2,c)"/>
+</div>
+<div class="input-group">
+<label>Domain A</label>
+<input id="c2-dom" type="text" value="1,2,3"/>
+</div>
+<div class="input-group">
+<label>Kodomain B</label>
+<input id="c2-cod" type="text" value="a,b,c"/>
+</div>
+<button class="btn-calc" onclick="calculate(2)">Hitung &amp; Analisis</button>
+<div class="result-box" id="c2-result"></div>
+</div>
+<div class="panel">
+<div class="panel-title">Pasangan Terurut</div>
+<div class="pair-grid" id="c2-pairs"></div>
+<div style="margin-top:1rem; font-size:0.82rem; color:var(--muted)">Invers R⁻¹:</div>
+<div class="pair-grid" id="c2-inv-pairs"></div>
+</div>
+</div>
+<div class="steps-box">
+<div class="panel-title">📝 Perhitungan Manual — Kasus 2</div>
+<div class="step"><div class="step-n">1</div>
+<div class="step-body"><strong>Relasi R:</strong><br/><span class="mono">R = {(1,a),(1,b),(2,c)}</span><br/>Domain A = {1,2,3} | Kodomain B = {a,b,c}</div>
+</div>
+<div class="step"><div class="step-n">2</div>
+<div class="step-body"><strong>Uji apakah R fungsi:</strong><br/>
+          Elemen 1 ∈ A memiliki dua pemetaan: 1→a dan 1→b — melanggar syarat fungsi!<br/>
+          Elemen 3 ∈ A tidak punya pasangan sama sekali.<br/>
+          ∴ <strong>R BUKAN FUNGSI</strong>
+</div>
+</div>
+<div class="step"><div class="step-n">3</div>
+<div class="step-body"><strong>Hitung invers R⁻¹:</strong><br/>
+<span class="mono">R⁻¹ = {(a,1),(b,1),(c,2)}</span>
+</div>
+</div>
+<div class="step"><div class="step-n">4</div>
+<div class="step-body"><strong>Apakah R⁻¹ fungsi?</strong><br/>
+          a→1 ✓, b→1 ✓ (boleh, karena domain berbeda), c→2 ✓<br/>
+          Setiap elemen domain R⁻¹ tepat satu pemetaan.<br/>
+          ∴ <strong>R⁻¹ adalah FUNGSI</strong> (tapi tidak injektif; elemen 3 di A tidak tercakup)
+        </div>
+</div>
+<div style="background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.25); border-radius:8px; padding:0.8rem 1rem; margin-top:0.5rem; font-size:0.87rem;">
+        ❌ <strong>Kesimpulan:</strong> R bukan fungsi (1 punya 2 pemetaan). R⁻¹ ada sebagai relasi dan kebetulan merupakan fungsi, tapi bukan fungsi invers yang sah.
+      </div>
+</div>
+</div>
+<!-- CASE 3 -->
+<div class="tab-panel" id="panel-2">
+<div class="case-header">
+<div class="case-num">3</div>
+<div>
+<h2>Fungsi Injektif — Invers Bukan Fungsi Total</h2>
+<p>R = {(1,a),(2,b),(3,c)} pada A={1,2,3,4}, B={a,b,c,d} — injektif tapi tidak surjektif</p>
+</div>
+</div>
+<div class="two-col">
+<div class="panel">
+<div class="panel-title">Input Relasi</div>
+<div class="input-group">
+<label>Pasangan terurut</label>
+<input id="c3-input" type="text" value="(1,a),(2,b),(3,c)"/>
+</div>
+<div class="input-group">
+<label>Domain A</label>
+<input id="c3-dom" type="text" value="1,2,3,4"/>
+</div>
+<div class="input-group">
+<label>Kodomain B</label>
+<input id="c3-cod" type="text" value="a,b,c,d"/>
+</div>
+<button class="btn-calc" onclick="calculate(3)">Hitung &amp; Analisis</button>
+<div class="result-box" id="c3-result"></div>
+</div>
+<div class="panel">
+<div class="panel-title">Pasangan Terurut</div>
+<div class="pair-grid" id="c3-pairs"></div>
+<div style="margin-top:1rem; font-size:0.82rem; color:var(--muted)">Invers R⁻¹:</div>
+<div class="pair-grid" id="c3-inv-pairs"></div>
+</div>
+</div>
+<div class="steps-box">
+<div class="panel-title">📝 Perhitungan Manual — Kasus 3</div>
+<div class="step"><div class="step-n">1</div>
+<div class="step-body"><strong>Relasi R:</strong><br/><span class="mono">R = {(1,a),(2,b),(3,c)}</span><br/>Domain A = {1,2,3,4} | Kodomain B = {a,b,c,d}</div>
+</div>
+<div class="step"><div class="step-n">2</div>
+<div class="step-body"><strong>Uji fungsi:</strong><br/>
+          1→a ✓, 2→b ✓, 3→c ✓, tapi 4 ∈ A tidak punya pasangan!<br/>
+          ∴ <strong>R adalah fungsi parsial</strong> (domain efektif {1,2,3} ≠ A)
+        </div>
+</div>
+<div class="step"><div class="step-n">3</div>
+<div class="step-body"><strong>Uji injektif:</strong><br/>
+          f(1)=a, f(2)=b, f(3)=c — semua berbeda ✓<br/>
+          ∴ <strong>INJEKTIF</strong>
+</div>
+</div>
+<div class="step"><div class="step-n">4</div>
+<div class="step-body"><strong>Uji surjektif:</strong><br/>
+          Range = {a,b,c}, Kodomain = {a,b,c,d} — d tidak terpetakan!<br/>
+          ∴ <strong>TIDAK SURJEKTIF</strong>
+</div>
+</div>
+<div class="step"><div class="step-n">5</div>
+<div class="step-body"><strong>Hitung R⁻¹:</strong><br/>
+<span class="mono">R⁻¹ = {(a,1),(b,2),(c,3)}</span><br/>
+          Domain R⁻¹ = {a,b,c} ≠ B (d tidak punya pasangan di R⁻¹)
+        </div>
+</div>
+<div class="step"><div class="step-n">6</div>
+<div class="step-body"><strong>Apakah R⁻¹ fungsi total?</strong><br/>
+          a→1 ✓, b→2 ✓, c→3 ✓ — tepat satu pemetaan, tapi d tidak terpetakan.<br/>
+          ∴ <strong>R⁻¹ fungsi parsial</strong> (bukan fungsi total dari B ke A)
+        </div>
+</div>
+<div style="background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.25); border-radius:8px; padding:0.8rem 1rem; margin-top:0.5rem; font-size:0.87rem;">
+        ⚠️ <strong>Kesimpulan:</strong> R injektif tapi tidak surjektif (bukan bijeksi), sehingga R⁻¹ ada tapi bukan fungsi total dari B ke A.
+      </div>
+</div>
+</div>
+<!-- CASE 4 -->
+<div class="tab-panel" id="panel-3">
+<div class="case-header">
+<div class="case-num">4</div>
+<div>
+<h2>Fungsi Surjektif — R⁻¹ Bukan Fungsi</h2>
+<p>R = {(1,a),(2,a),(3,b),(4,b)} — surjektif tapi tidak injektif</p>
+</div>
+</div>
+<div class="two-col">
+<div class="panel">
+<div class="panel-title">Input Relasi</div>
+<div class="input-group">
+<label>Pasangan terurut</label>
+<input id="c4-input" type="text" value="(1,a),(2,a),(3,b),(4,b)"/>
+</div>
+<div class="input-group">
+<label>Domain A</label>
+<input id="c4-dom" type="text" value="1,2,3,4"/>
+</div>
+<div class="input-group">
+<label>Kodomain B</label>
+<input id="c4-cod" type="text" value="a,b"/>
+</div>
+<button class="btn-calc" onclick="calculate(4)">Hitung &amp; Analisis</button>
+<div class="result-box" id="c4-result"></div>
+</div>
+<div class="panel">
+<div class="panel-title">Pasangan Terurut</div>
+<div class="pair-grid" id="c4-pairs"></div>
+<div style="margin-top:1rem; font-size:0.82rem; color:var(--muted)">Invers R⁻¹:</div>
+<div class="pair-grid" id="c4-inv-pairs"></div>
+</div>
+</div>
+<div class="steps-box">
+<div class="panel-title">📝 Perhitungan Manual — Kasus 4</div>
+<div class="step"><div class="step-n">1</div>
+<div class="step-body"><strong>Relasi R:</strong><br/><span class="mono">R = {(1,a),(2,a),(3,b),(4,b)}</span><br/>Domain A = {1,2,3,4} | Kodomain B = {a,b}</div>
+</div>
+<div class="step"><div class="step-n">2</div>
+<div class="step-body"><strong>Uji fungsi:</strong><br/>
+          1→a ✓, 2→a ✓, 3→b ✓, 4→b ✓ — setiap elemen domain tepat satu pemetaan<br/>
+          ∴ <strong>R adalah FUNGSI</strong>
+</div>
+</div>
+<div class="step"><div class="step-n">3</div>
+<div class="step-body"><strong>Uji injektif:</strong><br/>
+          f(1)=a dan f(2)=a → dua elemen domain ke nilai yang sama!<br/>
+          f(3)=b dan f(4)=b → sama juga!<br/>
+          ∴ <strong>TIDAK INJEKTIF</strong>
+</div>
+</div>
+<div class="step"><div class="step-n">4</div>
+<div class="step-body"><strong>Uji surjektif:</strong><br/>
+          Range = {a,b} = Kodomain B = {a,b} ✓ — semua elemen kodomain tercakup.<br/>
+          ∴ <strong>SURJEKTIF (onto)</strong>
+</div>
+</div>
+<div class="step"><div class="step-n">5</div>
+<div class="step-body"><strong>Hitung R⁻¹:</strong><br/>
+<span class="mono">R⁻¹ = {(a,1),(a,2),(b,3),(b,4)}</span>
+</div>
+</div>
+<div class="step"><div class="step-n">6</div>
+<div class="step-body"><strong>Apakah R⁻¹ fungsi?</strong><br/>
+          a→1 dan a→2 → elemen a punya DUA pemetaan!<br/>
+          b→3 dan b→4 → sama juga!<br/>
+          ∴ <strong>R⁻¹ BUKAN FUNGSI</strong>
+</div>
+</div>
+<div style="background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.25); border-radius:8px; padding:0.8rem 1rem; margin-top:0.5rem; font-size:0.87rem;">
+        ❌ <strong>Kesimpulan:</strong> R surjektif tapi tidak injektif → R⁻¹ bukan fungsi. Invers fungsi hanya ada jika fungsinya bijektif.
+      </div>
+</div>
+</div>
+<!-- CASE 5 -->
+<div class="tab-panel" id="panel-4">
+<div class="case-header">
+<div class="case-num">5</div>
+<div>
+<h2>Relasi Umum — Komposisi Relasi</h2>
+<p>R₁ = {(x,y)|y=2x}, R₂ = {(x,y)|y=x+1} pada A={1,2,3}</p>
+</div>
+</div>
+<div class="two-col">
+<div class="panel">
+<div class="panel-title">Input Relasi</div>
+<div class="input-group">
+<label>Pasangan terurut R₁</label>
+<input id="c5-input" type="text" value="(1,2),(2,4),(3,6)"/>
+</div>
+<div class="input-group">
+<label>Pasangan terurut R₂</label>
+<input id="c5-input2" type="text" value="(2,3),(4,5),(6,7)"/>
+</div>
+<div class="input-group">
+<label>Domain</label>
+<input id="c5-dom" type="text" value="1,2,3"/>
+</div>
+<div class="input-group">
+<label>Kodomain R₂</label>
+<input id="c5-cod" type="text" value="3,5,7"/>
+</div>
+<button class="btn-calc" onclick="calculate(5)">Hitung &amp; Analisis</button>
+<div class="result-box" id="c5-result"></div>
+</div>
+<div class="panel">
+<div class="panel-title">Pasangan Terurut</div>
+<div style="font-size:0.82rem; color:var(--muted); margin-bottom:4px">R₁:</div>
+<div class="pair-grid" id="c5-pairs"></div>
+<div style="margin-top:0.8rem; font-size:0.82rem; color:var(--muted)">R₂:</div>
+<div class="pair-grid" id="c5-pairs2"></div>
+<div style="margin-top:0.8rem; font-size:0.82rem; color:var(--muted)">Invers R₁⁻¹:</div>
+<div class="pair-grid" id="c5-inv-pairs"></div>
+</div>
+</div>
+<div class="steps-box">
+<div class="panel-title">📝 Perhitungan Manual — Kasus 5</div>
+<div class="step"><div class="step-n">1</div>
+<div class="step-body"><strong>Relasi R₁ (y = 2x):</strong><br/>
+          x=1: y=2 → (1,2) | x=2: y=4 → (2,4) | x=3: y=6 → (3,6)<br/>
+<span class="mono">R₁ = {(1,2),(2,4),(3,6)}</span>
+</div>
+</div>
+<div class="step"><div class="step-n">2</div>
+<div class="step-body"><strong>Relasi R₂ (y = x+1):</strong><br/>
+          x=2: y=3 | x=4: y=5 | x=6: y=7<br/>
+<span class="mono">R₂ = {(2,3),(4,5),(6,7)}</span>
+</div>
+</div>
+<div class="step"><div class="step-n">3</div>
+<div class="step-body"><strong>Komposisi R₂∘R₁ (R₁ dulu, lalu R₂):</strong><br/>
+          • (1,2)∈R₁ dan (2,3)∈R₂ → (1,3) ✓<br/>
+          • (2,4)∈R₁ dan (4,5)∈R₂ → (2,5) ✓<br/>
+          • (3,6)∈R₁ dan (6,7)∈R₂ → (3,7) ✓<br/>
+<span class="mono">R₂∘R₁ = {(1,3),(2,5),(3,7)}</span>
+</div>
+</div>
+<div class="step"><div class="step-n">4</div>
+<div class="step-body"><strong>Invers R₁⁻¹:</strong><br/>
+<span class="mono">R₁⁻¹ = {(2,1),(4,2),(6,3)}</span> — merepresentasikan x = y/2
+        </div>
+</div>
+<div class="step"><div class="step-n">5</div>
+<div class="step-body"><strong>Invers R₂⁻¹:</strong><br/>
+<span class="mono">R₂⁻¹ = {(3,2),(5,4),(7,6)}</span> — merepresentasikan x = y-1
+        </div>
+</div>
+<div class="step"><div class="step-n">6</div>
+<div class="step-body"><strong>Verifikasi: (R₂∘R₁)⁻¹ = R₁⁻¹∘R₂⁻¹</strong><br/>
+          (R₂∘R₁)⁻¹ = {(3,1),(5,2),(7,3)}<br/>
+          R₁⁻¹∘R₂⁻¹: (3,2)∈R₂⁻¹ ∧ (2,1)∈R₁⁻¹ → (3,1) ✓   (5,4)∈R₂⁻¹ ∧ (4,2)∈R₁⁻¹ → (5,2) ✓<br/>
+          ∴ <strong>Terbukti (R₂∘R₁)⁻¹ = R₁⁻¹∘R₂⁻¹ ✓</strong>
+</div>
+</div>
+<div style="background:rgba(52,211,153,0.08); border:1px solid rgba(52,211,153,0.25); border-radius:8px; padding:0.8rem 1rem; margin-top:0.5rem; font-size:0.87rem;">
+        ✅ <strong>Kesimpulan:</strong> R₂∘R₁ = {(1,3),(2,5),(3,7)} bijeksi. Invers komposisi = komposisi invers terbalik: (R₂∘R₁)⁻¹ = R₁⁻¹∘R₂⁻¹.
+      </div>
+</div>
+</div>
+<!-- SUMMARY -->
+<div style="margin-top:3rem; background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:1.5rem;">
+<div class="panel-title">Ringkasan 5 Kasus</div>
+<table class="sumtable">
+<thead>
+<tr>
+<th>Kasus</th><th>Relasi</th><th>Fungsi?</th><th>Injektif?</th><th>Surjektif?</th><th>R⁻¹ Fungsi?</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>1</td><td>{(1,a),(2,b),(3,c)}</td><td style="color:var(--teal)">✓ Ya</td><td style="color:var(--teal)">✓ Ya</td><td style="color:var(--teal)">✓ Ya</td><td style="color:var(--teal)">✓ Ya (Bijeksi)</td></tr>
+<tr><td>2</td><td>{(1,a),(1,b),(2,c)}</td><td style="color:var(--coral)">✗ Tidak</td><td style="color:var(--coral)">✗ Tidak</td><td style="color:var(--coral)">✗ Tidak</td><td style="color:var(--amber)">⚠ Parsial</td></tr>
+<tr><td>3</td><td>{(1,a),(2,b),(3,c)}, A={1..4}</td><td style="color:var(--amber)">⚠ Parsial</td><td style="color:var(--teal)">✓ Ya</td><td style="color:var(--coral)">✗ Tidak</td><td style="color:var(--amber)">⚠ Parsial</td></tr>
+<tr><td>4</td><td>{(1,a),(2,a),(3,b),(4,b)}</td><td style="color:var(--teal)">✓ Ya</td><td style="color:var(--coral)">✗ Tidak</td><td style="color:var(--teal)">✓ Ya</td><td style="color:var(--coral)">✗ Tidak</td></tr>
+<tr><td>5</td><td>R₁={(1,2),(2,4),(3,6)}</td><td style="color:var(--teal)">✓ Ya</td><td style="color:var(--teal)">✓ Ya</td><td style="color:var(--teal)">✓ Ya</td><td style="color:var(--teal)">✓ Ya</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<script>
+function parsePairs(str) {
+  const pairs = [];
+  const re = /\(([^,)]+),([^)]+)\)/g;
+  let m;
+  while ((m = re.exec(str)) !== null) {
+    pairs.push([m[1].trim(), m[2].trim()]);
+  }
+  return pairs;
+}
+
+function parseSet(str) {
+  return str.split(',').map(s => s.trim()).filter(Boolean);
+}
+
+function isFunction(pairs, domain) {
+  const domainCount = {};
+  for (const [a] of pairs) {
+    if (!domainCount[a]) domainCount[a] = 0;
+    domainCount[a]++;
+  }
+  const notCovered = domain.filter(d => !domainCount[d]);
+  const multi = Object.entries(domainCount).filter(([,v])=>v>1).map(([k])=>k);
+  const isFunc = multi.length === 0 && notCovered.length === 0;
+  const isPartial = multi.length === 0 && notCovered.length > 0;
+  return { isFunc, isPartial, multi, notCovered };
+}
+
+function isInjective(pairs) {
+  const seen = {};
+  for (const [a,b] of pairs) {
+    if (seen[b]) return { ok: false, dup: b };
+    seen[b] = a;
+  }
+  return { ok: true };
+}
+
+function isSurjective(pairs, codomain) {
+  const range = new Set(pairs.map(([,b])=>b));
+  const missing = codomain.filter(c => !range.has(c));
+  return { ok: missing.length === 0, missing };
+}
+
+function inverseRelation(pairs) {
+  return pairs.map(([a,b]) => [b,a]);
+}
+
+function renderPairs(id, pairs, cls='') {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = pairs.map(([a,b]) =>
+    `<span class="pair-chip ${cls}">(${a},${b})</span>`
+  ).join('');
+}
+
+function renderResult(id, html) {
+  const el = document.getElementById(id);
+  el.innerHTML = html;
+  el.classList.add('show');
+}
+
+function yesNo(b, yText='Ya', nText='Tidak') {
+  return b
+    ? `<span class="status-ok">✓ ${yText}</span>`
+    : `<span class="status-no">✗ ${nText}</span>`;
+}
+
+function buildResultHTML(pairs, domain, codomain) {
+  const inv = inverseRelation(pairs);
+  const fTest = isFunction(pairs, domain);
+  const iTest = isInjective(pairs);
+  const sTest = isSurjective(pairs, codomain);
+  const invFTest = isFunction(inv, Array.from(new Set(pairs.map(([,b])=>b))));
+  const range = [...new Set(pairs.map(([,b])=>b))].join(', ');
+  const invStr = inv.map(([a,b])=>`(${a},${b})`).join(', ');
+  const isBij = (fTest.isFunc || fTest.isPartial) && iTest.ok && sTest.ok;
+
+  let funcLabel;
+  if (fTest.isFunc) funcLabel = `<span class="status-ok">✓ Fungsi Total</span>`;
+  else if (fTest.isPartial) funcLabel = `<span style="color:var(--amber)">⚠ Fungsi Parsial</span>`;
+  else funcLabel = `<span class="status-no">✗ Bukan Fungsi</span>`;
+
+  return `
+    <div class="result-row"><span class="rk">Jumlah pasangan</span><span class="rv">${pairs.length}</span></div>
+    <div class="result-row"><span class="rk">Range R</span><span class="rv">{${range}}</span></div>
+    <div class="result-row"><span class="rk">Fungsi?</span><span class="rv">${funcLabel}</span></div>
+    <div class="result-row"><span class="rk">Injektif?</span><span class="rv">${yesNo(iTest.ok)}</span></div>
+    <div class="result-row"><span class="rk">Surjektif?</span><span class="rv">${yesNo(sTest.ok)}</span></div>
+    <div class="result-row"><span class="rk">Bijektif?</span><span class="rv">${yesNo(isBij)}</span></div>
+    <div class="result-row"><span class="rk">R⁻¹</span><span class="rv">{${invStr}}</span></div>
+    <div class="result-row"><span class="rk">R⁻¹ adalah Fungsi?</span><span class="rv">${
+      invFTest.isFunc
+        ? '<span class="status-ok">✓ Ya</span>'
+        : invFTest.isPartial
+          ? '<span style="color:var(--amber)">⚠ Parsial</span>'
+          : '<span class="status-no">✗ Tidak</span>'
+    }</span></div>
+  `;
+}
+
+function calculate(n) {
+  if (n <= 4) {
+    const pairStr = document.getElementById(`c${n}-input`).value;
+    const domStr  = document.getElementById(`c${n}-dom`).value;
+    const codStr  = document.getElementById(`c${n}-cod`).value;
+    const pairs   = parsePairs(pairStr);
+    const domain  = parseSet(domStr);
+    const codomain= parseSet(codStr);
+    const inv     = inverseRelation(pairs);
+    renderPairs(`c${n}-pairs`, pairs);
+    renderPairs(`c${n}-inv-pairs`, inv, 'inv');
+    renderResult(`c${n}-result`, buildResultHTML(pairs, domain, codomain));
+  }
+
+  if (n === 5) {
+    const pairs1  = parsePairs(document.getElementById('c5-input').value);
+    const pairs2  = parsePairs(document.getElementById('c5-input2').value);
+    const domain  = parseSet(document.getElementById('c5-dom').value);
+    const inv1    = inverseRelation(pairs1);
+
+    const comp = [];
+    for (const [a,b] of pairs1)
+      for (const [c,d] of pairs2)
+        if (b === c) comp.push([a,d]);
+
+    renderPairs('c5-pairs', pairs1);
+    renderPairs('c5-pairs2', pairs2);
+    renderPairs('c5-inv-pairs', inv1, 'inv');
+
+    const fTest1 = isFunction(pairs1, domain);
+    const iTest1 = isInjective(pairs1);
+    const sTest1 = isSurjective(pairs1, [...new Set(pairs2.map(([a])=>a))]);
+
+    renderResult('c5-result', `
+      <div class="result-row"><span class="rk">R₁ Fungsi?</span><span class="rv">${fTest1.isFunc ? '<span class="status-ok">✓ Ya</span>' : '<span class="status-no">✗ Tidak</span>'}</span></div>
+      <div class="result-row"><span class="rk">R₁ Injektif?</span><span class="rv">${yesNo(iTest1.ok)}</span></div>
+      <div class="result-row"><span class="rk">R₁ Surjektif?</span><span class="rv">${yesNo(sTest1.ok)}</span></div>
+      <div class="result-row"><span class="rk">R₁⁻¹</span><span class="rv">{${inv1.map(([a,b])=>`(${a},${b})`).join(', ')}}</span></div>
+      <div class="result-row"><span class="rk">R₂∘R₁ (Komposisi)</span><span class="rv">{${comp.map(([a,b])=>`(${a},${b})`).join(', ')}}</span></div>
+    `);
+  }
+}
+
+window.onload = () => { for (let i = 1; i <= 5; i++) calculate(i); };
+
+function switchTab(idx) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+  document.querySelectorAll('.tab-panel').forEach((p,i) => p.classList.toggle('active', i===idx));
+}
+</script>
+</body>
+</html>

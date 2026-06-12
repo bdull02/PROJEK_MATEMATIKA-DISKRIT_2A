@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Logika Matematika - Proposisi</title>
+<style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f6fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            background: white;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+        }
+
+        nav button {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        nav button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            color: var(--primary);
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 0.5rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        ul {
+            padding-left: 1.2rem;
+        }
+
+        li {
+            margin-bottom: 0.7rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .badge-true {
+            background: var(--success);
+        }
+
+        .badge-false {
+            background: var(--danger);
+        }
+
+        .badge-info {
+            background: var(--secondary);
+        }
+
+        .quiz-item {
+            background: var(--light);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 6px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-options button {
+            background: white;
+            border: 2px solid #bdc3c7;
+            padding: 0.7rem 1.2rem;
+            margin-right: 0.5rem;
+            margin-top: 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 500;
+        }
+
+        .quiz-options button:hover {
+            border-color: var(--secondary);
+        }
+
+        .selected-proposisi {
+            background: #d9f8d6 !important;
+            border-color: #2ecc71 !important;
+        }
+
+        .selected-bukan {
+            background: #d9f8d6 !important;
+            border-color: #2ecc71 !important;
+        }
+
+        /* STYLING BARU UNTUK KOLOM PENJELASAN */
+        .feedback {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border-radius: 5px;
+            font-size: 0.95rem;
+            display: none; /* Sembunyikan sebelum diperiksa */
+        }
+
+        .feedback-correct {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .feedback-wrong {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        #btn-submit {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: block;
+            margin: 2rem auto 0;
+        }
+
+        #btn-submit:hover {
+            background: #1a252f;
+        }
+
+        #result-zone {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+    </style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Nadia Rodhwal Haq_2501378</div>
+<header>
+<h1>Logika Matematika: Proposisi</h1>
+<p>Tugas Matematika Diskrit</p>
+</header>
+<nav>
+<button onclick="showPage('materi-page')">Materi Proposisi</button>
+<button onclick="showPage('quiz-page')">Latihan Soal</button>
+</nav>
+<div class="container">
+<div class="page active" id="materi-page">
+<div class="card">
+<h2>1. Pengertian Proposisi</h2>
+<p>
+                    Proposisi adalah kalimat pernyataan yang memiliki nilai kebenaran,
+                    yaitu bernilai benar (True) atau salah (False), tetapi tidak keduanya.
+                </p>
+<p>
+                    Dalam logika matematika, proposisi biasanya dilambangkan dengan
+                    huruf kecil seperti p, q, r, dan sebagainya.
+                </p>
+</div>
+<div class="grid">
+<div class="card">
+<h2>Contoh Proposisi</h2>
+<ul>
+<li>2 + 3 = 5 <span class="badge badge-true">Benar</span></li>
+<li>Indonesia berada di Asia Tenggara <span class="badge badge-true">Benar</span></li>
+<li>9 adalah bilangan ganjil <span class="badge badge-true">Benar</span></li>
+<li>5 &gt; 20 <span class="badge badge-false">Salah</span></li>
+</ul>
+</div>
+<div class="card">
+<h2>Bukan Proposisi</h2>
+<ul>
+<li>Tutup pintu itu! <span class="badge badge-info">Perintah</span></li>
+<li>Siapa nama kamu? <span class="badge badge-info">Pertanyaan</span></li>
+<li>x &gt; 5 <span class="badge badge-info">Kalimat Terbuka</span></li>
+<li>Belajarlah dengan rajin! <span class="badge badge-info">Ajakan</span></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="page" id="quiz-page">
+<div class="card">
+<h2>Latihan Soal Proposisi</h2>
+<p>
+                    Tentukan apakah kalimat berikut termasuk
+                    <b>Proposisi</b> atau <b>Bukan Proposisi</b>.
+                </p>
+<div id="quiz-container">
+<div class="quiz-item" data-correct="proposisi" data-explain="Kalimat ini adalah Proposisi karena merupakan sebuah pernyataan yang dapat ditentukan nilai kebenarannya secara mutlak, yaitu bernilai SALAH (25 adalah bilangan ganjil).">
+<p><strong>1.</strong> 25 adalah bilangan genap.</p>
+<div class="quiz-options">
+<button onclick="selectOption(this,'proposisi')">Proposisi</button>
+<button onclick="selectOption(this,'bukan')">Bukan Proposisi</button>
+</div>
+<div class="feedback"></div>
+</div>
+<div class="quiz-item" data-correct="bukan" data-explain="Kalimat ini Bukan Proposisi karena merupakan kalimat tanya (pertanyaan). Kalimat tanya tidak memiliki nilai benar atau salah.">
+<p><strong>2.</strong> Apakah kamu sudah makan?</p>
+<div class="quiz-options">
+<button onclick="selectOption(this,'proposisi')">Proposisi</button>
+<button onclick="selectOption(this,'bukan')">Bukan Proposisi</button>
+</div>
+<div class="feedback"></div>
+</div>
+<div class="quiz-item" data-correct="bukan" data-explain="Kalimat ini Bukan Proposisi melainkan kalimat terbuka. Karena menggunakan variabel (a, b, c) yang belum ditentukan nilainya, kita tidak bisa tahu apakah pernyataan ini benar atau salah.">
+<p><strong>3.</strong> a² + b² = c²</p>
+<div class="quiz-options">
+<button onclick="selectOption(this,'proposisi')">Proposisi</button>
+<button onclick="selectOption(this,'bukan')">Bukan Proposisi</button>
+</div>
+<div class="feedback"></div>
+</div>
+<div class="quiz-item" data-correct="proposisi" data-explain="Kalimat ini adalah Proposisi karena merupakan pernyataan fakta yang dapat langsung dinilai kebenarannya, yaitu bernilai BENAR.">
+<p><strong>4.</strong> Indonesia berada di Asia Tenggara.</p>
+<div class="quiz-options">
+<button onclick="selectOption(this,'proposisi')">Proposisi</button>
+<button onclick="selectOption(this,'bukan')">Bukan Proposisi</button>
+</div>
+<div class="feedback"></div>
+</div>
+<div class="quiz-item" data-correct="bukan" data-explain="Kalimat ini Bukan Proposisi melainkan kalimat perintah. Kalimat perintah atau instruksi tidak mempunyai nilai benar/salah.">
+<p><strong>5.</strong> Tolong tutup pintu itu!</p>
+<div class="quiz-options">
+<button onclick="selectOption(this,'proposisi')">Proposisi</button>
+<button onclick="selectOption(this,'bukan')">Bukan Proposisi</button>
+</div>
+<div class="feedback"></div>
+</div>
+<div class="quiz-item" data-correct="proposisi" data-explain="Kalimat ini adalah Proposisi karena kita bisa langsung mengonfirmasi kebenarannya secara matematis, yaitu bernilai BENAR.">
+<p><strong>6.</strong> 9 adalah bilangan ganjil.</p>
+<div class="quiz-options">
+<button onclick="selectOption(this,'proposisi')">Proposisi</button>
+<button onclick="selectOption(this,'bukan')">Bukan Proposisi</button>
+</div>
+<div class="feedback"></div>
+</div>
+<div class="quiz-item" data-correct="bukan" data-explain="Kalimat ini Bukan Proposisi melainkan kalimat terbuka. Nilai kebenarannya masih bergantung pada nilai 'x' yang dimasukkan.">
+<p><strong>7.</strong> x &gt; 10</p>
+<div class="quiz-options">
+<button onclick="selectOption(this,'proposisi')">Proposisi</button>
+<button onclick="selectOption(this,'bukan')">Bukan Proposisi</button>
+</div>
+<div class="feedback"></div>
+</div>
+<div class="quiz-item" data-correct="proposisi" data-explain="Kalimat ini adalah Proposisi karena operasi hitung tersebut menyatakan suatu kebenaran yang pasti dan bernilai BENAR.">
+<p><strong>8.</strong> 2 + 2 = 4</p>
+<div class="quiz-options">
+<button onclick="selectOption(this,'proposisi')">Proposisi</button>
+<button onclick="selectOption(this,'bukan')">Bukan Proposisi</button>
+</div>
+<div class="feedback"></div>
+</div>
+<div class="quiz-item" data-correct="bukan" data-explain="Kalimat ini Bukan Proposisi melainkan kalimat Ajakan. Kalimat Ajakan tidak mempunyai nilai benar/salah.">
+<p><strong>5.</strong> Ayo Kerjakan tugas sekarang!</p>
+<div class="quiz-options">
+<button onclick="selectOption(this,'proposisi')">Proposisi</button>
+<button onclick="selectOption(this,'bukan')">Bukan Proposisi</button>
+</div>
+<div class="feedback"></div>
+</div>
+<div class="quiz-item" data-correct="proposisi" data-explain="Kalimat ini adalah Proposisi (Proposisi Universal) karena mendefinisikan sifat mutlak geometris dari persegi yang bernilai BENAR.">
+<p><strong>10.</strong> Semua persegi memiliki 4 sisi.</p>
+<div class="quiz-options">
+<button onclick="selectOption(this,'proposisi')">Proposisi</button>
+<button onclick="selectOption(this,'bukan')">Bukan Proposisi</button>
+</div>
+<div class="feedback"></div>
+</div>
+</div>
+<button id="btn-submit" onclick="checkAnswers()">
+                    Periksa Jawaban
+                </button>
+<div id="result-zone"></div>
+</div>
+</div>
+</div>
+<script>
+        function showPage(pageId) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        function selectOption(button, choice) {
+            const optionsDiv = button.parentElement;
+            const buttons = optionsDiv.querySelectorAll('button');
+
+            buttons.forEach(btn => {
+                btn.classList.remove('selected-proposisi', 'selected-bukan');
+            });
+
+            if (choice === 'proposisi') {
+                button.classList.add('selected-proposisi');
+            } else {
+                button.classList.add('selected-bukan');
+            }
+
+            optionsDiv.parentElement.setAttribute('data-user-answer', choice);
+        }
+
+        function checkAnswers() {
+            const quizItems = document.querySelectorAll('.quiz-item');
+            let score = 0;
+            let answered = 0;
+
+            // Loop pertama untuk validasi apakah semua soal sudah diisi
+            quizItems.forEach(item => {
+                const user = item.getAttribute('data-user-answer');
+                if (user) answered++;
+            });
+
+            const resultZone = document.getElementById('result-zone');
+            resultZone.style.display = 'block';
+
+            // Jika belum semua soal dijawab, beri peringatan dan jangan tampilkan pembahasannya dulu
+            if (answered < quizItems.length) {
+                resultZone.style.background = '#ffeaa7';
+                resultZone.style.color = '#2d3436';
+                resultZone.innerText = `Kamu baru menjawab ${answered} dari ${quizItems.length} soal. Silakan lengkapi semua jawaban terlebih dahulu!`;
+                
+                // Beri penanda oranye pada soal yang belum dijawab
+                quizItems.forEach(item => {
+                    const user = item.getAttribute('data-user-answer');
+                    if (!user) {
+                        item.style.borderLeft = '6px solid orange';
+                    }
+                });
+                return; // Stop fungsi di sini
+            }
+
+            // Jika semua sudah dijawab, lakukan pengecekan detail dan tampilkan penjelasan
+            quizItems.forEach(item => {
+                const correct = item.getAttribute('data-correct');
+                const user = item.getAttribute('data-user-answer');
+                const explainText = item.getAttribute('data-explain');
+                const feedbackDiv = item.querySelector('.feedback');
+
+                feedbackDiv.style.display = 'block'; // Tampilkan kotak penjelasan
+
+                if (user === correct) {
+                    score++;
+                    item.style.borderLeft = '6px solid var(--success)';
+                    
+                    // Isi teks jika jawaban USER BENAR
+                    feedbackDiv.className = 'feedback feedback-correct';
+                    feedbackDiv.innerHTML = `<strong>🟢 Jawaban Kamu Benar!</strong><br>${explainText}`;
+                } else {
+                    item.style.borderLeft = '6px solid var(--danger)';
+                    
+                    // Isi teks jika jawaban USER SALAH
+                    feedbackDiv.className = 'feedback feedback-wrong';
+                    feedbackDiv.innerHTML = `<strong>🔴 Jawaban Kamu Salah!</strong><br>Jawaban yang benar seharusnya adalah <strong>${correct === 'proposisi' ? 'Proposisi' : 'Bukan Proposisi'}</strong>.<br><br><strong>Pembahasan:</strong> ${explainText}`;
+                }
+            });
+
+            // Menampilkan nilai akhir di result-zone
+            const nilai = (score / quizItems.length) * 100;
+
+            if (nilai === 100) {
+                resultZone.style.background = '#d4edda';
+                resultZone.style.color = '#155724';
+                resultZone.innerHTML = `Hebat! Nilai kamu <strong>${nilai}</strong>. Semua jawaban benar.`;
+            } else {
+                resultZone.style.background = '#fff3cd';
+                resultZone.style.color = '#856404';
+                resultZone.innerHTML = `Nilai kamu <strong>${nilai}</strong>. Cek kembali pembahasan pada soal yang masih salah di bawah.`;
+            }
+        }
+    </script>
+</body>
+</html>

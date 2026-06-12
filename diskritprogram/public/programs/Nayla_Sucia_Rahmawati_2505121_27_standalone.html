@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Program ISBN-13</title>
+<style>
+
+    body{
+      font-family: Arial, sans-serif;
+      background-color: #DCEEFF;
+      margin: 0;
+      padding: 30px;
+    }
+
+    h1{
+      text-align: center;
+      color: #3A6EA5;
+      margin-bottom: 30px;
+    }
+
+    .box{
+      max-width: 1100px;
+      margin: auto;
+      background-color: #F4FAFF;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+
+    h2{
+      color: #3A6EA5;
+    }
+
+    p, li{
+      color: #34506B;
+      line-height: 1.8;
+    }
+
+    .rumus{
+      background-color: #D6EBFF;
+      padding: 15px;
+      border-radius: 12px;
+      font-weight: bold;
+      color: #24476B;
+      margin-top: 15px;
+    }
+
+    .wrapper{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      justify-content: center;
+    }
+
+    .container{
+      width: 480px;
+      background-color: #F4FAFF;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+    }
+
+    input{
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      border: 2px solid #A7D3FF;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    button{
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      background-color: #5AA9E6;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover{
+      background-color: #3A86C8;
+    }
+
+    .hasil{
+      margin-top: 20px;
+      background-color: #DCEEFF;
+      padding: 15px;
+      border-radius: 12px;
+      color: #24476B;
+      line-height: 1.8;
+    }
+
+    .langkah{
+      background-color: white;
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+
+    .valid{
+      color: green;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .tidakvalid{
+      color: red;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .watermark{
+      text-align: center;
+      margin-top: 40px;
+      color: #5A7FA3;
+      font-size: 12px;
+    }
+
+  </style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Nayla Sucia Rahmawati_2505121</div>
+<h1>Program ISBN-13 Matematika Diskrit</h1>
+<!-- PENJELASAN -->
+<div class="box">
+<h2>Pengertian ISBN-13</h2>
+<p>
+      ISBN-13 (International Standard Book Number) adalah kode unik
+      yang digunakan untuk mengidentifikasi buku. ISBN terdiri dari
+      13 digit angka dan biasanya terdapat pada bagian belakang buku.
+    </p>
+<p>
+      Dalam Matematika Diskrit, ISBN-13 digunakan sebagai contoh
+      penerapan aritmatika modulo untuk memeriksa validitas data.
+      Setiap digit ISBN akan dikalikan menggunakan pola 1 dan 3,
+      kemudian seluruh hasil dijumlahkan untuk mendapatkan digit
+      terakhir ISBN.
+    </p>
+<h2>Rumus ISBN-13</h2>
+<div class="rumus">
+      (10 - (total mod 10)) mod 10
+    </div>
+<p>
+      Keterangan:
+    </p>
+<ul>
+<li>Digit posisi ganjil dikali 1</li>
+<li>Digit posisi genap dikali 3</li>
+<li>Semua hasil perkalian dijumlahkan</li>
+<li>Hasil akhir digunakan untuk menentukan digit terakhir ISBN</li>
+</ul>
+</div>
+<!-- PROGRAM -->
+<div class="wrapper">
+<!-- VALIDITAS -->
+<div class="container">
+<h2>1. Cek Kevalidan ISBN-13</h2>
+<p>
+        Masukkan ISBN 13 digit untuk mengecek validitas ISBN.
+      </p>
+<input id="isbnValid" placeholder="Contoh : 9786028519325" type="text"/>
+<button onclick="cekValiditas()">
+        Cek Validitas
+      </button>
+<div class="hasil" id="hasilValid">
+        Hasil akan muncul di sini...
+      </div>
+</div>
+<!-- DIGIT TERAKHIR -->
+<div class="container">
+<h2>2. Menghitung Digit Terakhir</h2>
+<p>
+        Masukkan 12 digit pertama ISBN untuk mencari digit terakhir.
+      </p>
+<input id="isbnDigit" placeholder="Contoh : 978602851932" type="text"/>
+<button onclick="cariDigitTerakhir()">
+        Hitung Digit Terakhir
+      </button>
+<div class="hasil" id="hasilDigit">
+        Hasil akan muncul di sini...
+      </div>
+</div>
+</div>
+<div class="watermark">
+    Created by Nayla Sucia Rahmawati
+  </div>
+<script>
+
+    // ===================================
+    // CEK VALIDITAS ISBN
+    // ===================================
+
+    function cekValiditas(){
+
+      let isbn =
+      document.getElementById("isbnValid").value;
+
+      let hasil =
+      document.getElementById("hasilValid");
+
+      if(isbn.length != 13 || isNaN(isbn)){
+
+        hasil.innerHTML = `
+          <span class="tidakvalid">
+            ISBN harus terdiri dari 13 angka!
+          </span>
+        `;
+
+        return;
+      }
+
+      let total = 0;
+      let langkah = "";
+
+      for(let i = 0; i < 12; i++){
+
+        let angka = parseInt(isbn[i]);
+
+        if(i % 2 == 0){
+
+          total += angka;
+
+          langkah += `
+            Digit ke-${i+1} :
+            ${angka} × 1 = ${angka}<br>
+          `;
+
+        }else{
+
+          total += angka * 3;
+
+          langkah += `
+            Digit ke-${i+1} :
+            ${angka} × 3 = ${angka*3}<br>
+          `;
+        }
+      }
+
+      let checkDigit =
+      (10 - (total % 10)) % 10;
+
+      let digitTerakhir = isbn[12];
+
+      let status = "";
+
+      if(checkDigit == digitTerakhir){
+
+        status = `
+          <span class="valid">
+            ISBN VALID ✅
+          </span>
+        `;
+
+      }else{
+
+        status = `
+          <span class="tidakvalid">
+            ISBN TIDAK VALID ❌
+          </span>
+        `;
+      }
+
+      hasil.innerHTML = `
+
+        <h3>Langkah Penyelesaian</h3>
+
+        <div class="langkah">
+          ${langkah}
+        </div>
+
+        <br>
+
+        Total = <b>${total}</b>
+
+        <br><br>
+
+        Menggunakan rumus:
+        <br>
+
+        (10 - (${total} mod 10)) mod 10
+
+        <br><br>
+
+        = <b>${checkDigit}</b>
+
+        <br><br>
+
+        Digit terakhir ISBN = <b>${digitTerakhir}</b>
+
+        <br><br>
+
+        ${status}
+      `;
+    }
+
+    // ===================================
+    // MENCARI DIGIT TERAKHIR
+    // ===================================
+
+    function cariDigitTerakhir(){
+
+      let isbn =
+      document.getElementById("isbnDigit").value;
+
+      let hasil =
+      document.getElementById("hasilDigit");
+
+      if(isbn.length != 12 || isNaN(isbn)){
+
+        hasil.innerHTML = `
+          <span class="tidakvalid">
+            Input harus terdiri dari 12 angka!
+          </span>
+        `;
+
+        return;
+      }
+
+      let total = 0;
+      let langkah = "";
+
+      for(let i = 0; i < 12; i++){
+
+        let angka = parseInt(isbn[i]);
+
+        if(i % 2 == 0){
+
+          total += angka;
+
+          langkah += `
+            Digit ke-${i+1} :
+            ${angka} × 1 = ${angka}<br>
+          `;
+
+        }else{
+
+          total += angka * 3;
+
+          langkah += `
+            Digit ke-${i+1} :
+            ${angka} × 3 = ${angka*3}<br>
+          `;
+        }
+      }
+
+      let digitTerakhir =
+      (10 - (total % 10)) % 10;
+
+      hasil.innerHTML = `
+
+        <h3>Langkah Penyelesaian</h3>
+
+        <div class="langkah">
+          ${langkah}
+        </div>
+
+        <br>
+
+        Total = <b>${total}</b>
+
+        <br><br>
+
+        Menggunakan rumus:
+        <br>
+
+        (10 - (${total} mod 10)) mod 10
+
+        <br><br>
+
+        = <b>${digitTerakhir}</b>
+
+        <br><br>
+
+        Jadi digit terakhir ISBN adalah:
+
+        <h2>${digitTerakhir}</h2>
+      `;
+    }
+
+  </script>
+</body>
+</html>

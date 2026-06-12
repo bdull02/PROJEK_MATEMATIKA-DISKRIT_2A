@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pembuktian Hukum Aljabar Boolean</title>
+<style>
+    body{
+        font-family: 'Times New Roman', Times, serif, sans-serif;
+        background: #f4f4f4;
+        margin: 20px;
+    }
+
+    .container{
+        max-width: 700px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+    h1{
+        text-align: center;
+        color: darkblue;
+    }
+
+    .box{
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+    }
+
+    input{
+        width: 60px;
+        padding: 8px;
+        margin: 5px;
+    }
+
+    button{
+        padding: 8px 15px;
+        background: #01aacf;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button:hover{
+        background: rgb(36, 176, 118);
+    }
+
+    p{
+        font-weight: bold;
+    }
+</style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Tia Ulhaq Ulaya_2501098</div>
+<div class="container">
+<h1>Pembuktian Hukum Aljabar Boolean</h1>
+<!-- HUKUM DISTRIBUTIF -->
+<div class="box">
+<h2>1. Hukum Distributif</h2>
+<p>a + (bc) = (a+b)(a+c)</p>
+<input id="a1" placeholder="a" type="number"/>
+<input id="b1" placeholder="b" type="number"/>
+<input id="c1" placeholder="c" type="number"/>
+<button onclick="distributif()">Buktikan</button>
+<p id="hasilDistributif"></p>
+</div>
+<!-- HUKUM DE MORGAN -->
+<div class="box">
+<h2>2. Hukum De Morgan</h2>
+<p>(a+b)' = a'b'</p>
+<input id="a2" placeholder="a" type="number"/>
+<input id="b2" placeholder="b" type="number"/>
+<button onclick="demorgan()">Buktikan</button>
+<p id="hasilDemorgan"></p>
+</div>
+</div>
+<script>
+
+function distributif(){
+
+    let a = parseInt(document.getElementById("a1").value);
+    let b = parseInt(document.getElementById("b1").value);
+    let c = parseInt(document.getElementById("c1").value);
+
+    let kiri = a || (b && c);
+    let kanan = (a || b) && (a || c);
+
+    document.getElementById("hasilDistributif").innerHTML =
+    "Ruas Kiri = " + kiri +
+    "<br>Ruas Kanan = " + kanan +
+    "<br><br>Kesimpulan: " +
+    (kiri == kanan ? "Terbukti Benar" : "Tidak Sama");
+}
+
+function demorgan(){
+
+    let a = parseInt(document.getElementById("a2").value);
+    let b = parseInt(document.getElementById("b2").value);
+
+    let kiri = !(a || b);
+    let kanan = (!a && !b);
+
+    document.getElementById("hasilDemorgan").innerHTML =
+    "Ruas Kiri = " + Number(kiri) +
+    "<br>Ruas Kanan = " + Number(kanan) +
+    "<br><br>Kesimpulan: " +
+    (kiri == kanan ? "Terbukti Benar" : "Tidak Sama");
+}
+
+</script>
+</body>
+</html>

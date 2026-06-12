@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Pencari Balikan Modulo</title>
+<style>
+
+body{
+    font-family: Arial;
+    text-align:center;
+    margin-top:50px;
+}
+
+.container{
+    width:500px;
+    margin:auto;
+    border:1px solid black;
+    padding:20px;
+    border-radius:10px;
+}
+
+input{
+    padding:8px;
+    margin:5px;
+}
+
+button{
+    padding:10px 20px;
+    margin-top:10px;
+}
+
+#hasil{
+    margin-top:20px;
+    font-weight:bold;
+}
+
+</style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Zhafira Alfiyya Tabriz_2502150</div>
+<div class="container">
+<h1>Pencari Balikan Modulo</h1>
+<label>Masukkan Nilai a :</label>
+<br/>
+<input id="a" type="number"/>
+<br/><br/>
+<label>Masukkan Modulus m :</label>
+<br/>
+<input id="m" type="number"/>
+<br/><br/>
+<button onclick="cariBalikan()">
+Cari Balikan Modulo
+</button>
+<div id="hasil"></div>
+</div>
+<script>
+
+function cariBalikan(){
+
+let a =
+parseInt(document.getElementById("a").value);
+
+let m =
+parseInt(document.getElementById("m").value);
+
+let invers = -1;
+
+for(let x=1; x<m; x++){
+
+if((a*x)%m===1){
+
+invers = x;
+
+break;
+
+}
+
+}
+
+if(invers!==-1){
+
+document.getElementById("hasil").innerHTML =
+"Balikan modulo dari " +
+a +
+" mod " +
+m +
+" adalah " +
+invers;
+
+}
+else{
+
+document.getElementById("hasil").innerHTML =
+"Balikan modulo tidak ada";
+
+}
+
+}
+
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sistem Pencari Balikan Modulo</title>
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body{
+    min-height:100vh;
+    padding:30px;
+
+    background:
+    radial-gradient(circle,#ffffff80 2px,transparent 2px),
+    linear-gradient(135deg,#e9d5ff,#d8b4fe,#c084fc);
+
+    background-size:25px 25px,100% 100%;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+    background:white;
+    border-radius:25px;
+    padding:30px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.15);
+}
+
+.header{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.header h1{
+    color:#7e22ce;
+    margin-bottom:10px;
+}
+
+.header p{
+    color:#666;
+}
+
+.teddy{
+    font-size:50px;
+    margin-bottom:10px;
+}
+
+.card{
+    background:#faf5ff;
+    border:2px solid #e9d5ff;
+    border-radius:20px;
+    padding:25px;
+}
+
+label{
+    font-weight:bold;
+    color:#6b21a8;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin-top:8px;
+    margin-bottom:15px;
+
+    border:2px solid #d8b4fe;
+    border-radius:12px;
+    font-size:16px;
+}
+
+button{
+    width:100%;
+    padding:14px;
+
+    background:#9333ea;
+    color:white;
+
+    border:none;
+    border-radius:12px;
+
+    cursor:pointer;
+    font-size:16px;
+    font-weight:bold;
+}
+
+button:hover{
+    background:#7e22ce;
+}
+
+#hasil{
+    margin-top:20px;
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    border:1px solid #ddd;
+    line-height:1.8;
+}
+
+.section-title{
+    margin-top:40px;
+    margin-bottom:15px;
+    color:#7e22ce;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+table th{
+    background:#9333ea;
+    color:white;
+}
+
+table th,
+table td{
+    border:1px solid #ddd;
+    padding:12px;
+    text-align:center;
+}
+
+table tr:nth-child(even){
+    background:#faf5ff;
+}
+
+.footer{
+    margin-top:20px;
+    text-align:center;
+    color:#666;
+}
+
+.badge{
+    background:#f3e8ff;
+    color:#6b21a8;
+    padding:10px;
+    border-radius:10px;
+    margin-top:15px;
+}
+
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<div class="teddy">
+🧸💜🟣💜🧸
+</div>
+<h1>SISTEM PENCARI BALIKAN MODULO</h1>
+<p>
+Implementasi Materi Matematika Diskrit
+(Balikan Modulo / Modular Inverse)
+</p>
+</div>
+<div class="card">
+<label>Masukkan Nilai a</label>
+<input id="a" placeholder="Contoh: 7" type="number"/>
+<label>Masukkan Nilai Modulus m</label>
+<input id="m" placeholder="Contoh: 26" type="number"/>
+<button onclick="cariBalikan()">
+Cari Balikan Modulo
+</button>
+<div id="hasil">
+Silakan masukkan nilai a dan modulus m lalu tekan tombol "Cari Balikan Modulo".
+</div>
+</div>
+<h2 class="section-title">
+📋 5 Kasus Uji Coba
+</h2>
+<table>
+<tr>
+<th>No</th>
+<th>Nilai a</th>
+<th>Modulus m</th>
+<th>Hasil Yang Diharapkan</th>
+</tr>
+<tr>
+<td>1</td>
+<td>3</td>
+<td>11</td>
+<td>4</td>
+</tr>
+<tr>
+<td>2</td>
+<td>5</td>
+<td>12</td>
+<td>5</td>
+</tr>
+<tr>
+<td>3</td>
+<td>7</td>
+<td>26</td>
+<td>15</td>
+</tr>
+<tr>
+<td>4</td>
+<td>8</td>
+<td>15</td>
+<td>2</td>
+</tr>
+<tr>
+<td>5</td>
+<td>6</td>
+<td>12</td>
+<td>Tidak Ada</td>
+</tr>
+</table>
+<div class="badge">
+💜 Gunakan 5 kasus di atas untuk screenshot pengujian sistem dan bandingkan dengan perhitungan manual pada laporan DOCS.
+</div>
+<div class="footer">
+<br/>
+© Tugas Matematika Diskrit - Sistem Balikan Modulo
+</div>
+</div>
+<script>
+
+function cariBalikan(){
+
+let a = parseInt(document.getElementById("a").value);
+let m = parseInt(document.getElementById("m").value);
+
+if(isNaN(a) || isNaN(m))
+{
+document.getElementById("hasil").innerHTML =
+"<b>⚠️ Masukkan nilai a dan modulus m terlebih dahulu.</b>";
+return;
+}
+
+let invers = -1;
+let proses = "";
+
+for(let x=1; x<m; x++)
+{
+let hasil = (a*x)%m;
+
+proses +=
+"x = " + x +
+" → (" + a + " × " + x + ") mod " +
+m + " = " + hasil + "<br>";
+
+if(hasil===1)
+{
+invers = x;
+break;
+}
+}
+
+if(invers!==-1)
+{
+document.getElementById("hasil").innerHTML =
+"<h3 style='color:green'>✅ Balikan Modulo Ditemukan</h3>" +
+
+"<b>Mencari x sehingga:</b><br>" +
+a + "x ≡ 1 (mod " + m + ")<br><br>" +
+
+proses +
+
+"<br><hr><br>" +
+
+"<b>Hasil Akhir:</b><br>" +
+
+"Balikan modulo dari <b>" +
+a +
+"</b> mod <b>" +
+m +
+"</b> adalah <b>" +
+invers +
+"</b>";
+
+}
+else
+{
+document.getElementById("hasil").innerHTML =
+"<h3 style='color:red'>❌ Balikan Modulo Tidak Ada</h3>" +
+
+"<b>Mencari x sehingga:</b><br>" +
+a + "x ≡ 1 (mod " + m + ")<br><br>" +
+
+proses +
+
+"<br><hr><br>" +
+
+"<b>Kesimpulan:</b><br>" +
+
+"Tidak ditemukan nilai x yang memenuhi syarat balikan modulo.";
+}
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,2916 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html b:defaultwidgetversion='2' b:version='2' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+
+<head>
+  <meta charset='UTF-8'/>
+  <meta content='width=device-width, initial-scale=1.0' name='viewport'/>
+  <title><data:view.title.escaped/></title>
+
+  <!-- SEO Meta Tags -->
+<!-- SEO Meta Tags -->
+<b:if cond='data:view.isPost'>
+  <meta expr:content='data:post.snippet + &quot; - DiskritProgram: Kumpulan Program Matematika Diskrit.&quot;' name='description'/>
+  <meta expr:content='data:post.title + &quot;, Matematika Diskrit, Program, Solver&quot;' name='keywords'/>
+<b:else/>
+  <meta content='Platform repository program interaktif untuk membantu mahasiswa memahami dan menyelesaikan berbagai permasalahan Matematika Diskrit.' name='description'/>
+  <meta content='Matematika Diskrit, Himpunan, Relasi, Fungsi, Logika, Boolean, Kombinatorika, Teori Bilangan, Matriks, Pohon, Rekursi, ISBN, Program Solver' name='keywords'/>
+</b:if>
+
+<link expr:href='data:blog.canonicalUrl' rel='canonical'/>
+
+<!-- Open Graph -->
+<meta content='website' property='og:type'/>
+<meta content='DiskritProgram' property='og:site_name'/>
+
+<b:if cond='data:view.isPost'>
+  <meta expr:content='data:post.title + &quot; | DiskritProgram&quot;' property='og:title'/>
+  <meta expr:content='data:post.snippet' property='og:description'/>
+  <meta expr:content='data:post.url' property='og:url'/>
+
+  <b:if cond='data:post.featuredImage'>
+    <meta expr:content='data:post.featuredImage' property='og:image'/>
+  </b:if>
+
+<b:else/>
+
+  <meta content='DiskritProgram | Kumpulan Program Matematika Diskrit' property='og:title'/>
+  <meta content='Platform repository program interaktif untuk membantu mahasiswa memahami dan menyelesaikan berbagai permasalahan Matematika Diskrit.' property='og:description'/>
+  <meta expr:content='data:blog.homepageUrl' property='og:url'/>
+
+</b:if>
+
+<!-- Twitter Card -->
+<meta content='summary_large_image' name='twitter:card'/>
+<meta content='@DiskritProgram' name='twitter:site'/>
+
+<b:if cond='data:view.isPost'>
+  <meta expr:content='data:post.title + &quot; | DiskritProgram&quot;' name='twitter:title'/>
+  <meta expr:content='data:post.snippet' name='twitter:description'/>
+<b:else/>
+  <meta content='DiskritProgram | Kumpulan Program Matematika Diskrit' name='twitter:title'/>
+  <meta content='Platform repository program interaktif untuk membantu mahasiswa memahami dan menyelesaikan berbagai permasalahan Matematika Diskrit.' name='twitter:description'/>
+</b:if>
+
+  <!-- Schema.org JSON-LD -->
+  <script type='application/ld+json'>
+  {
+    &quot;@context&quot;: &quot;https://schema.org&quot;,
+    &quot;@type&quot;: &quot;WebSite&quot;,
+    &quot;name&quot;: &quot;DiskritProgram&quot;,
+    &quot;url&quot;: &quot;<data:blog.homepageUrl/>&quot;,
+    &quot;description&quot;: &quot;Platform repository program interaktif untuk membantu mahasiswa memahami dan menyelesaikan berbagai permasalahan Matematika Diskrit.&quot;,
+    &quot;potentialAction&quot;: {
+      &quot;@type&quot;: &quot;SearchAction&quot;,
+      &quot;target&quot;: &quot;<data:blog.homepageUrl/>search?q={search_term_string}&quot;,
+      &quot;query-input&quot;: &quot;required name=search_term_string&quot;
+    }
+  }
+  </script>
+
+  <!-- Google Fonts -->
+  <link href='https://fonts.googleapis.com' rel='preconnect'/>
+  <link crossorigin='anonymous' href='https://fonts.gstatic.com' rel='preconnect'/>
+  <link href='https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap' rel='stylesheet'/>
+
+  <b:skin><![CDATA[
+  
+/* ============================================================
+   DISKRITPROGRAM — BLOGGER XML THEME
+   Modern SaaS Dashboard | Educational Repository
+   ============================================================ */
+
+/* === CSS VARIABLES === */
+:root {
+  --dp-primary: #2563EB;
+  --dp-primary-dark: #1D4ED8;
+  --dp-primary-light: #3B82F6;
+  --dp-primary-bg: #EFF6FF;
+  --dp-secondary: #0F172A;
+  --dp-bg: #F8FAFC;
+  --dp-card: #FFFFFF;
+  --dp-border: #E2E8F0;
+  --dp-border-light: #F1F5F9;
+  --dp-success: #10B981;
+  --dp-warning: #F59E0B;
+  --dp-danger: #EF4444;
+  --dp-text-primary: #0F172A;
+  --dp-text-secondary: #475569;
+  --dp-text-muted: #94A3B8;
+  --dp-text-inverse: #FFFFFF;
+  --dp-sidebar-width: 280px;
+  --dp-topbar-height: 80px;
+  --dp-font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --dp-font-mono: 'JetBrains Mono', 'Courier New', monospace;
+  --dp-radius-sm: 6px;
+  --dp-radius: 10px;
+  --dp-radius-lg: 16px;
+  --dp-radius-xl: 24px;
+  --dp-shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --dp-shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -1px rgba(0,0,0,0.04);
+  --dp-shadow-md: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.04);
+  --dp-shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.08), 0 10px 10px -5px rgba(0,0,0,0.03);
+  --dp-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --dp-transition-slow: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* === DARK MODE === */
+body.dp-dark {
+  --dp-primary: #3B82F6;
+  --dp-primary-dark: #2563EB;
+  --dp-primary-light: #60A5FA;
+  --dp-primary-bg: #1E3A5F;
+  --dp-secondary: #F8FAFC;
+  --dp-bg: #0F172A;
+  --dp-card: #1E293B;
+  --dp-border: #334155;
+  --dp-border-light: #1E293B;
+  --dp-text-primary: #F1F5F9;
+  --dp-text-secondary: #94A3B8;
+  --dp-text-muted: #64748B;
+  --dp-shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --dp-shadow: 0 4px 6px -1px rgba(0,0,0,0.4);
+  --dp-shadow-md: 0 10px 15px -3px rgba(0,0,0,0.4);
+  --dp-shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.4);
+}
+
+/* === RESET & BASE === */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--dp-font-sans);
+  background-color: var(--dp-bg);
+  color: var(--dp-text-primary);
+  line-height: 1.6;
+  font-size: 15px;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+a {
+  color: var(--dp-primary);
+  text-decoration: none;
+  transition: var(--dp-transition);
+}
+a:hover { color: var(--dp-primary-dark); }
+
+img { max-width: 100%; height: auto; display: block; }
+
+/* === LAYOUT WRAPPER === */
+.dp-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* === SIDEBAR === */
+.dp-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--dp-sidebar-width);
+  height: 100vh;
+  background: var(--dp-card);
+  border-right: 1px solid var(--dp-border);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease;
+}
+
+.dp-sidebar::-webkit-scrollbar { width: 4px; }
+.dp-sidebar::-webkit-scrollbar-track { background: transparent; }
+.dp-sidebar::-webkit-scrollbar-thumb { background: var(--dp-border); border-radius: 2px; }
+
+.dp-sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid var(--dp-border-light);
+  text-decoration: none;
+}
+
+.dp-sidebar-logo-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--dp-primary), var(--dp-primary-dark));
+  border-radius: var(--dp-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.dp-sidebar-logo-text { flex: 1; }
+
+.dp-sidebar-logo-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--dp-text-primary);
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.dp-sidebar-logo-sub {
+  font-size: 11px;
+  color: var(--dp-text-muted);
+  line-height: 1.3;
+  margin-top: 2px;
+}
+
+.dp-sidebar-nav {
+  flex: 1;
+  padding: 16px 12px;
+  overflow-y: auto;
+}
+
+.dp-nav-section {
+  margin-bottom: 20px;
+}
+
+.dp-nav-section-title {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--dp-text-muted);
+  padding: 0 8px;
+  margin-bottom: 6px;
+}
+
+.dp-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: var(--dp-radius-sm);
+  color: var(--dp-text-secondary);
+  font-size: 13.5px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: var(--dp-transition);
+  cursor: pointer;
+  position: relative;
+}
+
+.dp-nav-item:hover {
+  background: var(--dp-primary-bg);
+  color: var(--dp-primary);
+}
+
+.dp-nav-item.active {
+  background: var(--dp-primary-bg);
+  color: var(--dp-primary);
+  font-weight: 600;
+}
+
+.dp-nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 20px;
+  background: var(--dp-primary);
+  border-radius: 0 3px 3px 0;
+}
+
+.dp-nav-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.dp-nav-badge {
+  margin-left: auto;
+  background: var(--dp-primary-bg);
+  color: var(--dp-primary);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.dp-nav-item.active .dp-nav-badge {
+  background: var(--dp-primary);
+  color: white;
+}
+
+.dp-sidebar-footer {
+  padding: 12px;
+  border-top: 1px solid var(--dp-border-light);
+}
+
+/* === MAIN CONTENT === */
+.dp-main {
+  margin-left: var(--dp-sidebar-width);
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* === TOPBAR === */
+.dp-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: var(--dp-topbar-height);
+  background: var(--dp-card);
+  border-bottom: 1px solid var(--dp-border);
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  gap: 16px;
+  transition: background 0.3s ease, border-color 0.3s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.dp-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.dp-mobile-menu-btn {
+  display: none;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--dp-border);
+  border-radius: var(--dp-radius-sm);
+  background: transparent;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  color: var(--dp-text-secondary);
+  transition: var(--dp-transition);
+}
+
+.dp-mobile-menu-btn:hover {
+  background: var(--dp-bg);
+  color: var(--dp-text-primary);
+}
+
+/* === SEARCH === */
+.dp-search-wrapper {
+  position: relative;
+  flex: 1;
+  max-width: 480px;
+}
+
+.dp-search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--dp-text-muted);
+  pointer-events: none;
+}
+
+.dp-search-input {
+  width: 100%;
+  height: 40px;
+  padding: 0 14px 0 42px;
+  background: var(--dp-bg);
+  border: 1px solid var(--dp-border);
+  border-radius: var(--dp-radius);
+  font-family: var(--dp-font-sans);
+  font-size: 13.5px;
+  color: var(--dp-text-primary);
+  outline: none;
+  transition: var(--dp-transition);
+}
+
+.dp-search-input::placeholder { color: var(--dp-text-muted); }
+
+.dp-search-input:focus {
+  border-color: var(--dp-primary);
+  background: var(--dp-card);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.dp-search-results {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: var(--dp-card);
+  border: 1px solid var(--dp-border);
+  border-radius: var(--dp-radius);
+  box-shadow: var(--dp-shadow-lg);
+  max-height: 360px;
+  overflow-y: auto;
+  z-index: 200;
+  display: none;
+}
+
+.dp-search-results.active { display: block; }
+
+.dp-search-result-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: var(--dp-transition);
+  border-bottom: 1px solid var(--dp-border-light);
+  text-decoration: none;
+  color: var(--dp-text-primary);
+}
+
+.dp-search-result-item:last-child { border-bottom: none; }
+.dp-search-result-item:hover { background: var(--dp-bg); }
+
+.dp-search-result-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--dp-primary-bg);
+  border-radius: var(--dp-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.dp-search-result-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--dp-text-primary);
+  line-height: 1.3;
+}
+
+.dp-search-result-meta {
+  font-size: 11px;
+  color: var(--dp-text-muted);
+  margin-top: 2px;
+}
+
+.dp-search-empty {
+  padding: 20px 16px;
+  text-align: center;
+  color: var(--dp-text-muted);
+  font-size: 13px;
+}
+
+/* === TOPBAR RIGHT === */
+.dp-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dp-topbar-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--dp-border);
+  border-radius: var(--dp-radius-sm);
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--dp-text-secondary);
+  transition: var(--dp-transition);
+  font-size: 16px;
+}
+
+.dp-topbar-btn:hover {
+  background: var(--dp-bg);
+  color: var(--dp-text-primary);
+  border-color: var(--dp-primary);
+}
+
+/* === PAGE CONTENT === */
+.dp-page-content {
+  flex: 1;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* === HERO SECTION === */
+.dp-hero {
+  background: linear-gradient(135deg, #001B5E 0%, #0A2A7A 30%, #1B40A8 65%, #2563EB 100%);
+  padding: 60px 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.dp-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 70% 50%, rgba(37, 99, 235, 0.4) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 20%, rgba(59, 130, 246, 0.2) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.dp-hero::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.dp-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 40px;
+  align-items: center;
+  max-width: 1200px;
+  position: relative;
+  z-index: 1;
+}
+
+.dp-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.9);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  backdrop-filter: blur(4px);
+}
+
+.dp-hero-title {
+  font-size: clamp(26px, 3.5vw, 40px);
+  font-weight: 800;
+  color: white;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+  margin-bottom: 16px;
+}
+
+.dp-hero-title span {
+  background: linear-gradient(135deg, #60A5FA, #93C5FD);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dp-hero-desc {
+  font-size: 15px;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.7;
+  max-width: 520px;
+  margin-bottom: 28px;
+}
+
+.dp-hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.dp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: var(--dp-radius);
+  font-family: var(--dp-font-sans);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--dp-transition);
+  border: none;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.dp-btn-primary {
+  background: white;
+  color: var(--dp-primary-dark);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+}
+
+.dp-btn-primary:hover {
+  background: #F0F4FF;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  color: var(--dp-primary-dark);
+}
+
+.dp-btn-outline {
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.3);
+  backdrop-filter: blur(4px);
+}
+
+.dp-btn-outline:hover {
+  background: rgba(255,255,255,0.18);
+  border-color: rgba(255,255,255,0.5);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.dp-hero-code-card {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--dp-radius-lg);
+  padding: 20px;
+  backdrop-filter: blur(8px);
+  min-width: 300px;
+  max-width: 360px;
+}
+
+.dp-hero-code-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.dp-code-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.dp-code-dot.red { background: #FF5F57; }
+.dp-code-dot.yellow { background: #FEBC2E; }
+.dp-code-dot.green { background: #28C840; }
+
+.dp-hero-code-title {
+  margin-left: 8px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  font-family: var(--dp-font-mono);
+}
+
+.dp-hero-code pre {
+  font-family: var(--dp-font-mono);
+  font-size: 12px;
+  line-height: 1.7;
+  color: #E2E8F0;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.dp-code-kw { color: #C084FC; }
+.dp-code-fn { color: #60A5FA; }
+.dp-code-str { color: #86EFAC; }
+.dp-code-num { color: #FCA5A5; }
+.dp-code-cm { color: #64748B; }
+
+/* === STATS BAR === */
+.dp-stats-bar {
+  background: var(--dp-card);
+  border-bottom: 1px solid var(--dp-border);
+  padding: 18px 40px;
+  display: flex;
+  gap: 0;
+}
+
+.dp-stat-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px;
+  border-right: 1px solid var(--dp-border);
+}
+
+.dp-stat-item:first-child { padding-left: 0; }
+.dp-stat-item:last-child { border-right: none; }
+
+.dp-stat-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--dp-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.dp-stat-icon.blue { background: #EFF6FF; }
+.dp-stat-icon.green { background: #ECFDF5; }
+.dp-stat-icon.orange { background: #FFFBEB; }
+.dp-stat-icon.purple { background: #F5F3FF; }
+
+body.dp-dark .dp-stat-icon.blue { background: rgba(37,99,235,0.15); }
+body.dp-dark .dp-stat-icon.green { background: rgba(16,185,129,0.15); }
+body.dp-dark .dp-stat-icon.orange { background: rgba(245,158,11,0.15); }
+body.dp-dark .dp-stat-icon.purple { background: rgba(139,92,246,0.15); }
+
+.dp-stat-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--dp-text-primary);
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+
+.dp-stat-label {
+  font-size: 12px;
+  color: var(--dp-text-muted);
+  margin-top: 2px;
+}
+
+/* === SECTION HEADER === */
+.dp-section-header {
+  padding: 36px 40px 20px;
+}
+
+.dp-section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--dp-text-primary);
+  letter-spacing: -0.3px;
+  margin-bottom: 4px;
+}
+
+.dp-section-sub {
+  font-size: 13.5px;
+  color: var(--dp-text-secondary);
+}
+
+/* === CATEGORY GRID === */
+.dp-category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 0 40px 36px;
+}
+
+.dp-cat-card {
+  background: var(--dp-card);
+  border: 1px solid var(--dp-border);
+  border-radius: var(--dp-radius-lg);
+  padding: 20px;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: var(--dp-transition-slow);
+  position: relative;
+  overflow: hidden;
+}
+
+.dp-cat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--cat-color, var(--dp-primary));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+  border-radius: 0 0 3px 3px;
+}
+
+.dp-cat-card:hover {
+  border-color: var(--cat-color, var(--dp-primary));
+  transform: translateY(-3px);
+  box-shadow: var(--dp-shadow-md);
+}
+
+.dp-cat-card:hover::before { transform: scaleX(1); }
+
+.dp-cat-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--dp-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  background: var(--cat-bg, var(--dp-primary-bg));
+  flex-shrink: 0;
+}
+
+.dp-cat-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--dp-text-primary);
+  margin-bottom: 4px;
+  letter-spacing: -0.2px;
+}
+
+.dp-cat-desc {
+  font-size: 12px;
+  color: var(--dp-text-secondary);
+  line-height: 1.5;
+  flex: 1;
+}
+
+.dp-cat-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid var(--dp-border-light);
+}
+
+.dp-cat-count {
+  font-size: 11px;
+  color: var(--dp-text-muted);
+  font-weight: 500;
+}
+
+.dp-cat-link {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cat-color, var(--dp-primary));
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* === POST LIST === */
+.dp-posts-section {
+  padding: 0 40px 40px;
+}
+
+.dp-post-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.dp-post-card {
+  background: var(--dp-card);
+  border: 1px solid var(--dp-border);
+  border-radius: var(--dp-radius-lg);
+  overflow: hidden;
+  transition: var(--dp-transition-slow);
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.dp-post-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--dp-shadow-md);
+  border-color: var(--dp-primary);
+}
+
+.dp-post-card-header {
+  padding: 18px 18px 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dp-post-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: var(--dp-primary-bg);
+  color: var(--dp-primary);
+}
+
+.dp-post-card-body {
+  padding: 12px 18px 16px;
+  flex: 1;
+}
+
+.dp-post-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--dp-text-primary);
+  line-height: 1.4;
+  margin-bottom: 6px;
+  letter-spacing: -0.2px;
+}
+
+.dp-post-snippet {
+  font-size: 12px;
+  color: var(--dp-text-secondary);
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.dp-post-card-footer {
+  padding: 12px 18px;
+  border-top: 1px solid var(--dp-border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dp-post-date {
+  font-size: 11px;
+  color: var(--dp-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dp-post-arrow {
+  font-size: 13px;
+  color: var(--dp-primary);
+  transition: transform 0.2s ease;
+}
+
+.dp-post-card:hover .dp-post-arrow { transform: translateX(4px); }
+
+/* === SINGLE POST / PROGRAM === */
+.dp-post-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 36px 40px;
+}
+
+.dp-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--dp-text-muted);
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.dp-breadcrumb a {
+  color: var(--dp-text-muted);
+  transition: var(--dp-transition);
+}
+.dp-breadcrumb a:hover { color: var(--dp-primary); }
+.dp-breadcrumb-sep { color: var(--dp-border); }
+.dp-breadcrumb-current { color: var(--dp-text-secondary); font-weight: 500; }
+
+.dp-post-header {
+  margin-bottom: 28px;
+}
+
+.dp-post-labels {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.dp-post-label-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: var(--dp-primary-bg);
+  color: var(--dp-primary);
+  text-decoration: none;
+  transition: var(--dp-transition);
+}
+
+.dp-post-label-tag:hover {
+  background: var(--dp-primary);
+  color: white;
+}
+
+.dp-post-main-title {
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 800;
+  color: var(--dp-text-primary);
+  letter-spacing: -0.5px;
+  line-height: 1.25;
+  margin-bottom: 10px;
+}
+
+.dp-post-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--dp-text-muted);
+  flex-wrap: wrap;
+}
+
+.dp-post-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dp-post-content {
+  background: var(--dp-card);
+  border: 1px solid var(--dp-border);
+  border-radius: var(--dp-radius-lg);
+  overflow: hidden;
+}
+
+.dp-post-content-inner {
+  padding: 32px;
+}
+
+.dp-post-content-inner h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--dp-text-primary);
+  margin: 28px 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--dp-border);
+  letter-spacing: -0.3px;
+}
+
+.dp-post-content-inner h2:first-child { margin-top: 0; }
+
+.dp-post-content-inner h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--dp-text-primary);
+  margin: 20px 0 8px;
+}
+
+.dp-post-content-inner p {
+  font-size: 14px;
+  color: var(--dp-text-secondary);
+  line-height: 1.75;
+  margin-bottom: 14px;
+}
+
+.dp-post-content-inner ul, .dp-post-content-inner ol {
+  padding-left: 20px;
+  margin-bottom: 14px;
+}
+
+.dp-post-content-inner li {
+  font-size: 14px;
+  color: var(--dp-text-secondary);
+  line-height: 1.75;
+  margin-bottom: 4px;
+}
+
+.dp-post-content-inner pre {
+  background: var(--dp-secondary);
+  color: #E2E8F0;
+  border-radius: var(--dp-radius);
+  padding: 18px;
+  overflow-x: auto;
+  font-family: var(--dp-font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 14px 0;
+}
+
+body.dp-dark .dp-post-content-inner pre {
+  background: #0F172A;
+  border: 1px solid var(--dp-border);
+}
+
+.dp-post-content-inner code {
+  font-family: var(--dp-font-mono);
+  font-size: 12.5px;
+  background: var(--dp-bg);
+  border: 1px solid var(--dp-border);
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: var(--dp-primary);
+}
+
+.dp-post-content-inner pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+}
+
+/* === SOLVER CONTAINER === */
+.dp-solver-wrapper {
+  margin: 20px 0;
+  border: 2px solid var(--dp-primary);
+  border-radius: var(--dp-radius-lg);
+  overflow: hidden;
+  background: var(--dp-card);
+}
+
+.dp-solver-header {
+  background: linear-gradient(135deg, var(--dp-primary), var(--dp-primary-dark));
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dp-solver-header-icon {
+  font-size: 18px;
+}
+
+.dp-solver-header-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: white;
+  flex: 1;
+}
+
+.dp-solver-header-badge {
+  background: rgba(255,255,255,0.2);
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.solver-container {
+  padding: 20px;
+  background: var(--dp-card);
+}
+
+/* Isolation for student solver styles */
+.solver-container * {
+  box-sizing: border-box;
+}
+
+/* === LABEL SEARCH PAGE === */
+.dp-label-page {
+  padding: 36px 40px;
+}
+
+.dp-label-header {
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--dp-border);
+}
+
+.dp-label-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--dp-primary-bg);
+  color: var(--dp-primary);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dp-label-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--dp-text-primary);
+  letter-spacing: -0.5px;
+  margin-bottom: 6px;
+}
+
+.dp-label-desc {
+  font-size: 14px;
+  color: var(--dp-text-secondary);
+}
+
+/* === ABOUT PAGE === */
+.dp-about-page {
+  padding: 36px 40px;
+  max-width: 900px;
+}
+
+.dp-about-hero {
+  background: linear-gradient(135deg, var(--dp-primary), var(--dp-primary-dark));
+  border-radius: var(--dp-radius-xl);
+  padding: 48px;
+  color: white;
+  margin-bottom: 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.dp-about-hero::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -10%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+}
+
+.dp-about-title {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+  position: relative;
+  z-index: 1;
+}
+
+.dp-about-subtitle {
+  font-size: 15px;
+  opacity: 0.8;
+  line-height: 1.7;
+  max-width: 500px;
+  position: relative;
+  z-index: 1;
+}
+
+.dp-info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.dp-info-card {
+  background: var(--dp-card);
+  border: 1px solid var(--dp-border);
+  border-radius: var(--dp-radius-lg);
+  padding: 20px;
+  text-align: center;
+}
+
+.dp-info-card-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.dp-info-card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--dp-text-primary);
+  margin-bottom: 6px;
+}
+
+.dp-info-card-text {
+  font-size: 12.5px;
+  color: var(--dp-text-secondary);
+  line-height: 1.6;
+}
+
+/* === PAGINATION === */
+.dp-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 28px 40px;
+}
+
+.dp-page-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid var(--dp-border);
+  border-radius: var(--dp-radius);
+  background: var(--dp-card);
+  color: var(--dp-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--dp-transition);
+  text-decoration: none;
+  font-family: var(--dp-font-sans);
+}
+
+.dp-page-btn:hover {
+  border-color: var(--dp-primary);
+  color: var(--dp-primary);
+  background: var(--dp-primary-bg);
+}
+
+/* === FOOTER === */
+.dp-footer {
+  background: var(--dp-card);
+  border-top: 1px solid var(--dp-border);
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.dp-footer-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--dp-text-muted);
+}
+
+.dp-footer-logo {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--dp-primary);
+}
+
+.dp-footer-links {
+  display: flex;
+  gap: 16px;
+}
+
+.dp-footer-links a {
+  font-size: 12px;
+  color: var(--dp-text-muted);
+  text-decoration: none;
+  transition: var(--dp-transition);
+}
+
+.dp-footer-links a:hover { color: var(--dp-primary); }
+
+/* === SIDEBAR OVERLAY (mobile) === */
+.dp-sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 90;
+  backdrop-filter: blur(2px);
+}
+
+.dp-sidebar-overlay.active { display: block; }
+
+/* === SCROLL TO TOP === */
+.dp-scroll-top {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 40px;
+  height: 40px;
+  background: var(--dp-primary);
+  color: white;
+  border: none;
+  border-radius: var(--dp-radius);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  box-shadow: var(--dp-shadow-md);
+  transition: var(--dp-transition);
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  z-index: 80;
+}
+
+.dp-scroll-top.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+.dp-scroll-top:hover {
+  background: var(--dp-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--dp-shadow-lg);
+}
+
+/* === UTILITY === */
+.dp-divider {
+  height: 1px;
+  background: var(--dp-border);
+  margin: 0 40px;
+}
+
+.dp-empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--dp-text-muted);
+}
+
+.dp-empty-state-icon { font-size: 48px; margin-bottom: 14px; }
+.dp-empty-state-title { font-size: 17px; font-weight: 700; color: var(--dp-text-secondary); margin-bottom: 6px; }
+.dp-empty-state-text { font-size: 13.5px; line-height: 1.6; }
+
+/* === INFO BOX === */
+.dp-info-box {
+  display: flex;
+  gap: 14px;
+  background: var(--dp-primary-bg);
+  border: 1px solid rgba(37,99,235,0.2);
+  border-radius: var(--dp-radius);
+  padding: 16px;
+  margin: 0 40px 28px;
+}
+
+.dp-info-box-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.dp-info-box-content {}
+.dp-info-box-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--dp-primary);
+  margin-bottom: 4px;
+}
+
+.dp-info-box-text {
+  font-size: 12.5px;
+  color: var(--dp-text-secondary);
+  line-height: 1.5;
+}
+
+.dp-info-box-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--dp-primary);
+  background: var(--dp-card);
+  border: 1px solid var(--dp-border);
+  border-radius: var(--dp-radius-sm);
+  padding: 6px 14px;
+  margin-left: auto;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: var(--dp-transition);
+  align-self: center;
+}
+
+.dp-info-box-link:hover {
+  background: var(--dp-primary);
+  color: white;
+  border-color: var(--dp-primary);
+}
+
+/* === LOADING === */
+.dp-loading {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--dp-border);
+  border-top-color: var(--dp-primary);
+  border-radius: 50%;
+  animation: dp-spin 0.6s linear infinite;
+}
+
+@keyframes dp-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* === ANIMATIONS === */
+@keyframes dp-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dp-animate-in {
+  animation: dp-fade-in 0.4s ease both;
+}
+
+.dp-animate-delay-1 { animation-delay: 0.1s; }
+.dp-animate-delay-2 { animation-delay: 0.2s; }
+.dp-animate-delay-3 { animation-delay: 0.3s; }
+.dp-animate-delay-4 { animation-delay: 0.4s; }
+
+/* === RESPONSIVE === */
+@media (max-width: 1200px) {
+  .dp-category-grid { grid-template-columns: repeat(3, 1fr); }
+  .dp-post-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 1024px) {
+  .dp-hero { padding: 40px 28px; }
+  .dp-hero-grid { grid-template-columns: 1fr; }
+  .dp-hero-code-card { display: none; }
+  .dp-section-header, .dp-posts-section, .dp-label-page, .dp-about-page { padding-left: 28px; padding-right: 28px; }
+  .dp-category-grid { padding: 0 28px 28px; }
+  .dp-stats-bar { padding: 14px 28px; flex-wrap: wrap; gap: 10px; }
+  .dp-stat-item { min-width: 150px; border-right: none; padding: 8px 10px; }
+  .dp-footer, .dp-info-box, .dp-divider { margin-left: 0; margin-right: 0; padding-left: 28px; padding-right: 28px; }
+}
+
+@media (max-width: 900px) {
+  :root { --dp-sidebar-width: 0px; }
+  .dp-sidebar {
+    width: 280px;
+    transform: translateX(-100%);
+  }
+  .dp-sidebar.open { transform: translateX(0); }
+  .dp-main { margin-left: 0; }
+  .dp-mobile-menu-btn { display: flex; }
+  .dp-category-grid { grid-template-columns: repeat(2, 1fr); }
+  .dp-info-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .dp-hero { padding: 28px 16px; }
+  .dp-section-header, .dp-posts-section, .dp-label-page, .dp-about-page, .dp-post-page { padding: 20px 16px; }
+  .dp-category-grid { grid-template-columns: 1fr; padding: 0 16px 20px; }
+  .dp-post-grid { grid-template-columns: 1fr; }
+  .dp-stats-bar { padding: 12px 16px; }
+  .dp-topbar { padding: 0 16px; }
+  .dp-hero-actions { flex-direction: column; }
+  .dp-btn { width: 100%; justify-content: center; }
+  .dp-footer { padding: 16px; flex-direction: column; text-align: center; }
+  .dp-info-grid { grid-template-columns: 1fr; }
+  .dp-pagination { padding: 20px 16px; }
+  .dp-about-hero { padding: 28px; }
+  .dp-info-box { flex-direction: column; margin: 0 16px 20px; }
+  .dp-info-box-link { width: 100%; justify-content: center; }
+  .dp-post-content-inner { padding: 20px; }
+}
+
+/* === PRINT === */
+@media print {
+  .dp-sidebar, .dp-topbar, .dp-footer, .dp-scroll-top { display: none !important; }
+  .dp-main { margin-left: 0 !important; }
+  .dp-post-page { padding: 20px !important; }
+}
+  
+  ]]></b:skin>
+
+  <!-- Favicon inline SVG -->
+  <link href='data:image/svg+xml,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 32 32&quot;&gt;&lt;rect width=&quot;32&quot; height=&quot;32&quot; rx=&quot;8&quot; fill=&quot;%232563EB&quot;/&gt;&lt;text x=&quot;16&quot; y=&quot;22&quot; text-anchor=&quot;middle&quot; font-family=&quot;monospace&quot; font-weight=&quot;bold&quot; font-size=&quot;18&quot; fill=&quot;white&quot;&gt;Σ&lt;/text&gt;&lt;/svg&gt;' rel='icon' type='image/svg+xml'/>
+
+  <b:include data='blog' name='all-head-content'/>
+</head>
+
+<body expr:class='&quot;dp-body&quot; + (data:blog.languageDirection == &quot;rtl&quot; ? &quot; rtl&quot; : &quot;&quot;)'>
+
+<!-- Sidebar Overlay -->
+<div class='dp-sidebar-overlay' id='dpSidebarOverlay' onclick='dpToggleSidebar(false)'/>
+
+<!-- Scroll to Top -->
+<button class='dp-scroll-top' id='dpScrollTop' onclick='window.scrollTo({top:0,behavior:&quot;smooth&quot;})' title='Kembali ke atas'>&#9650;</button>
+
+<!-- ============================================================
+     LAYOUT
+     ============================================================ -->
+<div class='dp-layout'>
+
+  <!-- ========================
+       SIDEBAR
+       ======================== -->
+  <aside class='dp-sidebar' id='dpSidebar'>
+
+    <!-- Logo -->
+    <a class='dp-sidebar-logo' expr:href='data:blog.homepageUrl'>
+      <div class='dp-sidebar-logo-icon'>
+        <svg fill='none' height='22' viewBox='0 0 22 22' width='22' xmlns='http://www.w3.org/2000/svg'>
+          <rect fill='white' fill-opacity='0.9' height='7' rx='1.5' width='7' x='2' y='2'/>
+          <rect fill='white' fill-opacity='0.5' height='7' rx='1.5' width='7' x='13' y='2'/>
+          <rect fill='white' fill-opacity='0.5' height='7' rx='1.5' width='7' x='2' y='13'/>
+          <rect fill='white' fill-opacity='0.9' height='7' rx='1.5' width='7' x='13' y='13'/>
+        </svg>
+      </div>
+      <div class='dp-sidebar-logo-text'>
+        <div class='dp-sidebar-logo-name'>DiskritProgram</div>
+        <div class='dp-sidebar-logo-sub'>Matematika Diskrit</div>
+      </div>
+    </a>
+
+    <!-- Navigation -->
+    <nav aria-label='Navigasi Utama' class='dp-sidebar-nav' role='navigation'>
+
+      <!-- Main Navigation -->
+      <div class='dp-nav-section'>
+        <div class='dp-nav-section-title'>Navigasi</div>
+
+        <a expr:class='&quot;dp-nav-item&quot; + (data:view.isHomepage ? &quot; active&quot; : &quot;&quot;)' expr:href='data:blog.homepageUrl'>
+          <span class='dp-nav-icon'>
+            <svg fill='none' height='16' viewBox='0 0 16 16' width='16'>
+              <path d='M2 6.5L8 2l6 4.5V14a1 1 0 01-1 1H3a1 1 0 01-1-1V6.5z' stroke='currentColor' stroke-linejoin='round' stroke-width='1.4'/>
+              <path d='M6 15V9.5h4V15' stroke='currentColor' stroke-linejoin='round' stroke-width='1.4'/>
+            </svg>
+          </span>
+          <span>Dashboard</span>
+        </a>
+
+        <a class='dp-nav-item' expr:href='data:blog.homepageUrl + &quot;?view=mosaic&quot;'>
+          <span class='dp-nav-icon'>
+            <svg fill='none' height='16' viewBox='0 0 16 16' width='16'>
+              <rect height='5' rx='1' stroke='currentColor' stroke-width='1.4' width='5' x='2' y='2'/>
+              <rect height='5' rx='1' stroke='currentColor' stroke-width='1.4' width='5' x='9' y='2'/>
+              <rect height='5' rx='1' stroke='currentColor' stroke-width='1.4' width='5' x='2' y='9'/>
+              <rect height='5' rx='1' stroke='currentColor' stroke-width='1.4' width='5' x='9' y='9'/>
+            </svg>
+          </span>
+          <span>Semua Program</span>
+        </a>
+
+      </div>
+
+      <!-- Materi -->
+      <div class='dp-nav-section'>
+        <div class='dp-nav-section-title'>Materi</div>
+
+        <a class='dp-nav-item' expr:href='data:blog.homepageUrl + &quot;search/label/Himpunan&quot;'>
+          <span class='dp-nav-icon'>
+            <svg fill='none' height='16' viewBox='0 0 16 16' width='16'>
+              <circle cx='6' cy='8' r='4' stroke='currentColor' stroke-width='1.4'/>
+              <circle cx='10' cy='8' r='4' stroke='currentColor' stroke-width='1.4'/>
+            </svg>
+          </span>
+          <span>Himpunan</span>
+          <span class='dp-nav-badge'>9</span>
+        </a>
+
+        <a class='dp-nav-item' expr:href='data:blog.homepageUrl + &quot;search/label/Relasi-Fungsi&quot;'>
+          <span class='dp-nav-icon'>
+            <svg fill='none' height='16' viewBox='0 0 16 16' width='16'>
+              <circle cx='3.5' cy='5' r='1.5' stroke='currentColor' stroke-width='1.3'/>
+              <circle cx='3.5' cy='11' r='1.5' stroke='currentColor' stroke-width='1.3'/>
+              <circle cx='12.5' cy='8' r='1.5' stroke='currentColor' stroke-width='1.3'/>
+              <path d='M5 5.5L11 8M5 10.5L11 8' stroke='currentColor' stroke-linecap='round' stroke-width='1.3'/>
+            </svg>
+          </span>
+          <span>Relasi &amp; Fungsi</span>
+          <span class='dp-nav-badge'>9</span>
+        </a>
+
+        <a class='dp-nav-item' expr:href='data:blog.homepageUrl + &quot;search/label/Logika-Matematika&quot;'>
+          <span class='dp-nav-icon'>
+            <svg fill='none' height='16' viewBox='0 0 16 16' width='16'>
+              <path d='M3 4h4l2 4-2 4H3l2-4-2-4z' stroke='currentColor' stroke-linejoin='round' stroke-width='1.3'/>
+              <path d='M9 8h4' stroke='currentColor' stroke-linecap='round' stroke-width='1.3'/>
+              <path d='M11 6v4' stroke='currentColor' stroke-linecap='round' stroke-width='1.3'/>
+            </svg>
+          </span>
+          <span>Logika Matematika</span>
+          <span class='dp-nav-badge'>3</span>
+        </a>
+
+        <a class='dp-nav-item' expr:href='data:blog.homepageUrl + &quot;search/label/Aljabar-Boolean&quot;'>
+          <span class='dp-nav-icon'>
+            <svg fill='none' height='16' viewBox='0 0 16 16' width='16'>
+              <rect height='4' rx='1' stroke='currentColor' stroke-width='1.3' width='4' x='2' y='6'/>
+              <rect height='4' rx='1' stroke='currentColor' stroke-width='1.3' width='4' x='10' y='6'/>
+              <path d='M6 8h4' stroke='currentColor' stroke-linecap='round' stroke-width='1.3'/>
+              <path d='M4 3v2M12 3v2M4 11v2M12 11v2' stroke='currentColor' stroke-linecap='round' stroke-width='1.3'/>
+            </svg>
+          </span>
+          <span>Aljabar Boolean</span>
+          <span class='dp-nav-badge'>10</span>
+        </a>
+
+        <a class='dp-nav-item' expr:href='data:blog.homepageUrl + &quot;search/label/Kombinatorika&quot;'>
+          <span class='dp-nav-icon'>
+            <svg fill='none' height='16' viewBox='0 0 16 16' width='16'>
+              <circle cx='5' cy='5' r='2' stroke='currentColor' stroke-width='1.3'/>
+              <circle cx='11' cy='5' r='2' stroke='currentColor' stroke-width='1.3'/>
+              <circle cx='8' cy='11' r='2' stroke='currentColor' stroke-width='1.3'/>
+              <path d='M7 5h2M6.5 6.8L8 9M9.5 6.8L8 9' stroke='currentColor' stroke-linecap='round' stroke-width='1.3'/>
+            </svg>
+          </span>
+          <span>Kombinatorika</span>
+          <span class='dp-nav-badge'>2</span>
+        </a>
+
+        <a class='dp-nav-item' expr:href='data:blog.homepageUrl + &quot;search/label/Teori-Bilangan&quot;'>
+          <span class='dp-nav-icon'>
+            <svg fill='none' height='16' viewBox='0 0 16 16' width='16'>
+              <path d='M4 12V4l2 1.5' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.3'/>
+              <path d='M8 12V7.5c0-.8.7-1.5 1.5-1.5H10a1.5 1.5 0 010 3h-2m0 0h2.5a1.5 1.5 0 010 3H8' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.3'/>
+            </svg>
+          </span>
+          <span>Teori Bilangan</span>
+          <span class='dp-nav-badge'>11</span>
+        </a>
+
+        <a class='dp-nav-item' expr:href='data:blog.homepageUrl + &quot;search/label/Matriks&quot;'>
+          <span class='dp-nav-icon'>
+            <svg fill='none' height='16' viewBox='0 0 16 16' width='16'>
+              <rect height='12' rx='1.5' stroke='currentColor' stroke-width='1.3' width='12' x='2' y='2'/>
+              <path d='M2 6h12M2 10h12M6 2v12M10 2v12' stroke='currentColor' stroke-width='1.3'/>
+            </svg>
+          </span>
+          <span>Matriks</span>
+          <span class='dp-nav-badge'>5</span>
+        </a>
+
+        <a class='dp-nav-item' expr:href='data:blog.homepageUrl + &quot;search/label/Pohon-Graf&quot;'>
+          <span class='dp-nav-icon'>
+            <svg fill='none' height='16' viewBox='0 0 16 16' width='16'>
+              <circle cx='8' cy='3' r='1.5' stroke='currentColor' stroke-width='1.3'/>
+              <circle cx='4' cy='9' r='1.5' stroke='currentColor' stroke-width='1.3'/>
+              <circle cx='12' cy='9' r='1.5' stroke='currentColor' stroke-width='1.3'/>
+              <circle cx='4' cy='14' r='1.5' stroke='currentColor' stroke-width='1.3'/>
+              <path d='M8 4.5v1.5L4 7.5M8 6L12 7.5M4 10.5v2' stroke='currentColor' stroke-linecap='round' stroke-width='1.3'/>
+            </svg>
+          </span>
+          <span>Pohon</span>
+          <span class='dp-nav-badge'>3</span>
+        </a>
+
+        <a class='dp-nav-item' expr:href='data:blog.homepageUrl + &quot;search/label/Rekursi&quot;'>
+          <span class='dp-nav-icon'>
+            <svg fill='none' height='16' viewBox='0 0 16 16' width='16'>
+              <path d='M13 4a5 5 0 11-9.9 1.5' stroke='currentColor' stroke-linecap='round' stroke-width='1.4'/>
+              <path d='M3 2v3.5h3.5' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.4'/>
+            </svg>
+          </span>
+          <span>Rekursi</span>
+          <span class='dp-nav-badge'>1</span>
+        </a>
+
+        <a class='dp-nav-item' expr:href='data:blog.homepageUrl + &quot;search/label/ISBN&quot;'>
+          <span class='dp-nav-icon'>
+            <svg fill='none' height='16' viewBox='0 0 16 16' width='16'>
+              <rect height='12' rx='1.5' stroke='currentColor' stroke-width='1.3' width='12' x='2' y='2'/>
+              <path d='M5 5v6M7 5v6M9 5v6M11 5v6' stroke='currentColor' stroke-linecap='round' stroke-width='1.8'/>
+            </svg>
+          </span>
+          <span>ISBN</span>
+          <span class='dp-nav-badge'>2</span>
+        </a>
+
+      </div>
+
+      <!-- Info -->
+      <div class='dp-nav-section'>
+        <div class='dp-nav-section-title'>Lainnya</div>
+
+        <a class='dp-nav-item' href='/p/tentang.html'>
+          <span class='dp-nav-icon'>
+            <svg fill='none' height='16' viewBox='0 0 16 16' width='16'>
+              <circle cx='8' cy='8' r='6' stroke='currentColor' stroke-width='1.3'/>
+              <path d='M8 7v5' stroke='currentColor' stroke-linecap='round' stroke-width='1.5'/>
+              <circle cx='8' cy='5' fill='currentColor' r='0.75'/>
+            </svg>
+          </span>
+          <span>Tentang</span>
+        </a>
+
+      </div>
+
+    </nav>
+
+    <!-- Sidebar Footer -->
+    <div class='dp-sidebar-footer'>
+      <div style='font-size:11px;color:var(--dp-text-muted);text-align:center;'>
+        &#169; 2025 DiskritProgram
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ========================
+       MAIN AREA
+       ======================== -->
+  <div class='dp-main'>
+
+    <!-- ========================
+         TOPBAR
+         ======================== -->
+    <header class='dp-topbar' role='banner'>
+      <div class='dp-topbar-left'>
+
+        <!-- Mobile Menu Button -->
+        <button aria-label='Buka Menu' class='dp-mobile-menu-btn' onclick='dpToggleSidebar(true)'>
+          <svg fill='none' height='16' viewBox='0 0 16 16' width='16'>
+            <path d='M2 4h12M2 8h12M2 12h12' stroke='currentColor' stroke-linecap='round' stroke-width='1.5'/>
+          </svg>
+        </button>
+
+        <!-- Search -->
+        <div class='dp-search-wrapper'>
+          <span class='dp-search-icon'>
+            <svg fill='none' height='14' viewBox='0 0 16 16' width='14'>
+              <circle cx='7' cy='7' r='5.5' stroke='currentColor' stroke-width='1.5'/>
+              <path d='M11 11l3 3' stroke='currentColor' stroke-linecap='round' stroke-width='1.5'/>
+            </svg>
+          </span>
+          <input autocomplete='off' class='dp-search-input' id='dpSearchInput' onblur='setTimeout(dpSearchBlur, 200)' onfocus='dpSearchFocus()' oninput='dpLiveSearch(this.value)' placeholder='Cari program...' type='search'/>
+          <div class='dp-search-results' id='dpSearchResults'/>
+        </div>
+
+      </div>
+
+      <div class='dp-topbar-right'>
+
+        <!-- Dark Mode Toggle -->
+        <button aria-label='Toggle Dark Mode' class='dp-topbar-btn' id='dpDarkToggle' onclick='dpToggleDark()' title='Toggle Dark Mode'>
+          <span id='dpDarkIcon'>
+            <svg fill='none' height='16' viewBox='0 0 16 16' width='16'>
+              <path d='M13.5 10a6 6 0 01-8-8 6 6 0 108 8z' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.4'/>
+            </svg>
+          </span>
+        </button>
+
+      </div>
+    </header>
+
+    <!-- ========================
+         PAGE CONTENT
+         ======================== -->
+    <main class='dp-page-content' role='main'>
+
+      <!-- ======================================================
+           HOMEPAGE
+           ====================================================== -->
+      <b:if cond='data:view.isHomepage'>
+
+        <!-- Hero Section -->
+        <section aria-label='Hero' class='dp-hero'>
+          <div class='dp-hero-grid'>
+            <div class='dp-hero-content dp-animate-in'>
+              <div class='dp-hero-badge'>
+                <span>&#10022;</span>
+                Repository Interaktif
+              </div>
+              <h1 class='dp-hero-title'>
+                Kumpulan Program<br/>
+                <span>Matematika Diskrit</span>
+              </h1>
+              <p class='dp-hero-desc'>
+                Platform repository program interaktif untuk membantu mahasiswa memahami dan menyelesaikan berbagai permasalahan Matematika Diskrit.
+              </p>
+              <div class='dp-hero-actions'>
+                <a class='dp-btn dp-btn-primary' expr:href='data:blog.homepageUrl + &quot;search/label/Himpunan&quot;'>
+                  <svg fill='none' height='14' viewBox='0 0 16 16' width='14'>
+                    <path d='M8 2l4 6-4 6M2 8h10' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5'/>
+                  </svg>
+                  Lihat Program
+                </a>
+                <a class='dp-btn dp-btn-outline' href='#dp-categories'>
+                  <svg fill='none' height='14' viewBox='0 0 16 16' width='14'>
+                    <rect height='5' rx='1' stroke='currentColor' stroke-width='1.5' width='5' x='2' y='2'/>
+                    <rect height='5' rx='1' stroke='currentColor' stroke-width='1.5' width='5' x='9' y='2'/>
+                    <rect height='5' rx='1' stroke='currentColor' stroke-width='1.5' width='5' x='2' y='9'/>
+                    <rect height='5' rx='1' stroke='currentColor' stroke-width='1.5' width='5' x='9' y='9'/>
+                  </svg>
+                  Jelajahi Materi
+                </a>
+              </div>
+            </div>
+            <div class='dp-hero-code-card dp-animate-in dp-animate-delay-2'>
+              <div class='dp-hero-code-header'>
+                <div class='dp-code-dot red'/>
+                <div class='dp-code-dot yellow'/>
+                <div class='dp-code-dot green'/>
+                <span class='dp-hero-code-title'>himpunan.py</span>
+              </div>
+              <div class='dp-hero-code'>
+<pre><span class='dp-code-cm'># Contoh Program</span>
+<span class='dp-code-kw'>def</span> <span class='dp-code-fn'>gabungan</span>(A, B):
+    <span class='dp-code-kw'>return</span> A | B
+
+<span class='dp-code-kw'>def</span> <span class='dp-code-fn'>irisan</span>(A, B):
+    <span class='dp-code-kw'>return</span> A &amp; B
+
+A = {<span class='dp-code-num'>1</span>, <span class='dp-code-num'>2</span>, <span class='dp-code-num'>3</span>, <span class='dp-code-num'>4</span>}
+B = {<span class='dp-code-num'>3</span>, <span class='dp-code-num'>4</span>, <span class='dp-code-num'>5</span>, <span class='dp-code-num'>6</span>}
+<span class='dp-code-fn'>print</span>(gabungan(A,B))
+<span class='dp-code-cm'># {1,2,3,4,5,6}</span></pre>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Stats Bar -->
+        <div class='dp-stats-bar dp-animate-in dp-animate-delay-1'>
+          <div class='dp-stat-item'>
+            <div class='dp-stat-icon blue'><svg width='20' height='20' viewBox='0 0 20 20' fill='none'><rect x='2' y='6' width='16' height='11' rx='2' stroke='currentColor' stroke-width='1.5'/><path d='M6 6V4a2 2 0 012-2h4a2 2 0 012 2v2' stroke='currentColor' stroke-width='1.5'/><path d='M10 10v4M8 12h4' stroke='currentColor' stroke-linecap='round' stroke-width='1.5'/></svg></div>
+            <div>
+              <div class='dp-stat-value'>60+</div>
+              <div class='dp-stat-label'>Total Program</div>
+            </div>
+          </div>
+          <div class='dp-stat-item'>
+            <div class='dp-stat-icon green'><svg width='20' height='20' viewBox='0 0 20 20' fill='none'><rect x='3' y='3' width='6' height='14' rx='1.5' stroke='currentColor' stroke-width='1.5'/><rect x='11' y='3' width='6' height='14' rx='1.5' stroke='currentColor' stroke-width='1.5'/></svg></div>
+            <div>
+              <div class='dp-stat-value'>12</div>
+              <div class='dp-stat-label'>Kategori Materi</div>
+            </div>
+          </div>
+          <div class='dp-stat-item'>
+            <div class='dp-stat-icon orange'><svg width='20' height='20' viewBox='0 0 20 20' fill='none'><path d='M10 3L2 7l8 4 8-4-8-4z' stroke='currentColor' stroke-width='1.5' stroke-linejoin='round'/><path d='M6 9v5c0 1.657 1.791 3 4 3s4-1.343 4-3V9' stroke='currentColor' stroke-width='1.5' stroke-linecap='round'/><path d='M18 7v5' stroke='currentColor' stroke-width='1.5' stroke-linecap='round'/></svg></div>
+            <div>
+              <div class='dp-stat-value'>100%</div>
+              <div class='dp-stat-label'>Gratis &amp; Open</div>
+            </div>
+          </div>
+          <div class='dp-stat-item'>
+            <div class='dp-stat-icon purple'><svg width='20' height='20' viewBox='0 0 20 20' fill='none'><path d='M11 2L4 11h7l-2 7 9-10h-7l2-6z' stroke='currentColor' stroke-width='1.5' stroke-linejoin='round'/></svg></div>
+            <div>
+              <div class='dp-stat-value'>Interaktif</div>
+              <div class='dp-stat-label'>Program Solver</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category Section -->
+        <section id='dp-categories'>
+          <div class='dp-section-header dp-animate-in dp-animate-delay-2'>
+            <h2 class='dp-section-title'>Program Berdasarkan Materi</h2>
+            <p class='dp-section-sub'>Pilih materi untuk melihat dan menggunakan program yang tersedia.</p>
+          </div>
+
+          <div class='dp-category-grid dp-animate-in dp-animate-delay-3'>
+
+            <!-- Himpunan -->
+            <a class='dp-cat-card' expr:href='data:blog.homepageUrl + &quot;search/label/Himpunan&quot;' style='--cat-color:#2563EB;--cat-bg:#EFF6FF;'>
+              <div class='dp-cat-icon'><svg width='28' height='28' viewBox='0 0 28 28' fill='none'><circle cx='10' cy='14' r='6' stroke='currentColor' stroke-width='1.8'/><circle cx='18' cy='14' r='6' stroke='currentColor' stroke-width='1.8'/></svg></div>
+              <div>
+                <div class='dp-cat-name'>Himpunan</div>
+                <div class='dp-cat-desc'>Program operasi himpunan, diagram Venn, kardinalitas, dan relasi antar himpunan.</div>
+              </div>
+              <div class='dp-cat-footer'>
+                <span class='dp-cat-count'>9 Program</span>
+                <span class='dp-cat-link'>Lihat &#8594;</span>
+              </div>
+            </a>
+
+            <!-- Relasi &amp; Fungsi -->
+            <a class='dp-cat-card' expr:href='data:blog.homepageUrl + &quot;search/label/Relasi-Fungsi&quot;' style='--cat-color:#7C3AED;--cat-bg:#F5F3FF;'>
+              <div class='dp-cat-icon'><svg width='28' height='28' viewBox='0 0 28 28' fill='none'><circle cx='6' cy='9' r='2.5' stroke='currentColor' stroke-width='1.8'/><circle cx='6' cy='19' r='2.5' stroke='currentColor' stroke-width='1.8'/><circle cx='22' cy='14' r='2.5' stroke='currentColor' stroke-width='1.8'/><path d='M8.5 10L19.5 14M8.5 18L19.5 14' stroke='currentColor' stroke-linecap='round' stroke-width='1.8'/></svg></div>
+              <div>
+                <div class='dp-cat-name'>Relasi &amp; Fungsi</div>
+                <div class='dp-cat-desc'>Program untuk memeriksa relasi, sifat-sifat relasi, fungsi, komposisi, dan invers fungsi.</div>
+              </div>
+              <div class='dp-cat-footer'>
+                <span class='dp-cat-count'>9 Program</span>
+                <span class='dp-cat-link'>Lihat &#8594;</span>
+              </div>
+            </a>
+
+            <!-- Logika Matematika -->
+            <a class='dp-cat-card' expr:href='data:blog.homepageUrl + &quot;search/label/Logika-Matematika&quot;' style='--cat-color:#0891B2;--cat-bg:#ECFEFF;'>
+              <div class='dp-cat-icon'><svg width='28' height='28' viewBox='0 0 28 28' fill='none'><rect x='4' y='8' width='8' height='12' rx='2' stroke='currentColor' stroke-width='1.8'/><path d='M12 14h5' stroke='currentColor' stroke-linecap='round' stroke-width='1.8'/><path d='M17 10v8' stroke='currentColor' stroke-linecap='round' stroke-width='1.8'/><path d='M21 10v8' stroke='currentColor' stroke-linecap='round' stroke-width='1.8'/></svg></div>
+              <div>
+                <div class='dp-cat-name'>Logika Matematika</div>
+                <div class='dp-cat-desc'>Program untuk menganalisis proposisi, tabel kebenaran, dan rangkaian logika.</div>
+              </div>
+              <div class='dp-cat-footer'>
+                <span class='dp-cat-count'>3 Program</span>
+                <span class='dp-cat-link'>Lihat &#8594;</span>
+              </div>
+            </a>
+
+            <!-- Aljabar Boolean -->
+            <a class='dp-cat-card' expr:href='data:blog.homepageUrl + &quot;search/label/Aljabar-Boolean&quot;' style='--cat-color:#F59E0B;--cat-bg:#FFFBEB;'>
+              <div class='dp-cat-icon'><svg width='28' height='28' viewBox='0 0 28 28' fill='none'><rect x='4' y='10' width='6' height='8' rx='1.5' stroke='currentColor' stroke-width='1.8'/><rect x='18' y='10' width='6' height='8' rx='1.5' stroke='currentColor' stroke-width='1.8'/><path d='M10 14h8' stroke='currentColor' stroke-linecap='round' stroke-width='1.8'/><path d='M7 6v3M21 6v3M7 19v3M21 19v3' stroke='currentColor' stroke-linecap='round' stroke-width='1.8'/></svg></div>
+              <div>
+                <div class='dp-cat-name'>Aljabar Boolean</div>
+                <div class='dp-cat-desc'>Program SOP/POS, De Morgan, Karnaugh Map, fungsi Boolean, dan gerbang logika.</div>
+              </div>
+              <div class='dp-cat-footer'>
+                <span class='dp-cat-count'>10 Program</span>
+                <span class='dp-cat-link'>Lihat &#8594;</span>
+              </div>
+            </a>
+
+            <!-- Kombinatorika -->
+            <a class='dp-cat-card' expr:href='data:blog.homepageUrl + &quot;search/label/Kombinatorika&quot;' style='--cat-color:#10B981;--cat-bg:#ECFDF5;'>
+              <div class='dp-cat-icon'><svg width='28' height='28' viewBox='0 0 28 28' fill='none'><circle cx='9' cy='9' r='3.5' stroke='currentColor' stroke-width='1.8'/><circle cx='19' cy='9' r='3.5' stroke='currentColor' stroke-width='1.8'/><circle cx='14' cy='19' r='3.5' stroke='currentColor' stroke-width='1.8'/><path d='M13 9h2M12 11.5L14 15M16 11.5L14 15' stroke='currentColor' stroke-linecap='round' stroke-width='1.8'/></svg></div>
+              <div>
+                <div class='dp-cat-name'>Kombinatorika</div>
+                <div class='dp-cat-desc'>Program untuk permutasi, kombinasi, prinsip inklusi-eksklusi, dan kombinasi linear.</div>
+              </div>
+              <div class='dp-cat-footer'>
+                <span class='dp-cat-count'>2 Program</span>
+                <span class='dp-cat-link'>Lihat &#8594;</span>
+              </div>
+            </a>
+
+            <!-- Teori Bilangan -->
+            <a class='dp-cat-card' expr:href='data:blog.homepageUrl + &quot;search/label/Teori-Bilangan&quot;' style='--cat-color:#EF4444;--cat-bg:#FEF2F2;'>
+              <div class='dp-cat-icon'><svg width='28' height='28' viewBox='0 0 28 28' fill='none'><path d='M7 20V8l3 2.5' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8'/><path d='M14 20V13c0-1.1.9-2 2-2h1a2 2 0 010 4h-3m0 0h3.5a2 2 0 010 4H14' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8'/></svg></div>
+              <div>
+                <div class='dp-cat-name'>Teori Bilangan</div>
+                <div class='dp-cat-desc'>Program FPB, KPK, bilangan prima, kongruensi, kriptografi, dan konversi basis bilangan.</div>
+              </div>
+              <div class='dp-cat-footer'>
+                <span class='dp-cat-count'>11 Program</span>
+                <span class='dp-cat-link'>Lihat &#8594;</span>
+              </div>
+            </a>
+
+            <!-- Matriks -->
+            <a class='dp-cat-card' expr:href='data:blog.homepageUrl + &quot;search/label/Matriks&quot;' style='--cat-color:#6366F1;--cat-bg:#EEF2FF;'>
+              <div class='dp-cat-icon'><svg width='28' height='28' viewBox='0 0 28 28' fill='none'><rect x='4' y='4' width='20' height='20' rx='2' stroke='currentColor' stroke-width='1.8'/><path d='M4 10h20M4 16h20M10 4v20M18 4v20' stroke='currentColor' stroke-width='1.5'/></svg></div>
+              <div>
+                <div class='dp-cat-name'>Matriks</div>
+                <div class='dp-cat-desc'>Program operasi matriks, transpose, minor, dan determinan matriks.</div>
+              </div>
+              <div class='dp-cat-footer'>
+                <span class='dp-cat-count'>5 Program</span>
+                <span class='dp-cat-link'>Lihat &#8594;</span>
+              </div>
+            </a>
+
+            <!-- Pohon -->
+            <a class='dp-cat-card' expr:href='data:blog.homepageUrl + &quot;search/label/Pohon-Graf&quot;' style='--cat-color:#D97706;--cat-bg:#FEF3C7;'>
+              <div class='dp-cat-icon'><svg width='28' height='28' viewBox='0 0 28 28' fill='none'><circle cx='14' cy='5' r='2.5' stroke='currentColor' stroke-width='1.8'/><circle cx='7' cy='15' r='2.5' stroke='currentColor' stroke-width='1.8'/><circle cx='21' cy='15' r='2.5' stroke='currentColor' stroke-width='1.8'/><circle cx='7' cy='23' r='2.5' stroke='currentColor' stroke-width='1.8'/><path d='M14 7.5v3L7 13M14 10.5L21 13M7 17.5v3' stroke='currentColor' stroke-linecap='round' stroke-width='1.8'/></svg></div>
+              <div>
+                <div class='dp-cat-name'>Pohon &amp; Graf</div>
+                <div class='dp-cat-desc'>Program untuk berbagai jenis pohon, traversal, dan operasi pada struktur pohon.</div>
+              </div>
+              <div class='dp-cat-footer'>
+                <span class='dp-cat-count'>3 Program</span>
+                <span class='dp-cat-link'>Lihat &#8594;</span>
+              </div>
+            </a>
+
+            <!-- Rekursi -->
+            <a class='dp-cat-card' expr:href='data:blog.homepageUrl + &quot;search/label/Rekursi&quot;' style='--cat-color:#059669;--cat-bg:#ECFDF5;'>
+              <div class='dp-cat-icon'><svg width='28' height='28' viewBox='0 0 28 28' fill='none'><path d='M22 7a9 9 0 11-17.5 2.8' stroke='currentColor' stroke-linecap='round' stroke-width='1.8'/><path d='M4.5 4v5h5' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8'/></svg></div>
+              <div>
+                <div class='dp-cat-name'>Rekursi</div>
+                <div class='dp-cat-desc'>Program rekursi dan relasi rekurens untuk memahami konsep rekursif dalam matematika.</div>
+              </div>
+              <div class='dp-cat-footer'>
+                <span class='dp-cat-count'>1 Program</span>
+                <span class='dp-cat-link'>Lihat &#8594;</span>
+              </div>
+            </a>
+
+            <!-- ISBN -->
+            <a class='dp-cat-card' expr:href='data:blog.homepageUrl + &quot;search/label/ISBN&quot;' style='--cat-color:#DC2626;--cat-bg:#FEF2F2;'>
+              <div class='dp-cat-icon'><svg width='28' height='28' viewBox='0 0 28 28' fill='none'><rect x='4' y='4' width='20' height='20' rx='2' stroke='currentColor' stroke-width='1.8'/><path d='M9 8v12M12 8v12M16 8v12M19 8v12' stroke='currentColor' stroke-linecap='round' stroke-width='2.2'/></svg></div>
+              <div>
+                <div class='dp-cat-name'>ISBN</div>
+                <div class='dp-cat-desc'>Program verifikasi dan penghitungan digit cek untuk ISBN-10 dan ISBN-13.</div>
+              </div>
+              <div class='dp-cat-footer'>
+                <span class='dp-cat-count'>2 Program</span>
+                <span class='dp-cat-link'>Lihat &#8594;</span>
+              </div>
+            </a>
+
+            <!-- Induksi Matematika -->
+            <a class='dp-cat-card' expr:href='data:blog.homepageUrl + &quot;search/label/Induksi-Matematika&quot;' style='--cat-color:#BE185D;--cat-bg:#FDF2F8;'>
+              <div class='dp-cat-icon'><svg width='28' height='28' viewBox='0 0 28 28' fill='none'><path d='M5 23L14 5l9 18H5z' stroke='currentColor' stroke-linejoin='round' stroke-width='1.8'/><path d='M14 5v18' stroke='currentColor' stroke-linecap='round' stroke-width='1.5' stroke-dasharray='2 2'/></svg></div>
+              <div>
+                <div class='dp-cat-name'>Induksi Matematika</div>
+                <div class='dp-cat-desc'>Program untuk memahami dan menerapkan prinsip induksi matematika dalam pembuktian.</div>
+              </div>
+              <div class='dp-cat-footer'>
+                <span class='dp-cat-count'>Program</span>
+                <span class='dp-cat-link'>Lihat &#8594;</span>
+              </div>
+            </a>
+
+            <!-- Deret &amp; Sumasi -->
+            <a class='dp-cat-card' expr:href='data:blog.homepageUrl + &quot;search/label/Deret-Sumasi&quot;' style='--cat-color:#0369A1;--cat-bg:#F0F9FF;'>
+              <div class='dp-cat-icon'><svg width='28' height='28' viewBox='0 0 28 28' fill='none'><path d='M20 6H8l8 8-8 8h12' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8'/></svg></div>
+              <div>
+                <div class='dp-cat-name'>Deret &amp; Sumasi</div>
+                <div class='dp-cat-desc'>Program untuk menghitung deret aritmetika, geometri, dan notasi sumasi.</div>
+              </div>
+              <div class='dp-cat-footer'>
+                <span class='dp-cat-count'>Program</span>
+                <span class='dp-cat-link'>Lihat &#8594;</span>
+              </div>
+            </a>
+
+          </div>
+        </section>
+
+        <!-- Info Box -->
+        <div class='dp-info-box dp-animate-in dp-animate-delay-4'>
+          <span class='dp-info-box-icon'><svg width='20' height='20' viewBox='0 0 20 20' fill='none'><circle cx='10' cy='10' r='8' stroke='currentColor' stroke-width='1.5'/><path d='M10 9v6' stroke='currentColor' stroke-linecap='round' stroke-width='2'/><circle cx='10' cy='6.5' r='1' fill='currentColor'/></svg></span>
+          <div class='dp-info-box-content'>
+            <div class='dp-info-box-title'>Petunjuk Penggunaan</div>
+            <div class='dp-info-box-text'>Pilih materi di atas untuk melihat daftar program yang tersedia. Setiap program dilengkapi dengan penjelasan, cara penggunaan, dan contoh input-output untuk memudahkan Anda dalam belajar dan menganalisis masalah.</div>
+          </div>
+          <a class='dp-info-box-link' href='/p/tentang.html'>
+            Lihat Petunjuk &#8594;
+          </a>
+        </div>
+
+        <!-- Recent Posts -->
+        <div class='dp-section-header'>
+          <h2 class='dp-section-title'>Program Terbaru</h2>
+          <p class='dp-section-sub'>Program yang baru saja ditambahkan ke repository.</p>
+        </div>
+
+        <div class='dp-posts-section'>
+          <div class='dp-post-grid'>
+            <b:loop values='data:posts' var='post'>
+              <a class='dp-post-card dp-animate-in' expr:href='data:post.url'>
+                <div class='dp-post-card-header'>
+                  <b:if cond='data:post.labels'>
+                    <b:loop index='i' values='data:post.labels' var='label'>
+                      <b:if cond='data:i == 0'>
+                        <span class='dp-post-label'>
+                          <data:label.name/>
+                        </span>
+                      </b:if>
+                    </b:loop>
+                  </b:if>
+                </div>
+                <div class='dp-post-card-body'>
+                  <div class='dp-post-title'><data:post.title/></div>
+                  <div class='dp-post-snippet'><data:post.snippet/></div>
+                </div>
+                <div class='dp-post-card-footer'>
+                  <span class='dp-post-date'>
+                    <svg fill='none' height='11' viewBox='0 0 16 16' width='11'>
+                      <rect height='11' rx='2' stroke='currentColor' stroke-width='1.4' width='12' x='2' y='3'/>
+                      <path d='M5 1v4M11 1v4M2 7h12' stroke='currentColor' stroke-linecap='round' stroke-width='1.4'/>
+                    </svg>
+                    <data:post.date.year/>
+                  </span>
+                  <span class='dp-post-arrow'>&#8594;</span>
+                </div>
+              </a>
+            </b:loop>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class='dp-pagination'>
+          <b:if cond='data:olderPageUrl'>
+            <a class='dp-page-btn' expr:href='data:olderPageUrl'>
+              &#8592; Program Lainnya
+            </a>
+          </b:if>
+          <b:if cond='data:newerPageUrl'>
+            <a class='dp-page-btn' expr:href='data:newerPageUrl'>
+              Program Terbaru &#8594;
+            </a>
+          </b:if>
+        </div>
+
+      </b:if>
+      <!-- END HOMEPAGE -->
+
+      <!-- ======================================================
+           LABEL / CATEGORY PAGE
+           ====================================================== -->
+      <b:if cond='data:view.isLabelSearch'>
+        <div class='dp-label-page'>
+
+          <!-- Label Header -->
+          <div class='dp-label-header dp-animate-in'>
+            <div class='dp-label-badge'>
+              <svg width='12' height='12' viewBox='0 0 16 16' fill='none'><rect x='2' y='2' width='5' height='12' rx='1' stroke='currentColor' stroke-width='1.5'/><rect x='9' y='2' width='5' height='12' rx='1' stroke='currentColor' stroke-width='1.5'/></svg> Kategori
+            </div>
+            <h1 class='dp-label-title'>
+              <b:if cond='data:currentLabel'>
+                <data:currentLabel.name/>
+              <b:else/>
+                Semua Program
+              </b:if>
+            </h1>
+            <p class='dp-label-desc'>
+              <b:if cond='data:currentLabel'>
+                Daftar program untuk materi: <strong><data:currentLabel.name/></strong>
+              <b:else/>
+                Seluruh program yang tersedia di DiskritProgram.
+              </b:if>
+            </p>
+          </div>
+
+          <!-- Breadcrumb -->
+          <nav aria-label='Breadcrumb' class='dp-breadcrumb'>
+            <a expr:href='data:blog.homepageUrl'>Dashboard</a>
+            <span class='dp-breadcrumb-sep'>&#8250;</span>
+            <b:if cond='data:currentLabel'>
+              <span class='dp-breadcrumb-current'><data:currentLabel.name/></span>
+            <b:else/>
+              <span class='dp-breadcrumb-current'>Semua Program</span>
+            </b:if>
+          </nav>
+
+          <!-- Posts Grid -->
+          <div class='dp-post-grid dp-animate-in dp-animate-delay-1'>
+            <b:loop values='data:posts' var='post'>
+              <a class='dp-post-card' expr:href='data:post.url'>
+                <div class='dp-post-card-header'>
+                  <b:if cond='data:post.labels'>
+                    <b:loop index='i' values='data:post.labels' var='label'>
+                      <b:if cond='data:i == 0'>
+                        <span class='dp-post-label'>
+                          <data:label.name/>
+                        </span>
+                      </b:if>
+                    </b:loop>
+                  </b:if>
+                </div>
+                <div class='dp-post-card-body'>
+                  <div class='dp-post-title'><data:post.title/></div>
+                  <div class='dp-post-snippet'><data:post.snippet/></div>
+                </div>
+                <div class='dp-post-card-footer'>
+                  <span class='dp-post-date'>
+                    <data:post.date.year/>
+                  </span>
+                  <span class='dp-post-arrow'>&#8594;</span>
+                </div>
+              </a>
+            </b:loop>
+          </div>
+
+          <!-- Empty State -->
+          <b:if cond='!data:posts'>
+            <div class='dp-empty-state'>
+              <div class='dp-empty-state-icon'><svg width='48' height='48' viewBox='0 0 48 48' fill='none'><rect x='6' y='14' width='36' height='26' rx='3' stroke='currentColor' stroke-width='2'/><path d='M6 22h14l4 6h4l4-6h14' stroke='currentColor' stroke-width='2' stroke-linejoin='round'/></svg></div>
+              <div class='dp-empty-state-title'>Belum Ada Program</div>
+              <div class='dp-empty-state-text'>Program untuk kategori ini belum tersedia. Cek kembali nanti.</div>
+            </div>
+          </b:if>
+
+          <!-- Pagination -->
+          <div class='dp-pagination'>
+            <b:if cond='data:olderPageUrl'>
+              <a class='dp-page-btn' expr:href='data:olderPageUrl'>&#8592; Lebih Lama</a>
+            </b:if>
+            <b:if cond='data:newerPageUrl'>
+              <a class='dp-page-btn' expr:href='data:newerPageUrl'>Terbaru &#8594;</a>
+            </b:if>
+          </div>
+
+        </div>
+      </b:if>
+      <!-- END LABEL PAGE -->
+
+      <!-- ======================================================
+           SINGLE POST / PROGRAM PAGE
+           ====================================================== -->
+      <b:if cond='data:view.isPost'>
+        <div class='dp-post-page'>
+
+          <!-- Breadcrumb -->
+          <nav aria-label='Breadcrumb' class='dp-breadcrumb dp-animate-in'>
+            <script type='application/ld+json'>
+            {
+              &quot;@context&quot;: &quot;https://schema.org&quot;,
+              &quot;@type&quot;: &quot;BreadcrumbList&quot;,
+              &quot;itemListElement&quot;: [
+                {
+                  &quot;@type&quot;: &quot;ListItem&quot;,
+                  &quot;position&quot;: 1,
+                  &quot;name&quot;: &quot;Dashboard&quot;,
+                  &quot;item&quot;: &quot;<data:blog.homepageUrl/>&quot;
+                },
+                {
+                  &quot;@type&quot;: &quot;ListItem&quot;,
+                  &quot;position&quot;: 2,
+                  &quot;name&quot;: &quot;<data:post.title/>&quot;,
+                  &quot;item&quot;: &quot;<data:post.url/>&quot;
+                }
+              ]
+            }
+            </script>
+            <a expr:href='data:blog.homepageUrl'>Dashboard</a>
+            <span class='dp-breadcrumb-sep'>&#8250;</span>
+            <b:if cond='data:post.labels'>
+              <b:loop index='i' values='data:post.labels' var='label'>
+                <b:if cond='data:i == 0'>
+                  <a expr:href='data:blog.homepageUrl + &quot;search/label/&quot; + data:label.name'><data:label.name/></a>
+                  <span class='dp-breadcrumb-sep'>&#8250;</span>
+                </b:if>
+              </b:loop>
+            </b:if>
+            <span class='dp-breadcrumb-current'><data:post.title/></span>
+          </nav>
+
+          <!-- Post Header -->
+          <div class='dp-post-header dp-animate-in'>
+            <div class='dp-post-labels'>
+              <b:if cond='data:post.labels'>
+                <b:loop values='data:post.labels' var='label'>
+                  <a class='dp-post-label-tag' expr:href='data:blog.homepageUrl + &quot;search/label/&quot; + data:label.name'>
+                    <data:label.name/>
+                  </a>
+                </b:loop>
+              </b:if>
+            </div>
+            <h1 class='dp-post-main-title'><data:post.title/></h1>
+            <div class='dp-post-meta'>
+              <span class='dp-post-meta-item'>
+                <svg fill='none' height='12' viewBox='0 0 16 16' width='12'>
+                  <rect height='11' rx='2' stroke='currentColor' stroke-width='1.4' width='12' x='2' y='3'/>
+                  <path d='M5 1v4M11 1v4M2 7h12' stroke='currentColor' stroke-linecap='round' stroke-width='1.4'/>
+                </svg>
+                <data:post.dateHeader/>
+              </span>
+              <span class='dp-post-meta-item'>
+                <svg fill='none' height='12' viewBox='0 0 16 16' width='12'>
+                  <circle cx='8' cy='6' r='3' stroke='currentColor' stroke-width='1.4'/>
+                  <path d='M2 14c0-3.314 2.686-4 6-4s6 .686 6 4' stroke='currentColor' stroke-linecap='round' stroke-width='1.4'/>
+                </svg>
+                <data:post.author.name/>
+              </span>
+            </div>
+          </div>
+
+          <!-- Post Content with Solver Container -->
+          <article class='dp-post-content dp-animate-in dp-animate-delay-1'>
+            <div class='dp-post-content-inner'>
+              <data:post.body/>
+            </div>
+          </article>
+
+          <!-- Tags -->
+          <b:if cond='data:post.labels'>
+            <div style='margin-top:20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;'>
+              <span style='font-size:12px;color:var(--dp-text-muted);'>Tags:</span>
+              <b:loop values='data:post.labels' var='label'>
+                <a class='dp-post-label-tag' expr:href='data:blog.homepageUrl + &quot;search/label/&quot; + data:label.name'>
+                  <data:label.name/>
+                </a>
+              </b:loop>
+            </div>
+          </b:if>
+
+          <!-- Navigation between posts -->
+          <div style='margin-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:12px;'>
+            <b:if cond='data:olderPost'>
+              <a class='dp-page-btn' expr:href='data:olderPost.url' style='flex-direction:column;align-items:flex-start;height:auto;padding:14px 16px;'>
+                <span style='font-size:10px;color:var(--dp-text-muted);margin-bottom:4px;'>&#8592; Program Sebelumnya</span>
+                <span style='font-size:13px;font-weight:600;color:var(--dp-text-primary);line-height:1.3;'><data:olderPost.title/></span>
+              </a>
+            </b:if>
+            <b:if cond='data:newerPost'>
+              <a class='dp-page-btn' expr:href='data:newerPost.url' style='flex-direction:column;align-items:flex-end;text-align:right;height:auto;padding:14px 16px;margin-left:auto;width:100%;'>
+                <span style='font-size:10px;color:var(--dp-text-muted);margin-bottom:4px;'>Program Selanjutnya &#8594;</span>
+                <span style='font-size:13px;font-weight:600;color:var(--dp-text-primary);line-height:1.3;'><data:newerPost.title/></span>
+              </a>
+            </b:if>
+          </div>
+
+          <!-- Comments -->
+         
+<b:if cond='data:view.isPost'>
+  <div id='blogger-comments'/>
+</b:if>
+        </div>
+      </b:if>
+      <!-- END POST PAGE -->
+
+      <!-- ======================================================
+           SEARCH RESULTS PAGE
+           ====================================================== -->
+      <b:if cond='data:view.isSearch'>
+        <div class='dp-label-page'>
+          <div class='dp-label-header dp-animate-in'>
+            <div class='dp-label-badge'><svg width='12' height='12' viewBox='0 0 16 16' fill='none'><circle cx='7' cy='7' r='5' stroke='currentColor' stroke-width='1.5'/><path d='M11 11l3 3' stroke='currentColor' stroke-linecap='round' stroke-width='1.5'/></svg> Hasil Pencarian</div>
+            <h1 class='dp-label-title'>
+              Hasil untuk: &quot;<data:searchQuery/>&#8221;
+            </h1>
+            <p class='dp-label-desc'>
+              Program yang sesuai dengan kata kunci pencarian Anda.
+            </p>
+          </div>
+
+          <div class='dp-post-grid dp-animate-in dp-animate-delay-1'>
+            <b:loop values='data:posts' var='post'>
+              <a class='dp-post-card' expr:href='data:post.url'>
+                <div class='dp-post-card-header'>
+                  <b:if cond='data:post.labels'>
+                    <b:loop index='i' values='data:post.labels' var='label'>
+                      <b:if cond='data:i == 0'>
+                        <span class='dp-post-label'><data:label.name/></span>
+                      </b:if>
+                    </b:loop>
+                  </b:if>
+                </div>
+                <div class='dp-post-card-body'>
+                  <div class='dp-post-title'><data:post.title/></div>
+                  <div class='dp-post-snippet'><data:post.snippet/></div>
+                </div>
+                <div class='dp-post-card-footer'>
+                  <span class='dp-post-date'><data:post.date.year/></span>
+                  <span class='dp-post-arrow'>&#8594;</span>
+                </div>
+              </a>
+            </b:loop>
+          </div>
+
+          <b:if cond='!data:posts'>
+            <div class='dp-empty-state'>
+              <div class='dp-empty-state-icon'><svg width='48' height='48' viewBox='0 0 48 48' fill='none'><circle cx='21' cy='21' r='14' stroke='currentColor' stroke-width='2'/><path d='M31 31l10 10' stroke='currentColor' stroke-linecap='round' stroke-width='2'/></svg></div>
+              <div class='dp-empty-state-title'>Tidak Ditemukan</div>
+              <div class='dp-empty-state-text'>Tidak ada program yang sesuai dengan pencarian Anda. Coba kata kunci lain.</div>
+            </div>
+          </b:if>
+        </div>
+      </b:if>
+      <!-- END SEARCH PAGE -->
+
+      <!-- ======================================================
+           STATIC PAGE (Tentang, dll)
+           ====================================================== -->
+      <b:if cond='data:view.isPage'>
+        <div class='dp-post-page'>
+          <div class='dp-post-header dp-animate-in'>
+            <h1 class='dp-post-main-title'><data:post.title/></h1>
+          </div>
+          <article class='dp-post-content dp-animate-in dp-animate-delay-1'>
+            <div class='dp-post-content-inner'>
+              <data:post.body/>
+            </div>
+          </article>
+        </div>
+      </b:if>
+      <!-- END STATIC PAGE -->
+
+    </main>
+
+    <!-- ========================
+         FOOTER
+         ======================== -->
+    <footer class='dp-footer' role='contentinfo'>
+      <div class='dp-footer-left'>
+        <span class='dp-footer-logo'>DiskritProgram</span>
+        <span>&#169; 2025 &#183; Kumpulan Program Matematika Diskrit</span>
+      </div>
+      <div class='dp-footer-links'>
+        <a expr:href='data:blog.homepageUrl'>Beranda</a>
+        <a href='/p/tentang.html'>Tentang</a>
+        <a expr:href='data:blog.homepageUrl + &quot;search/label/Himpunan&quot;'>Himpunan</a>
+        <a expr:href='data:blog.homepageUrl + &quot;search/label/Teori-Bilangan&quot;'>Teori Bilangan</a>
+      </div>
+    </footer>
+
+  </div>
+  <!-- END MAIN -->
+
+</div>
+<!-- END LAYOUT -->
+
+<!-- ============================================================
+     HIDDEN BLOGGER WIDGETS (Required)
+     ============================================================ -->
+<!-- ============================================================
+     BLOG WIDGET — Required by Blogger to populate data:posts
+     Rendered into a hidden container; layout uses the data above
+     ============================================================ -->
+<b:section id='main' maxwidgets='1' name='main' showaddelement='no'>
+  <b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog' version='2' visible='true'>
+    <b:widget-settings>
+      <b:widget-setting name='showInlineAds'>false</b:widget-setting>
+      <b:widget-setting name='showBacklinks'>false</b:widget-setting>
+      <b:widget-setting name='showDateHeader'>false</b:widget-setting>
+    </b:widget-settings>
+    <b:includable id='main'>
+      <div id='dp-blog-data' style='display:none;'>
+        <b:loop values='data:posts' var='post'>
+          <span class='dp-post-data'
+            expr:data-url='data:post.url'
+            expr:data-title='data:post.title'
+            expr:data-snippet='data:post.snippet'
+            expr:data-year='data:post.date.year'/>
+        </b:loop>
+      </div>
+    </b:includable>
+    <b:includable id='postQuickEdit'>
+      <b:if cond='data:post.editUrl'>
+        <span class='item-control blog-admin'>
+          <a expr:href='data:post.editUrl' title='Edit Post'>
+            <img alt='' height='18' src='https://www.blogger.com/img/icon18_edit_allbkg.gif' width='18'/>
+          </a>
+        </span>
+      </b:if>
+    </b:includable>
+    <b:includable id='feedLinks'/>
+    <b:includable id='backlinks'/>
+    <b:includable id='comment'/>
+    <b:includable id='commentDeleteIcon'/>
+    <b:includable id='comments'/>
+    <b:includable id='feedLinksBody'/>
+    <b:includable id='nextprev'/>
+    <b:includable id='post'><data:post.body/></b:includable>
+    <b:includable id='postBody'><data:post.body/></b:includable>
+    <b:includable id='status-message'/>
+    <b:includable id='title'/>
+  </b:widget>
+</b:section>
+
+<b:section class='dp-hidden-section' id='header' maxwidgets='1' showaddelement='no'>
+  <b:widget id='Header1' locked='false' title='EduDisk (Header)' type='Header' version='2' visible='true'>
+    <b:widget-settings>
+      <b:widget-setting name='displayUrl'/>
+      <b:widget-setting name='displayHeight'>0</b:widget-setting>
+      <b:widget-setting name='sectionWidth'>-1</b:widget-setting>
+      <b:widget-setting name='useImage'>false</b:widget-setting>
+      <b:widget-setting name='shrinkToFit'>false</b:widget-setting>
+      <b:widget-setting name='imagePlacement'>BEHIND</b:widget-setting>
+      <b:widget-setting name='displayWidth'>0</b:widget-setting>
+    </b:widget-settings>
+    <b:includable id='main'>
+      <!-- Header widget hidden; logo rendered in sidebar -->
+    </b:includable>
+    <b:includable id='behindImageStyle'>
+    <b:if cond='data:sourceUrl'>
+      <b:include cond='data:this.image' data='{                    image: data:this.image,                    selector: &quot;.header-widget&quot;                  }' name='responsiveImageStyle'/>
+      <style type='text/css'>
+        .header-widget {
+          background-position: <data:blog.locale.languageAlignment/>;
+          background-repeat: no-repeat;
+          background-size: cover;
+        }
+      </style>
+    </b:if>
+  </b:includable>
+    <b:includable id='description'>
+    <p>
+      <data:this.description/>
+    </p>
+  </b:includable>
+    <b:includable id='image'>
+    <a class='header-image-wrapper' expr:href='data:blog.homepageUrl'>
+      <b:include data='{                                                 image: data:image,                                                 altText: data:blog.title.escaped,                                                 originalWidth: data:width,                                                 originalHeight: data:height                                               }' name='responsiveImage'/>
+    </a>
+  </b:includable>
+    <b:includable id='title'>
+    <h1>
+      <b:tag cond='data:view.url != data:blog.homepageUrl' expr:href='data:blog.homepageUrl' name='a'>
+        <data:title/>
+      </b:tag>
+    </h1>
+  </b:includable>
+  </b:widget>
+</b:section>
+
+<b:section class='dp-hidden-section' id='sidebar' showaddelement='yes'/>
+
+<b:section class='dp-hidden-section' id='footer-bottom' showaddelement='yes'/>
+
+<style>
+.dp-hidden-section { display: none !important; }
+#dp-blog-data { display: none !important; }
+</style>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script type='text/javascript'>
+//<![CDATA[
+
+/* ============================================================
+   DISKRITPROGRAM — MAIN JAVASCRIPT
+   ============================================================ */
+
+(function() {
+  'use strict';
+
+  /* ============================
+     DARK MODE
+     ============================ */
+  var DARK_KEY = 'dp_dark_mode';
+
+  var SVG_MOON = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.5 10a6 6 0 01-8-8 6 6 0 108 8z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var SVG_SUN = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.3 3.3l1.4 1.4M11.3 11.3l1.4 1.4M3.3 12.7l1.4-1.4M11.3 4.7l1.4-1.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
+
+  function dpApplyDark(isDark) {
+    if (isDark) {
+      document.body.classList.add('dp-dark');
+      var icon = document.getElementById('dpDarkIcon');
+      if (icon) icon.innerHTML = SVG_SUN;
+      localStorage.setItem(DARK_KEY, '1');
+    } else {
+      document.body.classList.remove('dp-dark');
+      var icon = document.getElementById('dpDarkIcon');
+      if (icon) icon.innerHTML = SVG_MOON;
+      localStorage.setItem(DARK_KEY, '0');
+    }
+  }
+
+  window.dpToggleDark = function() {
+    var isDark = document.body.classList.contains('dp-dark');
+    dpApplyDark(!isDark);
+  };
+
+  // Init dark mode from localStorage
+  (function() {
+    var saved = localStorage.getItem(DARK_KEY);
+    if (saved === '1') {
+      dpApplyDark(true);
+    } else if (saved === null) {
+      // Check system preference
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        dpApplyDark(true);
+      }
+    }
+  })();
+
+  /* ============================
+     MOBILE SIDEBAR
+     ============================ */
+  window.dpToggleSidebar = function(open) {
+    var sidebar = document.getElementById('dpSidebar');
+    var overlay = document.getElementById('dpSidebarOverlay');
+    if (!sidebar || !overlay) return;
+    if (open) {
+      sidebar.classList.add('open');
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    } else {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  };
+
+  /* ============================
+     ACTIVE NAV ITEM
+     ============================ */
+  (function() {
+    var path = window.location.href;
+    var navItems = document.querySelectorAll('.dp-nav-item');
+    navItems.forEach(function(item) {
+      var href = item.getAttribute('href');
+      if (href && path.indexOf(href.replace(window.location.origin, '')) !== -1 && href !== '/') {
+        item.classList.add('active');
+      }
+    });
+  })();
+
+  /* ============================
+     SCROLL TO TOP
+     ============================ */
+  (function() {
+    var btn = document.getElementById('dpScrollTop');
+    if (!btn) return;
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 400) {
+        btn.classList.add('visible');
+      } else {
+        btn.classList.remove('visible');
+      }
+    }, { passive: true });
+  })();
+
+  /* ============================
+     LIVE SEARCH
+     ============================ */
+  var searchIndex = [];
+  var searchLoaded = false;
+  var searchTimer = null;
+
+  // Category data for search
+  var categories = [
+    { name: 'Himpunan yang Sama', label: 'Himpunan', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="5" cy="7" r="3.5" stroke="currentColor" stroke-width="1.4"/><circle cx="9" cy="7" r="3.5" stroke="currentColor" stroke-width="1.4"/></svg>' },
+    { name: 'Gabungan Himpunan', label: 'Himpunan', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="5" cy="7" r="3.5" stroke="currentColor" stroke-width="1.4"/><circle cx="9" cy="7" r="3.5" stroke="currentColor" stroke-width="1.4"/></svg>' },
+    { name: 'Subset', label: 'Himpunan', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="5" cy="7" r="3.5" stroke="currentColor" stroke-width="1.4"/><circle cx="9" cy="7" r="3.5" stroke="currentColor" stroke-width="1.4"/></svg>' },
+    { name: 'Komplemen', label: 'Himpunan', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="5" cy="7" r="3.5" stroke="currentColor" stroke-width="1.4"/><circle cx="9" cy="7" r="3.5" stroke="currentColor" stroke-width="1.4"/></svg>' },
+    { name: 'Himpunan Kuasa', label: 'Himpunan', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="5" cy="7" r="3.5" stroke="currentColor" stroke-width="1.4"/><circle cx="9" cy="7" r="3.5" stroke="currentColor" stroke-width="1.4"/></svg>' },
+    { name: 'Multiset', label: 'Himpunan', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="5" cy="7" r="3.5" stroke="currentColor" stroke-width="1.4"/><circle cx="9" cy="7" r="3.5" stroke="currentColor" stroke-width="1.4"/></svg>' },
+    { name: 'Selisih Himpunan', label: 'Himpunan', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="5" cy="7" r="3.5" stroke="currentColor" stroke-width="1.4"/><circle cx="9" cy="7" r="3.5" stroke="currentColor" stroke-width="1.4"/></svg>' },
+    { name: 'Diagram Venn', label: 'Himpunan', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="5" cy="7" r="3.5" stroke="currentColor" stroke-width="1.4"/><circle cx="9" cy="7" r="3.5" stroke="currentColor" stroke-width="1.4"/></svg>' },
+    { name: 'Irisan', label: 'Himpunan', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="5" cy="7" r="3.5" stroke="currentColor" stroke-width="1.4"/><circle cx="9" cy="7" r="3.5" stroke="currentColor" stroke-width="1.4"/></svg>' },
+    { name: 'Fungsi Injektif', label: 'Relasi-Fungsi', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="3" cy="4" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="3" cy="10" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="11" cy="7" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 5L9.5 7M4.5 9L9.5 7" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: 'Fungsi Surjektif', label: 'Relasi-Fungsi', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="3" cy="4" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="3" cy="10" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="11" cy="7" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 5L9.5 7M4.5 9L9.5 7" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: 'Fungsi Bijektif', label: 'Relasi-Fungsi', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="3" cy="4" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="3" cy="10" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="11" cy="7" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 5L9.5 7M4.5 9L9.5 7" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: 'Pemeriksa Sifat Relasi Biner', label: 'Relasi-Fungsi', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="3" cy="4" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="3" cy="10" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="11" cy="7" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 5L9.5 7M4.5 9L9.5 7" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: 'Relasi Invers', label: 'Relasi-Fungsi', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="3" cy="4" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="3" cy="10" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="11" cy="7" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 5L9.5 7M4.5 9L9.5 7" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: 'Kombinasi Relasi', label: 'Relasi-Fungsi', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="3" cy="4" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="3" cy="10" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="11" cy="7" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 5L9.5 7M4.5 9L9.5 7" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: 'Klosur Menghantar', label: 'Relasi-Fungsi', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="3" cy="4" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="3" cy="10" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="11" cy="7" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 5L9.5 7M4.5 9L9.5 7" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: 'Representasi Relasi', label: 'Relasi-Fungsi', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="3" cy="4" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="3" cy="10" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="11" cy="7" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 5L9.5 7M4.5 9L9.5 7" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: 'Kekongruenan Linear', label: 'Relasi-Fungsi', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="3" cy="4" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="3" cy="10" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="11" cy="7" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 5L9.5 7M4.5 9L9.5 7" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: 'Proposisi', label: 'Logika-Matematika', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="4" width="5" height="6" rx="1" stroke="currentColor" stroke-width="1.3"/><path d="M7 7h3M10 5v4" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: 'Tabel Kebenaran', label: 'Logika-Matematika', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="4" width="5" height="6" rx="1" stroke="currentColor" stroke-width="1.3"/><path d="M7 7h3M10 5v4" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: 'Rangkaian Logika', label: 'Logika-Matematika', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="4" width="5" height="6" rx="1" stroke="currentColor" stroke-width="1.3"/><path d="M7 7h3M10 5v4" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: 'SOP POS', label: 'Aljabar-Boolean', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 8h5l-3 4 7-8H8l1-4z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3"/></svg>' },
+    { name: 'De Morgan', label: 'Aljabar-Boolean', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 8h5l-3 4 7-8H8l1-4z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3"/></svg>' },
+    { name: 'Karnaugh Map', label: 'Aljabar-Boolean', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 8h5l-3 4 7-8H8l1-4z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3"/></svg>' },
+    { name: 'Fungsi Boolean', label: 'Aljabar-Boolean', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 8h5l-3 4 7-8H8l1-4z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3"/></svg>' },
+    { name: 'Dominansi', label: 'Aljabar-Boolean', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 8h5l-3 4 7-8H8l1-4z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3"/></svg>' },
+    { name: 'Penyerapan', label: 'Aljabar-Boolean', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 8h5l-3 4 7-8H8l1-4z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3"/></svg>' },
+    { name: 'AND', label: 'Aljabar-Boolean', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 8h5l-3 4 7-8H8l1-4z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3"/></svg>' },
+    { name: 'OR', label: 'Aljabar-Boolean', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 8h5l-3 4 7-8H8l1-4z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3"/></svg>' },
+    { name: 'NOT', label: 'Aljabar-Boolean', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 8h5l-3 4 7-8H8l1-4z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3"/></svg>' },
+    { name: 'XOR', label: 'Aljabar-Boolean', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 8h5l-3 4 7-8H8l1-4z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3"/></svg>' },
+    { name: 'Kombinasi dan Permutasi', label: 'Kombinatorika', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="4" cy="4" r="2" stroke="currentColor" stroke-width="1.3"/><circle cx="10" cy="4" r="2" stroke="currentColor" stroke-width="1.3"/><circle cx="7" cy="10" r="2" stroke="currentColor" stroke-width="1.3"/></svg>' },
+    { name: 'Kombinasi Linear', label: 'Kombinatorika', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="4" cy="4" r="2" stroke="currentColor" stroke-width="1.3"/><circle cx="10" cy="4" r="2" stroke="currentColor" stroke-width="1.3"/><circle cx="7" cy="10" r="2" stroke="currentColor" stroke-width="1.3"/></svg>' },
+    { name: 'FPB', label: 'Teori-Bilangan', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 11V3l2 1.5" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/><path d="M8 11V6c0-.8.6-1.5 1.5-1.5a1.5 1.5 0 010 3H8m0 0h2a1.5 1.5 0 010 3H8" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: 'KPK', label: 'Teori-Bilangan', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 11V3l2 1.5" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/><path d="M8 11V6c0-.8.6-1.5 1.5-1.5a1.5 1.5 0 010 3H8m0 0h2a1.5 1.5 0 010 3H8" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: 'Bilangan Prima', label: 'Teori-Bilangan', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 11V3l2 1.5" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/><path d="M8 11V6c0-.8.6-1.5 1.5-1.5a1.5 1.5 0 010 3H8m0 0h2a1.5 1.5 0 010 3H8" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: 'Bilangan Bulat', label: 'Teori-Bilangan', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 11V3l2 1.5" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/><path d="M8 11V6c0-.8.6-1.5 1.5-1.5a1.5 1.5 0 010 3H8m0 0h2a1.5 1.5 0 010 3H8" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: 'Relatif Prima', label: 'Teori-Bilangan', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 11V3l2 1.5" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/><path d="M8 11V6c0-.8.6-1.5 1.5-1.5a1.5 1.5 0 010 3H8m0 0h2a1.5 1.5 0 010 3H8" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: 'Balikan Modulo', label: 'Teori-Bilangan', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 11V3l2 1.5" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/><path d="M8 11V6c0-.8.6-1.5 1.5-1.5a1.5 1.5 0 010 3H8m0 0h2a1.5 1.5 0 010 3H8" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: 'Hash', label: 'Teori-Bilangan', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 11V3l2 1.5" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/><path d="M8 11V6c0-.8.6-1.5 1.5-1.5a1.5 1.5 0 010 3H8m0 0h2a1.5 1.5 0 010 3H8" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: 'Kriptografi', label: 'Teori-Bilangan', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 11V3l2 1.5" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/><path d="M8 11V6c0-.8.6-1.5 1.5-1.5a1.5 1.5 0 010 3H8m0 0h2a1.5 1.5 0 010 3H8" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: 'Kongruen', label: 'Teori-Bilangan', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 11V3l2 1.5" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/><path d="M8 11V6c0-.8.6-1.5 1.5-1.5a1.5 1.5 0 010 3H8m0 0h2a1.5 1.5 0 010 3H8" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: 'Konversi Basis', label: 'Teori-Bilangan', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 11V3l2 1.5" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/><path d="M8 11V6c0-.8.6-1.5 1.5-1.5a1.5 1.5 0 010 3H8m0 0h2a1.5 1.5 0 010 3H8" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: 'Biner ke Desimal', label: 'Teori-Bilangan', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 11V3l2 1.5" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/><path d="M8 11V6c0-.8.6-1.5 1.5-1.5a1.5 1.5 0 010 3H8m0 0h2a1.5 1.5 0 010 3H8" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: 'Matriks Dasar', label: 'Matriks', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.3"/><path d="M2 5.5h10M2 8.5h10M5.5 2v10M8.5 2v10" stroke="currentColor" stroke-width="1"/></svg>' },
+    { name: 'Operasi Matriks', label: 'Matriks', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.3"/><path d="M2 5.5h10M2 8.5h10M5.5 2v10M8.5 2v10" stroke="currentColor" stroke-width="1"/></svg>' },
+    { name: 'Transpose', label: 'Matriks', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.3"/><path d="M2 5.5h10M2 8.5h10M5.5 2v10M8.5 2v10" stroke="currentColor" stroke-width="1"/></svg>' },
+    { name: 'Minor', label: 'Matriks', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.3"/><path d="M2 5.5h10M2 8.5h10M5.5 2v10M8.5 2v10" stroke="currentColor" stroke-width="1"/></svg>' },
+    { name: 'Determinan', label: 'Matriks', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.3"/><path d="M2 5.5h10M2 8.5h10M5.5 2v10M8.5 2v10" stroke="currentColor" stroke-width="1"/></svg>' },
+    { name: 'Rooted Tree', label: 'Pohon-Graf', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="3" cy="8" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="11" cy="8" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M7 3.5v2L3 7M7 5.5L11 7" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: '4-Ary Tree', label: 'Pohon-Graf', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="3" cy="8" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="11" cy="8" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M7 3.5v2L3 7M7 5.5L11 7" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: 'Traversal', label: 'Pohon-Graf', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="3" cy="8" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="11" cy="8" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M7 3.5v2L3 7M7 5.5L11 7" stroke="currentColor" stroke-linecap="round" stroke-width="1.3"/></svg>' },
+    { name: 'Rekursi dan Relasi Rekurens', label: 'Rekursi', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M11 3.5a5 5 0 11-8.5 2" stroke="currentColor" stroke-linecap="round" stroke-width="1.4"/><path d="M2.5 2v3h3" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4"/></svg>' },
+    { name: 'ISBN-10', label: 'ISBN', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 4v6M6 4v6M8 4v6M9.5 4v6" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/></svg>' },
+    { name: 'ISBN-13', label: 'ISBN', icon: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 4v6M6 4v6M8 4v6M9.5 4v6" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/></svg>' }
+  ];
+
+  var blogUrl = '';
+  try {
+    blogUrl = document.querySelector('a.dp-sidebar-logo') ?
+      document.querySelector('a.dp-sidebar-logo').getAttribute('href') : '/';
+  } catch(e) { blogUrl = '/'; }
+
+  window.dpLiveSearch = function(query) {
+    clearTimeout(searchTimer);
+    var results = document.getElementById('dpSearchResults');
+    if (!results) return;
+
+    if (!query || query.trim().length < 2) {
+      results.innerHTML = '';
+      results.classList.remove('active');
+      return;
+    }
+
+    searchTimer = setTimeout(function() {
+      var q = query.toLowerCase().trim();
+      var matched = categories.filter(function(item) {
+        return item.name.toLowerCase().indexOf(q) !== -1 ||
+               item.label.toLowerCase().replace('-', ' ').indexOf(q) !== -1;
+      });
+
+      if (matched.length === 0) {
+        results.innerHTML = '<div class="dp-search-empty">Tidak ditemukan program untuk "<strong>' + query + '</strong>"</div>';
+      } else {
+        var html = '';
+        matched.slice(0, 6).forEach(function(item) {
+          var searchUrl = blogUrl + 'search/label/' + encodeURIComponent(item.label) + '?q=' + encodeURIComponent(item.name);
+          html += '<a href="' + searchUrl + '" class="dp-search-result-item">' +
+            '<div class="dp-search-result-icon">' + item.icon + '</div>' +
+            '<div>' +
+              '<div class="dp-search-result-title">' + item.name + '</div>' +
+              '<div class="dp-search-result-meta">' + item.label.replace('-', ' & ') + '</div>' +
+            '</div>' +
+          '</a>';
+        });
+        if (matched.length > 6) {
+          html += '<a href="' + blogUrl + 'search?q=' + encodeURIComponent(query) + '" class="dp-search-result-item" style="justify-content:center;color:var(--dp-primary);font-size:12px;font-weight:600;">Lihat semua ' + matched.length + ' hasil →</a>';
+        }
+        results.innerHTML = html;
+      }
+      results.classList.add('active');
+    }, 150);
+  };
+
+  window.dpSearchFocus = function() {
+    var input = document.getElementById('dpSearchInput');
+    var results = document.getElementById('dpSearchResults');
+    if (!input || !results) return;
+    if (input.value.length >= 2) {
+      results.classList.add('active');
+    }
+  };
+
+  window.dpSearchBlur = function() {
+    var results = document.getElementById('dpSearchResults');
+    if (results) results.classList.remove('active');
+  };
+
+  // Handle Enter key on search
+  (function() {
+    var input = document.getElementById('dpSearchInput');
+    if (!input) return;
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        var q = input.value.trim();
+        if (q) {
+          window.location.href = blogUrl + 'search?q=' + encodeURIComponent(q);
+        }
+      }
+    });
+  })();
+
+  /* ============================
+     SOLVER CONTAINER WRAPPER
+     ============================ */
+  (function() {
+    // Wrap all solver-container divs with our styled wrapper
+    var solvers = document.querySelectorAll('.solver-container');
+    solvers.forEach(function(solver) {
+      if (!solver.parentElement.classList.contains('dp-solver-wrapper')) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'dp-solver-wrapper';
+        var header = document.createElement('div');
+        header.className = 'dp-solver-header';
+        header.innerHTML = '<span class="dp-solver-header-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="2.5" stroke="white" stroke-width="1.5"/><path d="M9 1v2M9 15v2M1 9h2M15 9h2M3.2 3.2l1.4 1.4M13.4 13.4l1.4 1.4M3.2 14.8l1.4-1.4M13.4 4.6l1.4-1.4" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></span>' +
+          '<span class="dp-solver-header-title">Program Solver Interaktif</span>' +
+          '<span class="dp-solver-header-badge">Live</span>';
+        solver.parentNode.insertBefore(wrapper, solver);
+        wrapper.appendChild(header);
+        wrapper.appendChild(solver);
+      }
+    });
+  })();
+
+  /* ============================
+     INTERSECTION OBSERVER ANIMATIONS
+     ============================ */
+  (function() {
+    if (!window.IntersectionObserver) return;
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.style.animationPlayState = 'running';
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.dp-cat-card, .dp-post-card, .dp-info-card').forEach(function(el) {
+      el.style.animationPlayState = 'paused';
+      el.classList.add('dp-animate-in');
+      observer.observe(el);
+    });
+  })();
+
+  /* ============================
+     KEYBOARD SHORTCUTS
+     ============================ */
+  document.addEventListener('keydown', function(e) {
+    // Cmd/Ctrl + K to focus search
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      var input = document.getElementById('dpSearchInput');
+      if (input) {
+        input.focus();
+        input.select();
+      }
+    }
+    // Escape to close sidebar / search
+    if (e.key === 'Escape') {
+      dpToggleSidebar(false);
+      var results = document.getElementById('dpSearchResults');
+      if (results) results.classList.remove('active');
+    }
+  });
+
+  /* ============================
+     SMOOTH ANCHOR SCROLLING
+     ============================ */
+  document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+    anchor.addEventListener('click', function(e) {
+      var targetId = this.getAttribute('href').slice(1);
+      var target = document.getElementById(targetId);
+      if (target) {
+        e.preventDefault();
+        var topbarH = document.querySelector('.dp-topbar') ?
+          document.querySelector('.dp-topbar').offsetHeight : 80;
+        var top = target.getBoundingClientRect().top + window.scrollY - topbarH - 20;
+        window.scrollTo({ top: top, behavior: 'smooth' });
+      }
+    });
+  });
+
+  /* ============================
+     TOPBAR SHADOW ON SCROLL
+     ============================ */
+  (function() {
+    var topbar = document.querySelector('.dp-topbar');
+    if (!topbar) return;
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 10) {
+        topbar.style.boxShadow = 'var(--dp-shadow)';
+      } else {
+        topbar.style.boxShadow = 'none';
+      }
+    }, { passive: true });
+  })();
+
+  console.log('%cDiskritProgram', 'color:#2563EB;font-size:16px;font-weight:bold;');
+  console.log('%cKumpulan Program Matematika Diskrit', 'color:#64748B;font-size:12px;');
+
+})();
+
+//]]>
+</script>
+
+</body>
+</html>

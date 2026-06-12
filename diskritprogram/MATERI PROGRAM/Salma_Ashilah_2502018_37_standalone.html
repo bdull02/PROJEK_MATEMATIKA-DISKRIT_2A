@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kriptografi Caesar Cipher</title>
+<style>
+        body{
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg,#4facfe,#00f2fe);
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+            margin:0;
+        }
+
+        .container{
+            background:white;
+            width:400px;
+            padding:25px;
+            border-radius:15px;
+            box-shadow:0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        h1{
+            text-align:center;
+            color:#333;
+        }
+
+        textarea,
+        input{
+            width:100%;
+            padding:12px;
+            margin-top:10px;
+            border-radius:8px;
+            border:1px solid #ccc;
+            font-size:16px;
+            box-sizing:border-box;
+        }
+
+        textarea{
+            height:100px;
+            resize:none;
+        }
+
+        .button-group{
+            display:flex;
+            justify-content:space-between;
+            margin-top:15px;
+        }
+
+        button{
+            width:48%;
+            padding:12px;
+            border:none;
+            border-radius:8px;
+            background:#4facfe;
+            color:white;
+            font-size:16px;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        button:hover{
+            opacity:0.9;
+        }
+
+        .result-box{
+            margin-top:20px;
+            background:#f3f3f3;
+            padding:15px;
+            border-radius:8px;
+            min-height:60px;
+        }
+
+        .rumus{
+            margin-top:15px;
+            background:#eef7ff;
+            padding:10px;
+            border-radius:8px;
+            font-size:14px;
+            color:#333;
+        }
+    </style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Salma Ashilah_2502018</div>
+<div class="container">
+<h1>DISCRYPT</h1>
+<h2>
+        Sistem Kriptografi Caesar Cipher
+    </h2>
+<textarea id="text" placeholder="Masukkan teks..."></textarea>
+<input id="shift" placeholder="Masukkan key/pergeseran" type="number"/>
+<div class="button-group">
+<button onclick="encrypt()">Enkripsi</button>
+<button onclick="decrypt()">Dekripsi</button>
+</div>
+<div class="result-box">
+<strong>Hasil:</strong>
+<p id="result"></p>
+</div>
+<div class="rumus">
+<strong>Rumus:</strong><br/>
+        Enkripsi: E(x) = (x + k) mod 26<br/>
+        Dekripsi: D(x) = (x - k) mod 26
+    </div>
+</div>
+<script>
+function caesarCipher(text, shift) {
+
+    let result = "";
+
+    for (let i = 0; i < text.length; i++) {
+
+        let char = text[i];
+
+        if (char.match(/[a-z]/i)) {
+
+            let code = text.charCodeAt(i);
+
+            let base = (code >= 65 && code <= 90) ? 65 : 97;
+
+            char = String.fromCharCode(
+                ((code - base + shift + 26) % 26) + base
+            );
+        }
+
+        result += char;
+    }
+
+    return result;
+}
+
+function encrypt() {
+
+    let text = document.getElementById("text").value;
+    let shift = parseInt(document.getElementById("shift").value);
+
+    if (isNaN(shift)) {
+        alert("Masukkan key terlebih dahulu!");
+        return;
+    }
+
+    document.getElementById("result").innerText =
+        caesarCipher(text, shift);
+}
+
+function decrypt() {
+
+    let text = document.getElementById("text").value;
+    let shift = parseInt(document.getElementById("shift").value);
+
+    if (isNaN(shift)) {
+        alert("Masukkan key terlebih dahulu!");
+        return;
+    }
+
+    document.getElementById("result").innerText =
+        caesarCipher(text, -shift);
+}
+</script>
+</body>
+</html>

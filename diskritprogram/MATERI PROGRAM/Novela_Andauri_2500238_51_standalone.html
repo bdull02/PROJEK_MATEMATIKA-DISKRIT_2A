@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sistem Visualisasi Diagram Venn — Matematika Diskrit</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=DM+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #fdf0f3;
+    --bg2: #fae4ea;
+    --surface: #ffffff;
+    --surface2: #fdf5f7;
+    --border: #f0cdd6;
+    --border2: #e8b4c0;
+    --text: #2d1a20;
+    --text2: #7a4f5a;
+    --text3: #b88a96;
+    --pink: #e05c7a;
+    --pink-dark: #c0465f;
+    --pink-light: #fce8ed;
+    --pink-soft: #f7d0da;
+    --blue: #5b8dee;
+    --blue-light: #e8f0fd;
+    --green: #4caf82;
+    --green-light: #e6f5ee;
+    --purple: #9b72cf;
+    --purple-light: #f0e9f9;
+    --amber: #e09a4a;
+    --amber-light: #fdf3e3;
+    --red: #e05c5c;
+    --radius: 12px;
+    --radius-lg: 18px;
+    --shadow: 0 2px 16px rgba(220,100,130,0.08);
+    --shadow-lg: 0 4px 32px rgba(220,100,130,0.13);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2.5rem 1rem 4rem;
+    background-image: radial-gradient(circle at 20% 20%, #fce4ec55 0%, transparent 50%),
+                      radial-gradient(circle at 80% 80%, #f8bbd055 0%, transparent 50%);
+  }
+
+  .page {
+    max-width: 700px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+
+  /* Header */
+  .header { text-align: center; padding: 0.5rem 0 0.8rem; }
+  .header-icon {
+    font-size: 36px;
+    margin-bottom: 8px;
+    display: block;
+    filter: drop-shadow(0 2px 8px rgba(220,100,130,0.25));
+  }
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--pink);
+    background: var(--pink-light);
+    border: 1px solid var(--pink-soft);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+  h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .header-sub {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.3rem;
+    box-shadow: var(--shadow);
+  }
+  .card-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .card-title span { font-size: 14px; }
+
+  /* Input */
+  .input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  @media (max-width: 480px) { .input-row { grid-template-columns: 1fr; } }
+
+  .input-group label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text2);
+    margin-bottom: 6px;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .dot-a { background: var(--blue); }
+  .dot-b { background: var(--green); }
+
+  .input-group input {
+    width: 100%;
+    padding: 10px 13px;
+    font-size: 13px;
+    font-family: 'DM Mono', monospace;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+  }
+  .input-group input:focus {
+    border-color: var(--pink);
+    background: var(--surface);
+    box-shadow: 0 0 0 3px rgba(224,92,122,0.12);
+  }
+  .input-hint {
+    font-size: 11px;
+    color: var(--text3);
+    margin-bottom: 14px;
+    line-height: 1.6;
+  }
+
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .btn-run {
+    background: var(--pink);
+    border: none;
+    border-radius: var(--radius);
+    color: #fff;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 22px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+    box-shadow: 0 2px 12px rgba(224,92,122,0.3);
+  }
+  .btn-run:hover { background: var(--pink-dark); box-shadow: 0 4px 18px rgba(224,92,122,0.4); }
+  .btn-run:active { transform: scale(0.97); }
+
+  .btn-reset {
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text2);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .btn-reset:hover { background: var(--pink-light); border-color: var(--pink); color: var(--pink); }
+
+  /* Diagram canvas */
+  .canvas-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+  canvas {
+    width: 100%;
+    max-width: 540px;
+    height: auto;
+    border-radius: var(--radius);
+    cursor: crosshair;
+    transition: opacity 0.3s;
+  }
+  .tooltip {
+    position: absolute;
+    background: var(--text);
+    color: #fff;
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    padding: 7px 12px;
+    border-radius: 8px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+    max-width: 240px;
+    white-space: pre-wrap;
+    line-height: 1.5;
+    z-index: 10;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  }
+  .legend {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 10px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text2);
+  }
+  .lswatch { width: 11px; height: 11px; border-radius: 3px; }
+
+  /* Results */
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  @media (max-width: 400px) { .results-grid { grid-template-columns: 1fr; } }
+
+  .result-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    animation: fadeUp 0.35s ease both;
+  }
+  .result-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(220,100,130,0.1); }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+
+
+
+
+  .result-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 3px;
+  }
+  .result-notation {
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 5px;
+  }
+  .result-val {
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    color: var(--text);
+    word-break: break-word;
+    line-height: 1.6;
+  }
+  .result-count {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 5px;
+  }
+
+  /* Summary */
+  .summary-bar {
+    background: var(--pink-light);
+    border: 1px solid var(--pink-soft);
+    border-radius: var(--radius);
+    padding: 11px 14px;
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    color: var(--pink-dark);
+    line-height: 1.8;
+  }
+
+  /* Relation badges */
+  .relation-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 10px;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid transparent;
+    animation: fadeUp 0.3s ease both;
+  }
+  .badge-true  { background: var(--green-light); color: #2d7a56; border-color: #b6e0cc; }
+  .badge-false { background: var(--surface2);    color: var(--text3); border-color: var(--border); }
+  .badge-warn  { background: var(--amber-light); color: #8a5a10; border-color: #f0d0a0; }
+
+  /* History */
+  .history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .history-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 12px;
+    animation: fadeUp 0.3s ease both;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .history-item:hover { background: var(--pink-light); border-color: var(--pink); }
+  .history-sets { font-family: 'DM Mono', monospace; color: var(--text2); flex: 1; line-height: 1.6; }
+  .history-sets strong { color: var(--text); font-weight: 600; }
+  .history-meta { font-size: 11px; color: var(--text3); white-space: nowrap; }
+  .history-del {
+    background: none; border: none;
+    color: var(--text3); cursor: pointer;
+    font-size: 15px; padding: 2px 4px;
+    border-radius: 4px; transition: color 0.15s, background 0.15s;
+  }
+  .history-del:hover { color: var(--red); background: #fce4e4; }
+  .empty-history {
+    text-align: center;
+    font-size: 13px;
+    color: var(--text3);
+    padding: 1.5rem 0;
+  }
+
+  /* Hidden */
+  .hidden { display: none !important; }
+
+  /* Divider */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 4px 0;
+  }
+
+  .footer {
+    font-size: 11px;
+    color: var(--text3);
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    margin-top: 0.5rem;
+  }
+</style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Novela Andauri_2500238</div>
+<div class="page">
+<!-- Header -->
+<div class="header">
+<span class="header-icon"> ♛ </span>
+<div class="tag">Matematika Diskrit</div>
+<h1>Sistem Visualisasi Diagram Venn</h1>
+<p class="header-sub">Masukkan dua himpunan A dan B, sistem akan menampilkan diagram Venn interaktif serta menghitung semua operasi himpunan secara otomatis.</p>
+</div>
+<!-- Input -->
+<div class="card">
+<div class="card-title"><span>✏️</span> Input himpunan</div>
+<div class="input-row">
+<div class="input-group">
+<label><span class="dot dot-a"></span> Himpunan A</label>
+<input id="setA" placeholder="contoh: 1,2,3,4,5" type="text"/>
+</div>
+<div class="input-group">
+<label><span class="dot dot-b"></span> Himpunan B</label>
+<input id="setB" placeholder="contoh: 3,4,5,6,7" type="text"/>
+</div>
+</div>
+<p class="input-hint">Pisahkan setiap anggota dengan tanda koma. Bisa angka maupun teks. Tekan <strong>Enter</strong> untuk langsung proses.</p>
+<div class="btn-row">
+<button class="btn-run" onclick="run()">▶ Proses &amp; Gambar Diagram</button>
+<button class="btn-reset" onclick="resetAll()">↺ Reset</button>
+</div>
+</div>
+<!-- Diagram -->
+<div class="card">
+<div class="card-title"><span>🔵</span> Diagram Venn</div>
+<div class="canvas-container">
+<canvas height="310" id="venn" width="540"></canvas>
+<div class="tooltip" id="tooltip"></div>
+</div>
+<div class="legend">
+<div class="legend-item"><div class="lswatch" style="background:#5b8dee;opacity:0.65"></div> Hanya A</div>
+<div class="legend-item"><div class="lswatch" style="background:#9b72cf;opacity:0.75"></div> A ∩ B (irisan)</div>
+<div class="legend-item"><div class="lswatch" style="background:#4caf82;opacity:0.65"></div> Hanya B</div>
+</div>
+</div>
+<!-- Results -->
+<div class="card hidden" id="resultSection">
+<div class="card-title"><span>📊</span> Hasil operasi himpunan</div>
+<div class="results-grid" id="results"></div>
+<div class="summary-bar" id="summary"></div>
+<hr class="divider" style="margin-top:12px"/>
+<div class="card-title" style="margin-top:12px"><span>🔗</span> Relasi himpunan</div>
+<div class="relation-wrap" id="relations"></div>
+</div>
+<!-- History -->
+<div class="card">
+<div class="card-title"><span>🕓</span> Riwayat perhitungan</div>
+<div class="history-list" id="historyList">
+<div class="empty-history">Belum ada riwayat. Coba masukkan himpunan dulu!</div>
+</div>
+</div>
+<div class="footer">Novela Andauri  ·  Matematika Diskrit  ·  Universitas Pendidikan Indonesia</div>
+</div>
+<!-- Tooltip + canvas logic -->
+<script>
+/* ── helpers ─────────────────────────────────────────────── */
+function parse(str) {
+  return [...new Set(str.split(',').map(s => s.trim()).filter(s => s !== ''))];
+}
+function fmt(arr) { return arr.length ? '{' + arr.join(', ') + '}' : '∅'; }
+function now() {
+  const d = new Date();
+  return d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+
+/* ── state ───────────────────────────────────────────────── */
+let history = [];
+let lastA = [], lastB = [], lastOnlyA = [], lastInter = [], lastOnlyB = [];
+
+/* ── canvas geometry ─────────────────────────────────────── */
+const W = 540, H = 310;
+const CX = W / 2, CY = H / 2 + 14;
+const R = 108, OFFSET = 70;
+const AX = CX - OFFSET, BX = CX + OFFSET;
+
+function inCircle(px, py, cx, cy, r) {
+  return (px - cx) ** 2 + (py - cy) ** 2 <= r * r;
+}
+function getRegion(px, py) {
+  const inA = inCircle(px, py, AX, CY, R);
+  const inB = inCircle(px, py, BX, CY, R);
+  if (inA && inB)  return 'inter';
+  if (inA)         return 'onlyA';
+  if (inB)         return 'onlyB';
+  return null;
+}
+
+/* ── draw ────────────────────────────────────────────────── */
+function drawVenn(onlyA, inter, onlyB, highlight) {
+  const canvas = document.getElementById('venn');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, W, H);
+
+  const alpha = (region) => highlight === region ? 0.52 : (highlight ? 0.18 : 0.30);
+
+  /* fills */
+  ctx.save(); ctx.globalAlpha = alpha('onlyA');
+  ctx.beginPath(); ctx.arc(AX, CY, R, 0, Math.PI * 2);
+  ctx.fillStyle = '#5b8dee'; ctx.fill(); ctx.restore();
+
+  ctx.save(); ctx.globalAlpha = alpha('onlyB');
+  ctx.beginPath(); ctx.arc(BX, CY, R, 0, Math.PI * 2);
+  ctx.fillStyle = '#4caf82'; ctx.fill(); ctx.restore();
+
+  ctx.save(); ctx.globalAlpha = alpha('inter');
+  ctx.beginPath(); ctx.arc(AX, CY, R, 0, Math.PI * 2);
+  ctx.save(); ctx.clip();
+  ctx.beginPath(); ctx.arc(BX, CY, R, 0, Math.PI * 2);
+  ctx.fillStyle = '#9b72cf'; ctx.fill();
+  ctx.restore(); ctx.restore();
+
+  /* borders */
+  ctx.strokeStyle = highlight ? '#d4a0b0' : '#e0b8c4';
+  ctx.lineWidth = 1.8;
+  ctx.beginPath(); ctx.arc(AX, CY, R, 0, Math.PI * 2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(BX, CY, R, 0, Math.PI * 2); ctx.stroke();
+
+  /* labels */
+  ctx.font = '700 15px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#2554c7';
+  ctx.fillText('A', AX - R + 22, CY - R - 14);
+  ctx.fillStyle = '#1a7a52';
+  ctx.fillText('B', BX + R - 22, CY - R - 14);
+
+  /* content items */
+  const MAX = 4;
+  const drawItems = (arr, x, baseY, color) => {
+    if (!arr.length) return;
+    ctx.fillStyle = color;
+    ctx.textAlign = 'center';
+    ctx.font = '500 12px "DM Mono", monospace';
+    const show = arr.slice(0, MAX);
+    const startY = baseY - ((show.length - 1) * 16) / 2;
+    show.forEach((v, i) => ctx.fillText(v, x, startY + i * 16));
+    if (arr.length > MAX) {
+      ctx.font = '400 11px "DM Mono", monospace';
+      ctx.fillStyle = color + '99';
+      ctx.fillText('+' + (arr.length - MAX) + ' lagi', x, startY + MAX * 16);
+    }
+  };
+
+  drawItems(onlyA, AX - OFFSET / 2 - 4, CY, '#1e40af');
+  drawItems(inter, CX, CY, '#5b21b6');
+  drawItems(onlyB, BX + OFFSET / 2 + 4, CY, '#14532d');
+
+  /* counts */
+  ctx.font = '400 11px "Plus Jakarta Sans", sans-serif';
+  ctx.fillStyle = '#b88a96';
+  ctx.textAlign = 'center';
+  const totalA = onlyA.length + inter.length;
+  const totalB = onlyB.length + inter.length;
+  ctx.fillText('|A| = ' + totalA, AX, CY + R + 22);
+  ctx.fillText('|A∩B| = ' + inter.length, CX, CY + R + 22);
+  ctx.fillText('|B| = ' + totalB, BX, CY + R + 22);
+}
+
+function drawEmpty() {
+  const canvas = document.getElementById('venn');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, W, H);
+  ctx.strokeStyle = '#f0cdd6'; ctx.lineWidth = 1.8;
+  ctx.setLineDash([6, 4]);
+  ctx.beginPath(); ctx.arc(AX, CY, R, 0, Math.PI * 2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(BX, CY, R, 0, Math.PI * 2); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.font = '700 15px "Plus Jakarta Sans", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#e8b4c0';
+  ctx.fillText('A', AX - R + 22, CY - R - 14);
+  ctx.fillText('B', BX + R - 22, CY - R - 14);
+  ctx.font = '400 13px "Plus Jakarta Sans", sans-serif';
+  ctx.fillStyle = '#d4a0b0';
+  ctx.fillText('Masukkan himpunan A dan B', CX, CY - 8);
+  ctx.fillText('lalu klik Proses ▶', CX, CY + 12);
+}
+
+/* ── tooltip on hover ────────────────────────────────────── */
+const canvas = document.getElementById('venn');
+const tooltip = document.getElementById('tooltip');
+
+canvas.addEventListener('mousemove', (e) => {
+  if (!lastA.length && !lastB.length) return;
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = W / rect.width;
+  const scaleY = H / rect.height;
+  const px = (e.clientX - rect.left) * scaleX;
+  const py = (e.clientY - rect.top) * scaleY;
+  const region = getRegion(px, py);
+
+  if (!region) {
+    tooltip.style.opacity = '0';
+    drawVenn(lastOnlyA, lastInter, lastOnlyB, null);
+    return;
+  }
+
+  drawVenn(lastOnlyA, lastInter, lastOnlyB, region);
+
+  let label, members;
+  if (region === 'onlyA')  { label = 'Hanya di A (A − B)'; members = lastOnlyA; }
+  if (region === 'onlyB')  { label = 'Hanya di B (B − A)'; members = lastOnlyB; }
+  if (region === 'inter')  { label = 'Irisan A ∩ B';        members = lastInter; }
+
+  const content = members.length
+    ? label + '\n' + fmt(members) + '\nJumlah: ' + members.length
+    : label + '\n∅ (kosong)';
+  tooltip.textContent = content;
+
+  const tx = e.clientX - rect.left + 12;
+  const ty = e.clientY - rect.top - 10;
+  tooltip.style.left = tx + 'px';
+  tooltip.style.top  = ty + 'px';
+  tooltip.style.opacity = '1';
+});
+
+canvas.addEventListener('mouseleave', () => {
+  tooltip.style.opacity = '0';
+  if (lastA.length || lastB.length) drawVenn(lastOnlyA, lastInter, lastOnlyB, null);
+});
+
+/* ── main run ────────────────────────────────────────────── */
+function run() {
+  const A = parse(document.getElementById('setA').value);
+  const B = parse(document.getElementById('setB').value);
+  if (!A.length && !B.length) return;
+
+  const inter  = A.filter(x => B.includes(x));
+  const union  = [...new Set([...A, ...B])];
+  const onlyA  = A.filter(x => !B.includes(x));
+  const onlyB  = B.filter(x => !A.includes(x));
+
+  lastA = A; lastB = B;
+  lastOnlyA = onlyA; lastInter = inter; lastOnlyB = onlyB;
+
+  /* animate canvas */
+  drawVenn(onlyA, inter, onlyB, null);
+
+  /* result cards */
+  const cards = [
+    { label: 'Irisan',    notation: 'A ∩ B', color: '#7c3aed', val: fmt(inter),  count: inter.length  },
+    { label: 'Gabungan',  notation: 'A ∪ B', color: '#2563eb', val: fmt(union),  count: union.length  },
+    { label: 'Selisih A', notation: 'A − B', color: '#d97706', val: fmt(onlyA),  count: onlyA.length  },
+    { label: 'Selisih B', notation: 'B − A', color: '#d97706', val: fmt(onlyB),  count: onlyB.length  },
+  ];
+  document.getElementById('results').innerHTML = cards.map(d => `
+    <div class="result-card">
+      <div class="result-label">${d.label}</div>
+      <div class="result-notation" style="color:${d.color}">${d.notation}</div>
+      <div class="result-val">${d.val}</div>
+      <div class="result-count">Jumlah anggota: ${d.count}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('summary').innerHTML =
+    `|A| = ${A.length} &nbsp; |B| = ${B.length} &nbsp; |A∩B| = ${inter.length}<br>` +
+    `|A∪B| = |A| + |B| − |A∩B| = ${A.length} + ${B.length} − ${inter.length} = <strong>${union.length}</strong>`;
+
+  /* relations */
+  const isDisjoint  = inter.length === 0;
+  const isSubsetAB  = A.every(x => B.includes(x));
+  const isSubsetBA  = B.every(x => A.includes(x));
+  const isEqual     = isSubsetAB && isSubsetBA;
+  const isOverlap   = inter.length > 0 && !isSubsetAB && !isSubsetBA;
+
+  const rels = [
+    { label: isEqual    ? '✓ A = B (Himpunan sama)'       : '✗ A ≠ B',                         ok: isEqual    },
+    { label: isSubsetAB ? '✓ A ⊆ B (A subset dari B)'     : '✗ A ⊄ B',                         ok: isSubsetAB && !isEqual },
+    { label: isSubsetBA ? '✓ B ⊆ A (B subset dari A)'     : '✗ B ⊄ A',                         ok: isSubsetBA && !isEqual },
+    { label: isDisjoint ? '✓ A dan B saling lepas (disjoint)' : '✗ A dan B tidak saling lepas', ok: isDisjoint },
+    { label: isOverlap  ? '✓ A dan B beririsan'            : '✗ Tidak beririsan parsial',        ok: isOverlap  },
+  ];
+  document.getElementById('relations').innerHTML = rels.map(r =>
+    `<span class="badge ${r.ok ? 'badge-true' : 'badge-false'}">${r.label}</span>`
+  ).join('');
+
+  document.getElementById('resultSection').classList.remove('hidden');
+
+  /* add to history */
+  addHistory(A, B, inter, union, onlyA, onlyB);
+}
+
+/* ── history ─────────────────────────────────────────────── */
+function addHistory(A, B, inter, union, onlyA, onlyB) {
+  history.unshift({ A, B, inter, union, onlyA, onlyB, time: now(), id: Date.now() });
+  if (history.length > 10) history.pop();
+  renderHistory();
+}
+
+function renderHistory() {
+  const el = document.getElementById('historyList');
+  if (!history.length) {
+    el.innerHTML = '<div class="empty-history">Belum ada riwayat.</div>';
+    return;
+  }
+  el.innerHTML = history.map(h => `
+    <div class="history-item" onclick="loadHistory(${h.id})">
+      <div class="history-sets">
+        <strong>A</strong> = ${fmt(h.A)} &nbsp; <strong>B</strong> = ${fmt(h.B)}<br>
+        A∩B = ${fmt(h.inter)} &nbsp; A∪B: ${h.union.length} anggota
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <div class="history-meta">${h.time}</div>
+        <button class="history-del" onclick="delHistory(event, ${h.id})">×</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function loadHistory(id) {
+  const h = history.find(x => x.id === id);
+  if (!h) return;
+  document.getElementById('setA').value = h.A.join(',');
+  document.getElementById('setB').value = h.B.join(',');
+  run();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function delHistory(e, id) {
+  e.stopPropagation();
+  history = history.filter(x => x.id !== id);
+  renderHistory();
+}
+
+/* ── reset ───────────────────────────────────────────────── */
+function resetAll() {
+  document.getElementById('setA').value = '';
+  document.getElementById('setB').value = '';
+  lastA = []; lastB = []; lastOnlyA = []; lastInter = []; lastOnlyB = [];
+  document.getElementById('resultSection').classList.add('hidden');
+  drawEmpty();
+}
+
+/* ── enter key ───────────────────────────────────────────── */
+document.addEventListener('keydown', e => { if (e.key === 'Enter') run(); });
+
+/* ── init ────────────────────────────────────────────────── */
+drawEmpty();
+</script>
+</body>
+</html>

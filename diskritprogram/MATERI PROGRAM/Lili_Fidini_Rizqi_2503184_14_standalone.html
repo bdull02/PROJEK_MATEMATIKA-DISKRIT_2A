@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kalkulator Tabel Kebenaran – Matematika Diskrit</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&amp;family=DM+Sans:wght@300;400;500;600&amp;family=DM+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<style>
+  /* ── CSS Variables ── */
+  :root {
+    --black-purple: #1E0708;
+    --red-berry:    #6C1E26;
+    --matrix:       #884B43;
+    --viola:        #C18F96;
+    --viola-light:  rgba(193,143,150,0.18);
+    --viola-mid:    rgba(193,143,150,0.35);
+    --petal:        #F1E1E9;
+    --petal-dark:   #e8cdd6;
+    --true-bg:      rgba(108,30,38,0.15);
+    --true-text:    #6C1E26;
+    --false-bg:     rgba(30,7,8,0.07);
+    --false-text:   #884B43;
+    --shadow-sm:    0 2px 8px rgba(30,7,8,0.12);
+    --shadow-md:    0 6px 24px rgba(30,7,8,0.16);
+    --shadow-lg:    0 16px 48px rgba(30,7,8,0.22);
+    --radius:       14px;
+    --radius-sm:    8px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--petal);
+    color: var(--black-purple);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 10% 20%, rgba(108,30,38,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 90% 80%, rgba(136,75,67,0.06) 0%, transparent 55%);
+  }
+
+  /* ── Header ── */
+  header {
+    background: linear-gradient(135deg, var(--black-purple) 0%, var(--red-berry) 55%, var(--matrix) 100%);
+    padding: 2.5rem 2rem 2rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+  }
+  header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle at 30% 50%, rgba(193,143,150,0.12) 0%, transparent 55%),
+                      radial-gradient(circle at 80% 20%, rgba(241,225,233,0.06) 0%, transparent 40%);
+  }
+  header::after {
+    content: '❧';
+    position: absolute; right: 2.5rem; top: 50%; transform: translateY(-50%);
+    font-size: 6rem; color: rgba(241,225,233,0.07);
+    font-family: 'Playfair Display', serif;
+    pointer-events: none;
+  }
+  .header-inner {
+    max-width: 1200px; margin: 0 auto; position: relative; z-index: 1;
+  }
+  .header-badge {
+    display: inline-block;
+    background: rgba(241,225,233,0.15);
+    border: 1px solid rgba(241,225,233,0.25);
+    color: var(--petal);
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0.3rem 0.85rem; border-radius: 50px; margin-bottom: 0.75rem;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 4vw, 2.4rem);
+    font-weight: 700; color: var(--petal);
+    line-height: 1.2; margin-bottom: 0.5rem;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  header p {
+    color: rgba(241,225,233,0.75);
+    font-size: 0.92rem; font-weight: 300; max-width: 560px;
+  }
+
+  /* ── Main Layout ── */
+  .main-wrapper {
+    max-width: 1200px; margin: 0 auto;
+    padding: 2.5rem 1.5rem;
+  }
+
+  .layout-grid {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 1.75rem;
+    align-items: start;
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--petal-dark);
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+  }
+  .card:hover { box-shadow: var(--shadow-md); }
+
+  .card-header {
+    background: linear-gradient(135deg, var(--red-berry), var(--matrix));
+    padding: 1rem 1.35rem;
+    display: flex; align-items: center; gap: 0.65rem;
+  }
+  .card-header-icon {
+    width: 32px; height: 32px;
+    background: rgba(241,225,233,0.2);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+  }
+  .card-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem; font-weight: 600; color: var(--petal);
+  }
+  .card-body { padding: 1.35rem; }
+
+  /* ── Input Area ── */
+  .input-group { margin-bottom: 1.1rem; }
+  .input-label {
+    display: block;
+    font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--matrix);
+    margin-bottom: 0.45rem;
+  }
+  .expression-input {
+    width: 100%;
+    font-family: 'DM Mono', monospace;
+    font-size: 1.05rem; font-weight: 500;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--petal-dark);
+    border-radius: var(--radius-sm);
+    background: var(--petal);
+    color: var(--black-purple);
+    transition: border-color 0.25s, box-shadow 0.25s;
+    outline: none;
+  }
+  .expression-input:focus {
+    border-color: var(--red-berry);
+    box-shadow: 0 0 0 4px rgba(108,30,38,0.1);
+  }
+  .expression-input::placeholder { color: var(--viola); }
+
+  /* ── Symbol Pad ── */
+  .symbol-pad-label {
+    font-size: 0.75rem; font-weight: 600; color: var(--matrix);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 0.5rem; display: block;
+  }
+  .symbol-pad {
+    display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.1rem;
+  }
+  .sym-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.88rem; font-weight: 500;
+    padding: 0.4rem 0.7rem;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--viola);
+    background: var(--viola-light);
+    color: var(--black-purple);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+  }
+  .sym-btn:hover {
+    background: var(--red-berry); color: var(--petal);
+    border-color: var(--red-berry);
+    transform: translateY(-1px); box-shadow: var(--shadow-sm);
+  }
+  .sym-btn:active { transform: translateY(0); }
+  .sym-btn.danger {
+    background: rgba(136,75,67,0.12); border-color: var(--matrix); color: var(--red-berry);
+  }
+  .sym-btn.danger:hover { background: var(--matrix); color: white; border-color: var(--matrix); }
+
+  /* ── Buttons ── */
+  .btn-row { display: flex; gap: 0.6rem; }
+  .btn-primary {
+    flex: 1;
+    background: linear-gradient(135deg, var(--red-berry), var(--matrix));
+    color: var(--petal); border: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 16px rgba(108,30,38,0.25);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(108,30,38,0.35);
+  }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-secondary {
+    background: var(--viola-light); color: var(--matrix);
+    border: 1.5px solid var(--viola);
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem; font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .btn-secondary:hover { background: var(--viola-mid); color: var(--red-berry); border-color: var(--matrix); }
+
+  /* ── Hint Panel ── */
+  .hint-panel {
+    margin-top: 1.1rem;
+    background: var(--viola-light);
+    border: 1px solid rgba(193,143,150,0.4);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem 1rem;
+  }
+  .hint-panel h4 {
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.07em;
+    text-transform: uppercase; color: var(--matrix); margin-bottom: 0.5rem;
+  }
+  .hint-list {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 0.2rem;
+  }
+  .hint-list li {
+    font-size: 0.8rem; color: var(--black-purple);
+    display: flex; align-items: baseline; gap: 0.5rem;
+  }
+  .hint-list .sym { font-family: 'DM Mono', monospace; font-weight: 500; color: var(--red-berry); min-width: 28px; }
+  .hint-list .alt { color: var(--viola); font-size: 0.72rem; }
+
+  /* ── Result Panel ── */
+  .result-placeholder {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 3.5rem 2rem; gap: 1rem;
+    color: var(--viola); text-align: center;
+  }
+  .result-placeholder .icon {
+    font-size: 3rem; opacity: 0.5;
+  }
+  .result-placeholder p { font-size: 0.9rem; max-width: 220px; line-height: 1.6; }
+
+  .error-msg {
+    display: flex; gap: 0.6rem; align-items: flex-start;
+    background: rgba(108,30,38,0.08);
+    border: 1.5px solid rgba(108,30,38,0.2);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem 1rem;
+    color: var(--red-berry); font-size: 0.88rem;
+  }
+  .error-msg .icon { font-size: 1.1rem; flex-shrink: 0; }
+
+  /* ── Conclusion Banner ── */
+  .conclusion {
+    margin-bottom: 1.1rem;
+    padding: 0.9rem 1.15rem;
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; gap: 0.75rem;
+    font-weight: 600; font-size: 0.9rem;
+    animation: fadeSlideIn 0.4s ease;
+  }
+  .conclusion.tautologi {
+    background: linear-gradient(135deg, rgba(108,30,38,0.12), rgba(108,30,38,0.06));
+    border: 1.5px solid rgba(108,30,38,0.25);
+    color: var(--red-berry);
+  }
+  .conclusion.kontradiksi {
+    background: linear-gradient(135deg, rgba(30,7,8,0.1), rgba(30,7,8,0.05));
+    border: 1.5px solid rgba(30,7,8,0.2);
+    color: var(--black-purple);
+  }
+  .conclusion.kontingensi {
+    background: linear-gradient(135deg, rgba(136,75,67,0.12), rgba(136,75,67,0.06));
+    border: 1.5px solid rgba(136,75,67,0.25);
+    color: var(--matrix);
+  }
+  .conclusion .badge {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem; font-weight: 700;
+    background: currentColor; color: white;
+    padding: 0.2rem 0.6rem; border-radius: 50px;
+    opacity: 0.9;
+  }
+  .conclusion .badge { background: currentColor; color: var(--petal); }
+
+  /* ── Truth Table ── */
+  .table-wrapper {
+    overflow-x: auto;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--petal-dark);
+    animation: fadeSlideIn 0.5s ease;
+  }
+  table {
+    width: 100%; border-collapse: collapse;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.88rem;
+  }
+  thead th {
+    background: linear-gradient(135deg, var(--red-berry), var(--matrix));
+    color: var(--petal);
+    padding: 0.7rem 0.9rem;
+    text-align: center; font-weight: 500; font-size: 0.82rem;
+    white-space: nowrap;
+    border-right: 1px solid rgba(241,225,233,0.15);
+  }
+  thead th:last-child {
+    background: linear-gradient(135deg, var(--black-purple), var(--red-berry));
+    font-weight: 700; font-size: 0.85rem;
+  }
+  thead th:last-child { border-right: none; }
+  thead tr th:first-child { border-radius: 0; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--petal-dark);
+    transition: background 0.15s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--viola-light); }
+  tbody tr:nth-child(even) { background: rgba(241,225,233,0.5); }
+  tbody tr:nth-child(even):hover { background: var(--viola-light); }
+
+  tbody td {
+    padding: 0.6rem 0.9rem; text-align: center;
+    border-right: 1px solid var(--petal-dark);
+  }
+  tbody td:last-child { border-right: none; }
+
+  .cell-true {
+    color: var(--true-text); font-weight: 700;
+    background: var(--true-bg) !important;
+  }
+  .cell-false {
+    color: var(--false-text); font-weight: 500;
+  }
+  .result-col { border-left: 2px solid var(--matrix) !important; }
+
+  /* ── Step Info ── */
+  .step-info {
+    font-size: 0.78rem; color: var(--viola);
+    margin-bottom: 0.65rem; font-style: italic;
+  }
+
+  /* ── Education Section ── */
+  .edu-section { margin-top: 2.5rem; }
+  .edu-section-header {
+    display: flex; align-items: center; gap: 0.85rem;
+    margin-bottom: 1.35rem;
+  }
+  .edu-section-header::after {
+    content: ''; flex: 1; height: 1.5px;
+    background: linear-gradient(to right, var(--viola), transparent);
+  }
+  .edu-section-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem; font-weight: 700; color: var(--red-berry);
+    white-space: nowrap;
+  }
+
+  .edu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .edu-card {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--petal-dark);
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .edu-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+
+  .edu-card-header {
+    padding: 1rem 1.25rem 0.7rem;
+    border-bottom: 1.5px solid var(--petal-dark);
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .edu-op-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.1rem; font-weight: 700; color: var(--red-berry);
+    background: var(--true-bg);
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 8px;
+  }
+  .edu-card-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem; font-weight: 600; color: var(--black-purple);
+  }
+  .edu-card-header span {
+    font-size: 0.75rem; color: var(--viola); margin-top: 0.1rem; display: block;
+  }
+  .edu-table-wrap { padding: 0.85rem; overflow-x: auto; }
+  .edu-table {
+    width: 100%; border-collapse: collapse; font-family: 'DM Mono', monospace; font-size: 0.85rem;
+  }
+  .edu-table thead th {
+    background: var(--viola-light); color: var(--black-purple);
+    padding: 0.5rem 0.75rem; text-align: center;
+    border: 1px solid var(--petal-dark); font-weight: 600;
+  }
+  .edu-table tbody td {
+    padding: 0.5rem 0.75rem; text-align: center;
+    border: 1px solid var(--petal-dark);
+  }
+  .edu-rule {
+    padding: 0.6rem 1rem 0.85rem;
+    font-size: 0.78rem; color: var(--matrix); line-height: 1.5;
+    border-top: 1px solid var(--petal-dark);
+    font-style: italic;
+  }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center; padding: 2rem 1rem;
+    color: var(--viola); font-size: 0.78rem;
+    border-top: 1px solid var(--petal-dark);
+    margin-top: 2rem;
+  }
+  footer strong { color: var(--matrix); }
+
+  /* ── Animations ── */
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse-border {
+    0%, 100% { border-color: var(--viola); }
+    50%       { border-color: var(--red-berry); }
+  }
+
+  /* ── Scrollbar ── */
+  .result-scroll { max-height: 460px; overflow-y: auto; }
+  .result-scroll::-webkit-scrollbar { width: 5px; }
+  .result-scroll::-webkit-scrollbar-track { background: var(--petal); }
+  .result-scroll::-webkit-scrollbar-thumb { background: var(--viola); border-radius: 4px; }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .layout-grid { grid-template-columns: 1fr; }
+    header h1 { font-size: 1.4rem; }
+    header::after { display: none; }
+    .edu-grid { grid-template-columns: 1fr; }
+    .main-wrapper { padding: 1.5rem 1rem; }
+  }
+</style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Lili Fidini Rizqi_2503184</div>
+<header>
+<div class="header-inner">
+<div class="header-badge">Matematika Diskrit</div>
+<h1>Kalkulator &amp; Media Pembelajaran<br/>Tabel Kebenaran</h1>
+<p>Masukkan ekspresi logika kustom untuk menghasilkan tabel kebenaran secara otomatis, lengkap dengan analisis langkah per langkah.</p>
+</div>
+</header>
+<div class="main-wrapper">
+<!-- Layout Grid -->
+<div class="layout-grid">
+<!-- LEFT: Input Panel -->
+<div>
+<div class="card">
+<div class="card-header">
+<div class="card-header-icon">∧</div>
+<h2>Panel Kalkulator</h2>
+</div>
+<div class="card-body">
+<div class="input-group">
+<label class="input-label" for="expr-input">Ekspresi Logika</label>
+<input autocapitalize="off" autocomplete="off" autocorrect="off" class="expression-input" id="expr-input" placeholder="Contoh: (p ∧ q) → ~r" spellcheck="false" type="text"/>
+</div>
+<span class="symbol-pad-label">Tombol Simbol Cepat</span>
+<div class="symbol-pad">
+<button class="sym-btn" onclick="insertSym('∧')" title="AND">∧ AND</button>
+<button class="sym-btn" onclick="insertSym('∨')" title="OR">∨ OR</button>
+<button class="sym-btn" onclick="insertSym('~')" title="NOT">~ NOT</button>
+<button class="sym-btn" onclick="insertSym('→')" title="Implikasi">→ IMP</button>
+<button class="sym-btn" onclick="insertSym('↔')" title="Biimplikasi">↔ BIIMP</button>
+<button class="sym-btn" onclick="insertSym('(')">(</button>
+<button class="sym-btn" onclick="insertSym(')')">)</button>
+<button class="sym-btn" onclick="insertSym('p')">p</button>
+<button class="sym-btn" onclick="insertSym('q')">q</button>
+<button class="sym-btn" onclick="insertSym('r')">r</button>
+<button class="sym-btn" onclick="insertSym('s')">s</button>
+<button class="sym-btn danger" onclick="clearExpr()">⌫ Hapus</button>
+</div>
+<div class="btn-row">
+<button class="btn-primary" onclick="calculate()">
+              🔍  Generate Tabel
+            </button>
+<button class="btn-secondary" onclick="resetAll()">Reset</button>
+</div>
+<div class="hint-panel">
+<h4>Panduan Simbol</h4>
+<ul class="hint-list">
+<li><span class="sym">∧</span> Konjungsi (AND) <span class="alt">– juga bisa: &amp;</span></li>
+<li><span class="sym">∨</span> Disjungsi (OR) <span class="alt">– juga bisa: |</span></li>
+<li><span class="sym">~</span> Negasi (NOT) <span class="alt">– juga bisa: !</span></li>
+<li><span class="sym">→</span> Implikasi <span class="alt">– juga bisa: -&gt;</span></li>
+<li><span class="sym">↔</span> Biimplikasi <span class="alt">– juga bisa: &lt;-&gt;</span></li>
+<li><span class="sym">( )</span> Tanda kurung untuk prioritas</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT: Result Panel -->
+<div>
+<div class="card" id="result-card">
+<div class="card-header">
+<div class="card-header-icon">⊨</div>
+<h2>Hasil Tabel Kebenaran</h2>
+</div>
+<div class="card-body" id="result-body">
+<div class="result-placeholder">
+<div class="icon">⟐</div>
+<p>Masukkan ekspresi logika dan klik <strong>"Generate Tabel"</strong> untuk melihat hasilnya di sini.</p>
+</div>
+</div>
+</div>
+</div>
+</div><!-- /layout-grid -->
+<!-- EDUCATION SECTION -->
+<div class="edu-section">
+<div class="edu-section-header">
+<h2>Referensi Tabel Kebenaran Dasar</h2>
+</div>
+<div class="edu-grid">
+<!-- Konjungsi -->
+<div class="edu-card">
+<div class="edu-card-header">
+<div class="edu-op-badge">∧</div>
+<div>
+<h3>Konjungsi</h3>
+<span>p ∧ q (AND) – Benar hanya jika keduanya benar</span>
+</div>
+</div>
+<div class="edu-table-wrap">
+<table class="edu-table">
+<thead><tr><th>p</th><th>q</th><th>p ∧ q</th></tr></thead>
+<tbody>
+<tr><td class="cell-true">T</td><td class="cell-true">T</td><td class="cell-true">T</td></tr>
+<tr><td class="cell-true">T</td><td class="cell-false">F</td><td class="cell-false">F</td></tr>
+<tr><td class="cell-false">F</td><td class="cell-true">T</td><td class="cell-false">F</td></tr>
+<tr><td class="cell-false">F</td><td class="cell-false">F</td><td class="cell-false">F</td></tr>
+</tbody>
+</table>
+</div>
+<div class="edu-rule">Konjungsi bernilai <strong>True (T)</strong> hanya ketika kedua proposisi p dan q sama-sama bernilai True.</div>
+</div>
+<!-- Disjungsi -->
+<div class="edu-card">
+<div class="edu-card-header">
+<div class="edu-op-badge">∨</div>
+<div>
+<h3>Disjungsi</h3>
+<span>p ∨ q (OR) – Benar jika salah satu benar</span>
+</div>
+</div>
+<div class="edu-table-wrap">
+<table class="edu-table">
+<thead><tr><th>p</th><th>q</th><th>p ∨ q</th></tr></thead>
+<tbody>
+<tr><td class="cell-true">T</td><td class="cell-true">T</td><td class="cell-true">T</td></tr>
+<tr><td class="cell-true">T</td><td class="cell-false">F</td><td class="cell-true">T</td></tr>
+<tr><td class="cell-false">F</td><td class="cell-true">T</td><td class="cell-true">T</td></tr>
+<tr><td class="cell-false">F</td><td class="cell-false">F</td><td class="cell-false">F</td></tr>
+</tbody>
+</table>
+</div>
+<div class="edu-rule">Disjungsi bernilai <strong>False (F)</strong> hanya ketika kedua proposisi p dan q sama-sama bernilai False.</div>
+</div>
+<!-- Negasi -->
+<div class="edu-card">
+<div class="edu-card-header">
+<div class="edu-op-badge">~</div>
+<div>
+<h3>Negasi</h3>
+<span>~p (NOT) – Membalik nilai kebenaran</span>
+</div>
+</div>
+<div class="edu-table-wrap">
+<table class="edu-table">
+<thead><tr><th>p</th><th>~p</th></tr></thead>
+<tbody>
+<tr><td class="cell-true">T</td><td class="cell-false">F</td></tr>
+<tr><td class="cell-false">F</td><td class="cell-true">T</td></tr>
+</tbody>
+</table>
+</div>
+<div class="edu-rule">Negasi selalu <strong>membalik</strong> nilai kebenaran proposisi. Jika p True, maka ~p False, dan sebaliknya.</div>
+</div>
+<!-- Implikasi -->
+<div class="edu-card">
+<div class="edu-card-header">
+<div class="edu-op-badge">→</div>
+<div>
+<h3>Implikasi</h3>
+<span>p → q – Jika p maka q</span>
+</div>
+</div>
+<div class="edu-table-wrap">
+<table class="edu-table">
+<thead><tr><th>p</th><th>q</th><th>p → q</th></tr></thead>
+<tbody>
+<tr><td class="cell-true">T</td><td class="cell-true">T</td><td class="cell-true">T</td></tr>
+<tr><td class="cell-true">T</td><td class="cell-false">F</td><td class="cell-false">F</td></tr>
+<tr><td class="cell-false">F</td><td class="cell-true">T</td><td class="cell-true">T</td></tr>
+<tr><td class="cell-false">F</td><td class="cell-false">F</td><td class="cell-true">T</td></tr>
+</tbody>
+</table>
+</div>
+<div class="edu-rule">Implikasi hanya bernilai <strong>False (F)</strong> ketika hipotesis (p) bernilai True namun konklusi (q) bernilai False.</div>
+</div>
+<!-- Biimplikasi -->
+<div class="edu-card">
+<div class="edu-card-header">
+<div class="edu-op-badge">↔</div>
+<div>
+<h3>Biimplikasi</h3>
+<span>p ↔ q – p jika dan hanya jika q</span>
+</div>
+</div>
+<div class="edu-table-wrap">
+<table class="edu-table">
+<thead><tr><th>p</th><th>q</th><th>p ↔ q</th></tr></thead>
+<tbody>
+<tr><td class="cell-true">T</td><td class="cell-true">T</td><td class="cell-true">T</td></tr>
+<tr><td class="cell-true">T</td><td class="cell-false">F</td><td class="cell-false">F</td></tr>
+<tr><td class="cell-false">F</td><td class="cell-true">T</td><td class="cell-false">F</td></tr>
+<tr><td class="cell-false">F</td><td class="cell-false">F</td><td class="cell-true">T</td></tr>
+</tbody>
+</table>
+</div>
+<div class="edu-rule">Biimplikasi bernilai <strong>True (T)</strong> ketika kedua proposisi memiliki nilai yang sama (keduanya T atau keduanya F).</div>
+</div>
+</div>
+</div><!-- /edu-section -->
+</div><!-- /main-wrapper -->
+<footer>
+<p>Kalkulator Tabel Kebenaran  ·  <strong>Matematika Diskrit</strong>  ·  Logika Proposisional</p>
+</footer>
+<script>
+/* ============================================================
+   TRUTH TABLE CALCULATOR – Vanilla JS
+   ============================================================ */
+
+const input = document.getElementById('expr-input');
+const resultBody = document.getElementById('result-body');
+
+// ── Symbol insertion ──────────────────────────────────────────
+function insertSym(sym) {
+  const start = input.selectionStart;
+  const end   = input.selectionEnd;
+  const val   = input.value;
+  input.value = val.slice(0, start) + sym + val.slice(end);
+  input.selectionStart = input.selectionEnd = start + sym.length;
+  input.focus();
+}
+
+function clearExpr() {
+  const start = input.selectionStart;
+  const end   = input.selectionEnd;
+  if (start !== end) {
+    input.value = input.value.slice(0, start) + input.value.slice(end);
+    input.selectionStart = input.selectionEnd = start;
+  } else if (start > 0) {
+    input.value = input.value.slice(0, start - 1) + input.value.slice(start);
+    input.selectionStart = input.selectionEnd = start - 1;
+  }
+  input.focus();
+}
+
+function resetAll() {
+  input.value = '';
+  resultBody.innerHTML = `
+    <div class="result-placeholder">
+      <div class="icon">⟐</div>
+      <p>Masukkan ekspresi logika dan klik <strong>"Generate Tabel"</strong> untuk melihat hasilnya di sini.</p>
+    </div>`;
+  input.focus();
+}
+
+// ── Keyboard shortcut ─────────────────────────────────────────
+input.addEventListener('keydown', e => {
+  if (e.key === 'Enter') calculate();
+});
+
+// ── Normalize expression ──────────────────────────────────────
+function normalize(expr) {
+  return expr
+    .replace(/&/g, '∧')
+    .replace(/\|/g, '∨')
+    .replace(/!/g, '~')
+    .replace(/->/g, '→')
+    .replace(/<->/g, '↔')
+    .replace(/¬/g, '~')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+// ── Extract variables ─────────────────────────────────────────
+function getVars(expr) {
+  const order = ['p','q','r','s'];
+  const found = new Set(expr.match(/[pqrs]/g) || []);
+  return order.filter(v => found.has(v));
+}
+
+// ── Tokenizer ─────────────────────────────────────────────────
+function tokenize(expr) {
+  const tokens = [];
+  let i = 0;
+  while (i < expr.length) {
+    const ch = expr[i];
+    if (ch === ' ') { i++; continue; }
+    if (/[pqrs]/.test(ch)) { tokens.push({type:'var', val:ch}); i++; }
+    else if (ch === '~') { tokens.push({type:'not', val:'~'}); i++; }
+    else if (ch === '∧') { tokens.push({type:'op',  val:'∧', prec:3}); i++; }
+    else if (ch === '∨') { tokens.push({type:'op',  val:'∨', prec:2}); i++; }
+    else if (ch === '→') { tokens.push({type:'op',  val:'→', prec:1}); i++; }
+    else if (ch === '↔') { tokens.push({type:'op',  val:'↔', prec:0}); i++; }
+    else if (ch === '(') { tokens.push({type:'lparen'}); i++; }
+    else if (ch === ')') { tokens.push({type:'rparen'}); i++; }
+    else { throw new Error(`Simbol tidak dikenal: "${ch}"`); }
+  }
+  return tokens;
+}
+
+// ── Shunting-Yard → postfix ───────────────────────────────────
+function toPostfix(tokens) {
+  const output = [];
+  const ops    = [];
+
+  for (const tok of tokens) {
+    if (tok.type === 'var') {
+      output.push(tok);
+    } else if (tok.type === 'not') {
+      ops.push(tok);
+    } else if (tok.type === 'op') {
+      while (ops.length > 0) {
+        const top = ops[ops.length - 1];
+        if (top.type === 'lparen') break;
+        if (top.type === 'not') { output.push(ops.pop()); continue; }
+        if (top.type === 'op' && top.prec > tok.prec) { output.push(ops.pop()); continue; }
+        // right-associative for →, ↔ – use >= for left-assoc
+        if (top.type === 'op' && top.prec === tok.prec && tok.val !== '→' && tok.val !== '↔') {
+          output.push(ops.pop()); continue;
+        }
+        break;
+      }
+      ops.push(tok);
+    } else if (tok.type === 'lparen') {
+      ops.push(tok);
+    } else if (tok.type === 'rparen') {
+      let matched = false;
+      while (ops.length > 0) {
+        const top = ops.pop();
+        if (top.type === 'lparen') { matched = true; break; }
+        output.push(top);
+      }
+      if (!matched) throw new Error('Tanda kurung tidak seimbang – terlalu banyak ")"');
+    }
+  }
+
+  while (ops.length > 0) {
+    const top = ops.pop();
+    if (top.type === 'lparen') throw new Error('Tanda kurung tidak seimbang – terlalu banyak "("');
+    output.push(top);
+  }
+  return output;
+}
+
+// ── Evaluate postfix with given assignment ────────────────────
+function evalPostfix(postfix, assignment) {
+  const stack = [];
+  for (const tok of postfix) {
+    if (tok.type === 'var') {
+      stack.push(assignment[tok.val]);
+    } else if (tok.type === 'not') {
+      if (stack.length < 1) throw new Error('Ekspresi tidak valid (NOT)');
+      stack.push(!stack.pop());
+    } else if (tok.type === 'op') {
+      if (stack.length < 2) throw new Error('Ekspresi tidak valid (operator)');
+      const b = stack.pop();
+      const a = stack.pop();
+      switch (tok.val) {
+        case '∧': stack.push(a && b); break;
+        case '∨': stack.push(a || b); break;
+        case '→': stack.push(!a || b); break;
+        case '↔': stack.push(a === b); break;
+      }
+    }
+  }
+  if (stack.length !== 1) throw new Error('Ekspresi tidak lengkap atau salah');
+  return stack[0];
+}
+
+// ── Extract sub-expressions for step display ─────────────────
+function extractSubExprs(expr, vars) {
+  const subExprs = [];
+  // parenthesized groups
+  const parenRe = /\([^()]+\)/g;
+  let m;
+  let tmp = expr;
+  while ((m = parenRe.exec(expr)) !== null) {
+    const sub = m[0].slice(1, -1).trim();
+    if (sub && !vars.includes(sub) && sub !== expr.slice(1,-1).trim()) {
+      subExprs.push(sub);
+    }
+  }
+  // negations
+  const negRe = /~[pqrs]/g;
+  while ((m = negRe.exec(expr)) !== null) {
+    if (!subExprs.includes(m[0])) subExprs.push(m[0]);
+  }
+  // remove duplicates, remove the full expr itself, remove bare vars
+  return [...new Set(subExprs)].filter(s => !vars.includes(s) && s !== expr);
+}
+
+// ── Postfix cache ─────────────────────────────────────────────
+const pfCache = {};
+function getPostfix(exprStr) {
+  if (pfCache[exprStr]) return pfCache[exprStr];
+  const tokens = tokenize(exprStr);
+  const pf = toPostfix(tokens);
+  pfCache[exprStr] = pf;
+  return pf;
+}
+
+// ── Display value cell ────────────────────────────────────────
+function tv(bool) {
+  return bool
+    ? `<td class="cell-true${arguments[1] ? ' result-col' : ''}">T</td>`
+    : `<td class="cell-false${arguments[1] ? ' result-col' : ''}">F</td>`;
+}
+
+// ── Main calculate ────────────────────────────────────────────
+function calculate() {
+  const raw = input.value;
+  if (!raw.trim()) {
+    showError('Ekspresi kosong. Silakan masukkan ekspresi logika terlebih dahulu.');
+    return;
+  }
+
+  let expr;
+  try {
+    expr = normalize(raw);
+    const vars = getVars(expr);
+
+    if (vars.length === 0) throw new Error('Tidak ada variabel (p, q, r, s) ditemukan dalam ekspresi.');
+    if (vars.length > 4)   throw new Error('Terlalu banyak variabel. Aplikasi mendukung maksimal 4 variabel (p, q, r, s).');
+
+    // Validate by tokenizing
+    const tokens = tokenize(expr);
+    const postfix = toPostfix(tokens);
+
+    // Sub-expressions
+    const subExprs = extractSubExprs(expr, vars);
+
+    // Generate combinations
+    const n = vars.length;
+    const rows = Math.pow(2, n);
+    const results = [];
+
+    for (let i = 0; i < rows; i++) {
+      const assignment = {};
+      for (let j = 0; j < n; j++) {
+        assignment[vars[j]] = Boolean((i >> (n - 1 - j)) & 1);
+      }
+      const subVals = subExprs.map(sub => {
+        try {
+          const pf2 = getPostfix(sub);
+          return evalPostfix(pf2, assignment);
+        } catch { return null; }
+      });
+      const result = evalPostfix(postfix, assignment);
+      results.push({ assignment, subVals, result });
+    }
+
+    // Determine type
+    const allTrue  = results.every(r => r.result === true);
+    const allFalse = results.every(r => r.result === false);
+    const type = allTrue ? 'tautologi' : allFalse ? 'kontradiksi' : 'kontingensi';
+
+    const typeLabels = {
+      tautologi:   { label: 'Tautologi',   icon: '✦', desc: 'Ekspresi ini selalu bernilai <strong>True</strong> untuk semua kombinasi nilai.' },
+      kontradiksi: { label: 'Kontradiksi', icon: '✗', desc: 'Ekspresi ini selalu bernilai <strong>False</strong> untuk semua kombinasi nilai.' },
+      kontingensi: { label: 'Kontingensi', icon: '◈', desc: 'Ekspresi ini bernilai <strong>True</strong> untuk sebagian kombinasi dan <strong>False</strong> untuk sebagian lainnya.' },
+    };
+    const tInfo = typeLabels[type];
+
+    // Build HTML
+    let html = '';
+
+    // Conclusion banner
+    html += `
+      <div class="conclusion ${type}">
+        <span class="badge">${tInfo.icon} ${tInfo.label}</span>
+        <span>${tInfo.desc}</span>
+      </div>`;
+
+    // Step info
+    if (subExprs.length > 0) {
+      html += `<p class="step-info">Kolom sub-ekspresi ditampilkan untuk memudahkan verifikasi langkah demi langkah.</p>`;
+    }
+
+    // Table
+    html += `<div class="table-wrapper"><div class="result-scroll"><table>`;
+
+    // Header
+    html += '<thead><tr>';
+    vars.forEach(v => html += `<th>${v}</th>`);
+    subExprs.forEach(s => html += `<th>${escHtml(s)}</th>`);
+    html += `<th>${escHtml(expr)}</th>`;
+    html += '</tr></thead>';
+
+    // Body
+    html += '<tbody>';
+    results.forEach(row => {
+      html += '<tr>';
+      vars.forEach(v => html += tv(row.assignment[v]));
+      row.subVals.forEach(sv => html += sv !== null ? tv(sv) : '<td>?</td>');
+      html += tv(row.result, true);
+      html += '</tr>';
+    });
+    html += '</tbody></table></div></div>';
+
+    resultBody.innerHTML = html;
+
+  } catch (err) {
+    showError(err.message);
+  }
+}
+
+function showError(msg) {
+  resultBody.innerHTML = `
+    <div class="error-msg">
+      <span class="icon">⚠</span>
+      <div><strong>Ekspresi Tidak Valid</strong><br>${escHtml(msg)}</div>
+    </div>`;
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,2275 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logic Circuit Adventure - Dimas Krisna Syafa'at Buheri (2501711)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --neon-blue: #00d4ff;
+  --neon-purple: #a855f7;
+  --neon-cyan: #06ffd4;
+  --neon-pink: #ff006e;
+  --bg-dark: #050a1a;
+  --bg-mid: #0a1628;
+  --bg-card: rgba(10,22,50,0.7);
+  --glass: rgba(0,212,255,0.05);
+  --glass-border: rgba(0,212,255,0.2);
+  --text-primary: #e8f4ff;
+  --text-secondary: #8ab4d4;
+  --success: #00ff88;
+  --danger: #ff4444;
+  --gold: #ffd700;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Exo 2',sans-serif;
+  background:var(--bg-dark);
+  color:var(--text-primary);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ===== CANVAS BG ===== */
+#bgCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:0.4}
+
+/* ===== LAYOUT ===== */
+.page{display:none;position:relative;z-index:1;min-height:100vh}
+.page.active{display:block}
+
+/* ===== NAV ===== */
+#topNav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:none;
+  align-items:center;justify-content:space-between;
+  padding:12px 24px;
+  background:rgba(5,10,26,0.9);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--glass-border);
+}
+#topNav.show{display:flex}
+.nav-brand{font-family:'Orbitron',monospace;font-size:1rem;color:var(--neon-cyan);letter-spacing:2px}
+.nav-stats{display:flex;gap:20px;align-items:center}
+.stat-pill{
+  display:flex;align-items:center;gap:6px;
+  padding:6px 14px;border-radius:20px;
+  background:var(--glass);border:1px solid var(--glass-border);
+  font-size:0.8rem;font-weight:600;
+}
+.stat-pill .icon{font-size:1rem}
+.xp-val{color:var(--neon-cyan)}
+.lvl-val{color:var(--neon-purple)}
+#soundBtn{
+  background:none;border:1px solid var(--glass-border);
+  color:var(--text-secondary);border-radius:8px;
+  padding:6px 10px;cursor:pointer;font-size:1rem;
+  transition:all 0.3s;
+}
+#soundBtn:hover{border-color:var(--neon-cyan);color:var(--neon-cyan)}
+
+/* ===== LANDING PAGE ===== */
+#landing{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:100vh;text-align:center;padding:20px;
+}
+.landing-circuit{
+  position:absolute;inset:0;overflow:hidden;pointer-events:none;
+}
+.circuit-line{
+  position:absolute;background:linear-gradient(90deg,transparent,var(--neon-blue),transparent);
+  height:1px;animation:flowLine 3s linear infinite;opacity:0.3;
+}
+@keyframes flowLine{from{transform:translateX(-100%)}to{transform:translateX(100vw)}}
+
+.hero-chip{
+  position:relative;margin-bottom:40px;
+  animation:floatChip 3s ease-in-out infinite;
+}
+@keyframes floatChip{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+
+.chip-svg{
+  width:140px;height:140px;
+  filter:drop-shadow(0 0 30px var(--neon-blue));
+}
+
+.hero-title{
+  font-family:'Orbitron',monospace;
+  font-size:clamp(2rem,6vw,4rem);
+  font-weight:900;
+  background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple),var(--neon-cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  letter-spacing:3px;margin-bottom:16px;
+  text-shadow:none;
+  animation:titleGlow 2s ease-in-out infinite alternate;
+}
+@keyframes titleGlow{
+  from{filter:drop-shadow(0 0 20px rgba(0,212,255,0.5))}
+  to{filter:drop-shadow(0 0 40px rgba(168,85,247,0.8))}
+}
+.hero-sub{
+  font-size:clamp(0.9rem,2.5vw,1.2rem);
+  color:var(--text-secondary);max-width:550px;
+  line-height:1.7;margin-bottom:50px;
+}
+.hero-sub span{color:var(--neon-cyan);font-weight:600}
+
+.badge-role{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 20px;border-radius:30px;
+  background:linear-gradient(135deg,rgba(168,85,247,0.2),rgba(0,212,255,0.2));
+  border:1px solid var(--glass-border);
+  font-size:0.85rem;color:var(--neon-purple);
+  margin-bottom:20px;letter-spacing:1px;
+}
+
+.btn-group{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.btn-primary{
+  padding:16px 40px;border-radius:12px;border:none;cursor:pointer;
+  font-family:'Orbitron',monospace;font-size:1rem;font-weight:700;
+  background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple));
+  color:#fff;letter-spacing:2px;
+  position:relative;overflow:hidden;
+  transition:all 0.3s;box-shadow:0 0 30px rgba(0,212,255,0.4);
+}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 0 50px rgba(0,212,255,0.7)}
+.btn-primary::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,transparent,rgba(255,255,255,0.15),transparent);
+  transform:translateX(-100%);transition:transform 0.5s;
+}
+.btn-primary:hover::after{transform:translateX(100%)}
+
+.btn-secondary{
+  padding:16px 40px;border-radius:12px;cursor:pointer;
+  font-family:'Exo 2',sans-serif;font-size:1rem;font-weight:600;
+  background:transparent;
+  color:var(--neon-cyan);border:2px solid var(--neon-cyan);
+  letter-spacing:1px;transition:all 0.3s;
+}
+.btn-secondary:hover{background:rgba(6,255,212,0.1);transform:translateY(-3px)}
+
+.floating-gates{
+  position:absolute;inset:0;pointer-events:none;overflow:hidden;
+}
+.float-gate{
+  position:absolute;font-size:2rem;opacity:0.08;
+  animation:floatRandom 8s ease-in-out infinite;
+}
+@keyframes floatRandom{
+  0%,100%{transform:translateY(0) rotate(0deg)}
+  33%{transform:translateY(-30px) rotate(10deg)}
+  66%{transform:translateY(20px) rotate(-10deg)}
+}
+
+/* ===== WORLD MAP ===== */
+#worldMap{padding:80px 20px 40px;max-width:1200px;margin:0 auto}
+.map-title{
+  font-family:'Orbitron',monospace;font-size:1.8rem;
+  text-align:center;color:var(--neon-cyan);
+  margin-bottom:8px;letter-spacing:3px;
+}
+.map-subtitle{text-align:center;color:var(--text-secondary);margin-bottom:50px}
+
+.map-grid{
+  display:flex;flex-direction:column;gap:30px;align-items:center;
+}
+.map-row{display:flex;gap:30px;justify-content:center;flex-wrap:wrap}
+
+.level-node{
+  position:relative;
+  width:140px;cursor:pointer;
+  transition:all 0.3s;
+}
+.level-node:hover{transform:translateY(-5px)}
+
+.node-circle{
+  width:80px;height:80px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.8rem;margin:0 auto 10px;
+  background:var(--bg-mid);
+  border:2px solid var(--glass-border);
+  position:relative;transition:all 0.5s;
+  box-shadow:0 4px 20px rgba(0,0,0,0.5);
+}
+.node-circle.locked{opacity:0.4;filter:grayscale(1)}
+.node-circle.completed{
+  border-color:var(--success);
+  box-shadow:0 0 25px rgba(0,255,136,0.5);
+  background:rgba(0,255,136,0.1);
+}
+.node-circle.current{
+  border-color:var(--neon-cyan);
+  box-shadow:0 0 30px rgba(0,212,255,0.6);
+  animation:nodePulse 2s ease-in-out infinite;
+}
+@keyframes nodePulse{
+  0%,100%{box-shadow:0 0 30px rgba(0,212,255,0.6)}
+  50%{box-shadow:0 0 50px rgba(0,212,255,1)}
+}
+
+.node-num{
+  position:absolute;top:-5px;right:-5px;
+  width:22px;height:22px;border-radius:50%;
+  background:var(--neon-purple);color:#fff;
+  font-size:0.7rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.node-label{
+  text-align:center;font-size:0.75rem;
+  color:var(--text-secondary);line-height:1.3;
+}
+.node-xp{
+  text-align:center;font-size:0.7rem;
+  color:var(--neon-cyan);font-weight:600;margin-top:3px;
+}
+.connector-line{
+  width:2px;height:30px;
+  background:linear-gradient(180deg,var(--neon-blue),transparent);
+  margin:0 auto;opacity:0.3;
+}
+
+/* ===== PROGRESS BAR ===== */
+.xp-bar-container{
+  max-width:600px;margin:30px auto;
+  background:var(--bg-mid);border-radius:10px;padding:20px;
+  border:1px solid var(--glass-border);
+}
+.xp-bar-label{display:flex;justify-content:space-between;margin-bottom:8px;font-size:0.85rem}
+.xp-bar-track{height:12px;background:rgba(255,255,255,0.1);border-radius:6px;overflow:hidden}
+.xp-bar-fill{
+  height:100%;border-radius:6px;
+  background:linear-gradient(90deg,var(--neon-blue),var(--neon-purple));
+  transition:width 1s ease;box-shadow:0 0 10px var(--neon-blue);
+}
+.badges-row{display:flex;gap:12px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.badge-item{
+  padding:6px 14px;border-radius:20px;font-size:0.75rem;
+  background:var(--bg-card);border:1px solid var(--glass-border);
+  opacity:0.3;transition:all 0.3s;
+}
+.badge-item.earned{
+  opacity:1;border-color:var(--gold);
+  box-shadow:0 0 15px rgba(255,215,0,0.3);
+  color:var(--gold);
+}
+
+/* ===== LEVEL PAGE ===== */
+#levelPage{padding:80px 20px 40px;max-width:900px;margin:0 auto}
+.level-header{
+  display:flex;align-items:center;gap:16px;margin-bottom:30px;flex-wrap:wrap;
+}
+.level-badge{
+  width:60px;height:60px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;font-size:1.8rem;
+  background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple));
+  box-shadow:0 0 20px rgba(0,212,255,0.4);
+}
+.level-title{font-family:'Orbitron',monospace;font-size:1.5rem;color:var(--neon-cyan)}
+.level-sub{color:var(--text-secondary);font-size:0.9rem}
+
+.btn-back{
+  background:none;border:1px solid var(--glass-border);
+  color:var(--text-secondary);border-radius:8px;
+  padding:8px 16px;cursor:pointer;font-size:0.85rem;
+  transition:all 0.3s;margin-left:auto;
+}
+.btn-back:hover{border-color:var(--neon-cyan);color:var(--neon-cyan)}
+
+/* ===== CONTENT CARDS ===== */
+.content-card{
+  background:var(--bg-card);
+  backdrop-filter:blur(20px);
+  border:1px solid var(--glass-border);
+  border-radius:16px;padding:28px;
+  margin-bottom:24px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.3);
+}
+.content-card h3{
+  font-family:'Orbitron',monospace;font-size:1rem;
+  color:var(--neon-purple);margin-bottom:16px;letter-spacing:1px;
+}
+.content-card p{color:var(--text-secondary);line-height:1.8;margin-bottom:12px}
+.content-card ul{color:var(--text-secondary);line-height:2;padding-left:20px}
+.content-card li span{color:var(--neon-cyan);font-weight:600}
+
+/* ===== INTERACTIVE DEMO ===== */
+.demo-area{
+  background:rgba(0,0,0,0.3);border-radius:12px;padding:24px;
+  border:1px dashed var(--glass-border);margin-top:16px;
+}
+.demo-title{font-size:0.8rem;color:var(--neon-cyan);letter-spacing:2px;margin-bottom:16px;text-transform:uppercase}
+
+/* TOGGLE SWITCH */
+.toggle-row{display:flex;align-items:center;gap:16px;margin-bottom:12px;flex-wrap:wrap}
+.toggle-label{font-size:0.9rem;font-weight:600;min-width:50px}
+.toggle-switch{
+  width:60px;height:30px;border-radius:15px;
+  background:rgba(255,255,255,0.1);border:2px solid var(--glass-border);
+  cursor:pointer;position:relative;transition:all 0.3s;
+}
+.toggle-switch.on{background:var(--neon-cyan);border-color:var(--neon-cyan);box-shadow:0 0 15px var(--neon-cyan)}
+.toggle-switch::after{
+  content:'';position:absolute;top:3px;left:3px;
+  width:20px;height:20px;border-radius:50%;
+  background:#fff;transition:all 0.3s;
+}
+.toggle-switch.on::after{left:33px}
+
+/* LAMP */
+.lamp-display{display:flex;align-items:center;gap:12px;margin-top:8px}
+.lamp{
+  width:50px;height:50px;border-radius:50%;
+  background:rgba(255,255,255,0.05);
+  border:2px solid rgba(255,255,255,0.1);
+  transition:all 0.4s;display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;
+}
+.lamp.on{
+  background:radial-gradient(circle,#fffde7,#ffd700);
+  border-color:#ffd700;
+  box-shadow:0 0 30px rgba(255,215,0,0.8),0 0 60px rgba(255,215,0,0.4);
+}
+.lamp-val{font-family:'Orbitron',monospace;font-size:1.2rem;font-weight:700}
+.lamp-val.high{color:var(--neon-cyan)}
+.lamp-val.low{color:var(--text-secondary)}
+
+/* TRUTH TABLE */
+.truth-table{width:100%;border-collapse:collapse;margin-top:16px;font-size:0.85rem}
+.truth-table th{
+  background:rgba(0,212,255,0.1);color:var(--neon-cyan);
+  padding:10px;border:1px solid var(--glass-border);
+  font-family:'Orbitron',monospace;font-size:0.75rem;letter-spacing:1px;
+}
+.truth-table td{
+  padding:10px;border:1px solid rgba(255,255,255,0.05);
+  text-align:center;color:var(--text-secondary);
+  transition:all 0.3s;
+}
+.truth-table tr.active td{background:rgba(0,212,255,0.1);color:var(--text-primary)}
+.truth-table td.one{color:var(--neon-cyan);font-weight:700}
+.truth-table td.zero{color:var(--text-secondary)}
+
+/* GATE SVG */
+.gate-display{
+  display:flex;align-items:center;justify-content:center;
+  gap:20px;flex-wrap:wrap;margin:16px 0;
+}
+.gate-svg-wrap{position:relative}
+.gate-svg-wrap svg{filter:drop-shadow(0 0 10px var(--neon-blue))}
+.gate-svg-wrap.active svg{filter:drop-shadow(0 0 20px var(--neon-cyan))}
+.signal-wire{
+  height:3px;width:50px;border-radius:2px;
+  background:var(--glass-border);display:inline-block;
+  transition:all 0.3s;
+}
+.signal-wire.active{background:var(--neon-cyan);box-shadow:0 0 8px var(--neon-cyan)}
+
+/* ===== QUIZ ===== */
+.quiz-box{
+  background:var(--bg-card);border:1px solid var(--glass-border);
+  border-radius:16px;padding:28px;
+}
+.quiz-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.quiz-q-num{font-family:'Orbitron',monospace;font-size:0.8rem;color:var(--neon-purple)}
+.quiz-score-disp{font-size:0.85rem;color:var(--neon-cyan);font-weight:600}
+.quiz-progress{
+  height:4px;background:rgba(255,255,255,0.1);border-radius:2px;margin-bottom:24px;overflow:hidden;
+}
+.quiz-progress-fill{height:100%;background:var(--neon-purple);transition:width 0.5s;border-radius:2px}
+
+.quiz-question{
+  font-size:1.1rem;font-weight:600;margin-bottom:8px;line-height:1.6;
+}
+.quiz-context{font-size:0.85rem;color:var(--text-secondary);margin-bottom:20px;font-style:italic}
+.quiz-options{display:flex;flex-direction:column;gap:10px}
+.quiz-opt{
+  padding:14px 18px;border-radius:10px;border:1px solid var(--glass-border);
+  background:rgba(255,255,255,0.03);cursor:pointer;
+  font-size:0.95rem;text-align:left;color:var(--text-primary);
+  transition:all 0.2s;
+}
+.quiz-opt:hover:not(.disabled){background:rgba(0,212,255,0.08);border-color:var(--neon-blue)}
+.quiz-opt.correct{background:rgba(0,255,136,0.15);border-color:var(--success);color:var(--success)}
+.quiz-opt.wrong{background:rgba(255,68,68,0.15);border-color:var(--danger);color:var(--danger)}
+.quiz-opt.disabled{cursor:default}
+
+.quiz-feedback{
+  margin-top:16px;padding:14px;border-radius:10px;font-size:0.9rem;
+  display:none;line-height:1.6;
+}
+.quiz-feedback.show{display:block}
+.quiz-feedback.correct{background:rgba(0,255,136,0.1);border:1px solid var(--success);color:var(--success)}
+.quiz-feedback.wrong{background:rgba(255,68,68,0.1);border:1px solid var(--danger);color:var(--text-primary)}
+
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px}
+.quiz-xp-badge{
+  padding:6px 14px;border-radius:20px;font-size:0.8rem;font-weight:700;
+  background:rgba(0,212,255,0.1);color:var(--neon-cyan);
+  border:1px solid var(--neon-cyan);
+}
+.btn-next{
+  padding:12px 28px;border-radius:10px;border:none;cursor:pointer;
+  background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple));
+  color:#fff;font-weight:600;font-size:0.9rem;transition:all 0.3s;
+  display:none;
+}
+.btn-next.show{display:block}
+.btn-next:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(0,212,255,0.4)}
+
+/* ===== K-MAP ===== */
+.kmap-grid{display:inline-grid;gap:2px;border:2px solid var(--neon-blue);margin-top:16px}
+.kmap-cell{
+  width:65px;height:65px;display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;font-weight:700;cursor:pointer;
+  border:1px solid var(--glass-border);transition:all 0.3s;
+  background:rgba(255,255,255,0.03);border-radius:4px;
+  font-family:'Orbitron',monospace;
+}
+.kmap-cell:hover{background:rgba(0,212,255,0.1)}
+.kmap-cell.selected{background:rgba(0,212,255,0.25);color:var(--neon-cyan);box-shadow:inset 0 0 15px rgba(0,212,255,0.3)}
+.kmap-cell.group1{background:rgba(168,85,247,0.25);color:var(--neon-purple)}
+.kmap-cell.group2{background:rgba(6,255,212,0.25);color:var(--neon-cyan)}
+.kmap-cell.header{background:none;border:none;color:var(--text-secondary);font-size:0.7rem;cursor:default}
+
+/* ===== MAJORITY GATE ===== */
+.majority-inputs{display:flex;gap:20px;margin-bottom:20px;flex-wrap:wrap}
+.input-col{display:flex;flex-direction:column;align-items:center;gap:8px}
+.input-letter{font-family:'Orbitron',monospace;font-size:1.2rem;color:var(--neon-purple)}
+
+/* ===== HALF ADDER ===== */
+.adder-display{
+  display:flex;align-items:center;gap:10px;
+  font-family:'Orbitron',monospace;font-size:1.5rem;
+  justify-content:center;padding:20px 0;flex-wrap:wrap;
+}
+.adder-bit{
+  width:60px;height:60px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.8rem;font-weight:700;cursor:pointer;
+  border:2px solid var(--glass-border);background:var(--bg-mid);
+  transition:all 0.3s;
+}
+.adder-bit:hover{transform:scale(1.1)}
+.adder-bit.one{
+  border-color:var(--neon-cyan);color:var(--neon-cyan);
+  background:rgba(0,212,255,0.1);box-shadow:0 0 20px rgba(0,212,255,0.3);
+}
+.adder-result{
+  display:flex;gap:20px;justify-content:center;margin-top:16px;flex-wrap:wrap;
+}
+.result-box{
+  text-align:center;padding:16px 24px;border-radius:10px;
+  background:var(--bg-mid);border:1px solid var(--glass-border);
+}
+.result-label{font-size:0.75rem;color:var(--text-secondary);margin-bottom:4px}
+.result-val{
+  font-family:'Orbitron',monospace;font-size:2rem;font-weight:700;
+  transition:all 0.3s;
+}
+.result-val.active{color:var(--neon-cyan)}
+
+/* ===== FORMULA CARD ===== */
+.formula-box{
+  background:rgba(0,0,0,0.4);border:1px solid var(--neon-purple);
+  border-radius:10px;padding:16px 24px;margin:12px 0;
+  font-family:'Orbitron',monospace;font-size:1.1rem;
+  color:var(--neon-cyan);letter-spacing:2px;
+  text-align:center;box-shadow:0 0 20px rgba(168,85,247,0.2);
+}
+
+/* ===== SIMPLIFY ANIMATION ===== */
+.simplify-demo{text-align:center;padding:20px}
+.expr-before{font-family:'Orbitron',monospace;font-size:1.3rem;color:var(--text-primary);margin-bottom:10px}
+.expr-term{
+  display:inline-block;padding:4px 10px;border-radius:6px;
+  border:1px solid var(--glass-border);margin:0 3px;transition:all 0.5s;
+}
+.expr-term.removing{opacity:0;transform:scale(0)}
+.expr-term.merged{color:var(--neon-cyan);border-color:var(--neon-cyan);box-shadow:0 0 10px var(--neon-cyan)}
+.arrow-down{font-size:1.5rem;color:var(--neon-purple);margin:10px;display:block}
+.expr-after{font-family:'Orbitron',monospace;font-size:1.3rem;color:var(--success)}
+
+/* ===== LAMP CITY (LEVEL 9) ===== */
+.city-demo{
+  border-radius:12px;overflow:hidden;
+  background:linear-gradient(180deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
+  padding:24px;text-align:center;position:relative;min-height:200px;
+}
+.city-demo.day{background:linear-gradient(180deg,#87ceeb,#e0f4ff,#a8d8a8)}
+.street-lamp{font-size:4rem;transition:all 0.5s;filter:drop-shadow(0 0 0 transparent)}
+.street-lamp.on{filter:drop-shadow(0 0 20px #ffd700) drop-shadow(0 0 40px rgba(255,215,0,0.6))}
+.sky-text{color:rgba(255,255,255,0.5);font-size:0.8rem;margin-top:8px}
+.city-demo.day .sky-text{color:rgba(0,0,0,0.4)}
+
+/* ===== FINAL BOSS ===== */
+.boss-challenge{
+  background:linear-gradient(135deg,rgba(168,85,247,0.1),rgba(0,212,255,0.1));
+  border:1px solid var(--neon-purple);border-radius:16px;padding:28px;
+}
+.truth-input{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:16px 0;
+}
+.boss-result{
+  text-align:center;padding:40px;
+  display:none;
+}
+.boss-result.show{display:block}
+.trophy-anim{font-size:5rem;animation:trophyBounce 1s ease-in-out infinite alternate}
+@keyframes trophyBounce{from{transform:scale(1)}to{transform:scale(1.2) rotate(5deg)}}
+
+/* ===== AI TUTOR ===== */
+#aiTutor{
+  position:fixed;bottom:20px;right:20px;z-index:200;
+}
+.tutor-btn{
+  width:56px;height:56px;border-radius:50%;border:none;cursor:pointer;
+  background:linear-gradient(135deg,var(--neon-purple),var(--neon-blue));
+  font-size:1.5rem;box-shadow:0 0 20px rgba(168,85,247,0.5);
+  transition:all 0.3s;display:flex;align-items:center;justify-content:center;
+}
+.tutor-btn:hover{transform:scale(1.1);box-shadow:0 0 30px rgba(168,85,247,0.8)}
+.tutor-panel{
+  position:absolute;bottom:70px;right:0;width:320px;
+  background:var(--bg-mid);border:1px solid var(--glass-border);
+  border-radius:16px;padding:16px;display:none;
+  box-shadow:0 16px 40px rgba(0,0,0,0.5);
+  backdrop-filter:blur(20px);
+}
+.tutor-panel.open{display:block}
+.tutor-header{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;
+}
+.tutor-title{font-family:'Orbitron',monospace;font-size:0.85rem;color:var(--neon-cyan)}
+.tutor-close{background:none;border:none;color:var(--text-secondary);cursor:pointer;font-size:1.2rem}
+.tutor-msgs{height:200px;overflow-y:auto;margin-bottom:12px;display:flex;flex-direction:column;gap:8px}
+.tutor-msg{
+  padding:10px 12px;border-radius:10px;font-size:0.82rem;line-height:1.6;
+  max-width:90%;
+}
+.tutor-msg.bot{background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);color:var(--text-primary)}
+.tutor-msg.user{background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.2);align-self:flex-end;color:var(--text-primary)}
+.tutor-input-row{display:flex;gap:8px}
+.tutor-input{
+  flex:1;padding:10px;border-radius:8px;border:1px solid var(--glass-border);
+  background:rgba(255,255,255,0.05);color:var(--text-primary);font-size:0.82rem;
+  outline:none;
+}
+.tutor-input:focus{border-color:var(--neon-cyan)}
+.tutor-send{
+  padding:10px 14px;border-radius:8px;border:none;cursor:pointer;
+  background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple));
+  color:#fff;font-size:0.9rem;transition:all 0.3s;
+}
+
+/* ===== CONFETTI ===== */
+.confetti-piece{
+  position:fixed;width:10px;height:10px;border-radius:2px;
+  pointer-events:none;z-index:999;
+  animation:confettiFall 2s ease-in forwards;
+}
+@keyframes confettiFall{
+  0%{transform:translateY(-20px) rotate(0deg);opacity:1}
+  100%{transform:translateY(100vh) rotate(720deg);opacity:0}
+}
+
+/* ===== TOAST ===== */
+.toast{
+  position:fixed;top:80px;left:50%;transform:translateX(-50%);
+  padding:12px 28px;border-radius:30px;font-size:0.9rem;font-weight:600;
+  z-index:300;pointer-events:none;
+  animation:toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards;
+  box-shadow:0 8px 30px rgba(0,0,0,0.4);
+}
+.toast.success{background:linear-gradient(135deg,var(--success),var(--neon-cyan));color:#000}
+.toast.error{background:linear-gradient(135deg,var(--danger),#ff8800);color:#fff}
+.toast.info{background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple));color:#fff}
+@keyframes toastIn{from{opacity:0;top:60px}to{opacity:1;top:80px}}
+@keyframes toastOut{from{opacity:1}to{opacity:0}}
+
+/* ===== COMPLETE MODAL ===== */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;
+  display:none;align-items:center;justify-content:center;backdrop-filter:blur(10px);
+}
+.modal-overlay.show{display:flex}
+.modal-box{
+  background:var(--bg-mid);border:1px solid var(--glass-border);
+  border-radius:20px;padding:40px;text-align:center;max-width:400px;width:90%;
+  box-shadow:0 0 60px rgba(0,212,255,0.2);
+}
+.modal-icon{font-size:4rem;margin-bottom:16px;display:block}
+.modal-title{font-family:'Orbitron',monospace;font-size:1.3rem;color:var(--neon-cyan);margin-bottom:8px}
+.modal-sub{color:var(--text-secondary);margin-bottom:24px;line-height:1.6}
+.modal-xp{
+  font-family:'Orbitron',monospace;font-size:2rem;color:var(--gold);
+  margin-bottom:20px;font-weight:700;
+}
+
+/* ===== BOSS FORMULA DISPLAY ===== */
+.formula-step{
+  padding:12px;background:rgba(0,0,0,0.3);border-radius:8px;
+  border-left:3px solid var(--neon-purple);margin-bottom:8px;
+  font-size:0.85rem;color:var(--text-secondary);
+}
+.formula-step span{color:var(--neon-cyan);font-family:'Orbitron',monospace}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:600px){
+  .map-row{gap:16px}
+  .level-node{width:100px}
+  .node-circle{width:65px;height:65px}
+  #aiTutor{display:none}
+  .gate-display{gap:10px}
+  .kmap-cell{width:50px;height:50px;font-size:0.9rem}
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg-dark)}
+::-webkit-scrollbar-thumb{background:var(--neon-blue);border-radius:3px}
+
+/* ===== INSTRUCTIONS MODAL ===== */
+.instructions-list{text-align:left;margin:16px 0}
+.instructions-list li{
+  padding:8px 0;border-bottom:1px solid var(--glass-border);
+  color:var(--text-secondary);font-size:0.9rem;line-height:1.6;
+}
+.instructions-list li:last-child{border:none}
+.instructions-list li span{color:var(--neon-cyan)}
+
+/* ===== TABS ===== */
+.tab-bar{display:flex;gap:2px;margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:10px;padding:4px}
+.tab-btn{
+  flex:1;padding:10px;border:none;border-radius:8px;
+  background:none;color:var(--text-secondary);cursor:pointer;
+  font-size:0.85rem;font-weight:600;transition:all 0.3s;
+}
+.tab-btn.active{background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple));color:#fff}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* ===== STEP INDICATOR ===== */
+.step-indicator{
+  display:flex;gap:8px;margin-bottom:20px;
+}
+.step-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--glass-border);transition:all 0.3s;
+}
+.step-dot.active{background:var(--neon-cyan);box-shadow:0 0 8px var(--neon-cyan)}
+.step-dot.done{background:var(--success)}
+
+.author-badge{
+position:fixed;
+top:16px;
+left:16px;
+z-index:99999;
+padding:6px 12px;
+border-radius:999px;
+font-size:12px;
+background:#111;
+color:#fff;
+font-family:Arial,sans-serif;
+box-shadow:0 2px 8px rgba(0,0,0,.25);
+}
+
+</style>
+</head>
+<body>
+<div class="author-badge">Dimas Krisna Syafa'at Buheri (2501711)</div>
+
+<canvas id="bgCanvas"></canvas>
+
+<!-- TOP NAV -->
+<nav id="topNav">
+  <div class="nav-brand">⚡ LCA</div>
+  <div class="nav-stats">
+    <div class="stat-pill"><span class="icon">⚡</span><span class="xp-val" id="navXp">0 XP</span></div>
+    <div class="stat-pill"><span class="icon">🎯</span><span class="lvl-val" id="navLvl">Lv.0</span></div>
+    <button id="soundBtn" onclick="toggleSound()">🔊</button>
+  </div>
+</nav>
+
+<!-- LANDING PAGE -->
+<div id="landing" class="page active">
+  <div class="floating-gates">
+    <div class="float-gate" style="left:5%;top:10%;animation-delay:0s">AND</div>
+    <div class="float-gate" style="left:85%;top:15%;animation-delay:1s">OR</div>
+    <div class="float-gate" style="left:10%;top:75%;animation-delay:2s">NOT</div>
+    <div class="float-gate" style="left:80%;top:70%;animation-delay:0.5s">XOR</div>
+    <div class="float-gate" style="left:45%;top:5%;animation-delay:1.5s">NAND</div>
+    <div class="float-gate" style="left:60%;top:85%;animation-delay:2.5s">NOR</div>
+  </div>
+  <div class="hero-chip">
+    <svg class="chip-svg" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="30" width="80" height="80" rx="8" fill="rgba(0,212,255,0.1)" stroke="#00d4ff" stroke-width="2"/>
+      <rect x="42" y="42" width="56" height="56" rx="4" fill="rgba(168,85,247,0.15)" stroke="#a855f7" stroke-width="1"/>
+      <line x1="20" y1="50" x2="30" y2="50" stroke="#00d4ff" stroke-width="2"/>
+      <line x1="20" y1="65" x2="30" y2="65" stroke="#00d4ff" stroke-width="2"/>
+      <line x1="20" y1="80" x2="30" y2="80" stroke="#00d4ff" stroke-width="2"/>
+      <line x1="110" y1="50" x2="120" y2="50" stroke="#00d4ff" stroke-width="2"/>
+      <line x1="110" y1="65" x2="120" y2="65" stroke="#00d4ff" stroke-width="2"/>
+      <line x1="110" y1="80" x2="120" y2="80" stroke="#00d4ff" stroke-width="2"/>
+      <line x1="50" y1="20" x2="50" y2="30" stroke="#a855f7" stroke-width="2"/>
+      <line x1="70" y1="20" x2="70" y2="30" stroke="#a855f7" stroke-width="2"/>
+      <line x1="90" y1="20" x2="90" y2="30" stroke="#a855f7" stroke-width="2"/>
+      <line x1="50" y1="110" x2="50" y2="120" stroke="#a855f7" stroke-width="2"/>
+      <line x1="70" y1="110" x2="70" y2="120" stroke="#a855f7" stroke-width="2"/>
+      <line x1="90" y1="110" x2="90" y2="120" stroke="#a855f7" stroke-width="2"/>
+      <text x="70" y="75" text-anchor="middle" font-size="14" fill="#06ffd4" font-family="monospace" font-weight="bold">LC</text>
+      <circle cx="70" cy="70" r="20" fill="none" stroke="rgba(6,255,212,0.3)" stroke-width="1" stroke-dasharray="4 2"/>
+    </svg>
+  </div>
+  <div class="badge-role">🎓 Digital Engineer Apprentice</div>
+  <h1 class="hero-title">Logic Circuit<br>Adventure</h1>
+  <p class="hero-sub">Belajar <span>Perancangan Rangkaian Logika</span> melalui petualangan interaktif. Dari gerbang logika dasar hingga rangkaian digital lengkap.</p>
+  <div class="btn-group">
+    <button class="btn-primary" onclick="startGame()">⚡ Mulai Belajar</button>
+    <button class="btn-secondary" onclick="showInstructions()">📖 Petunjuk</button>
+  </div>
+</div>
+
+<!-- WORLD MAP PAGE -->
+<div id="worldMapPage" class="page">
+  <div style="max-width:900px;margin:0 auto;padding:80px 20px 40px">
+    <div class="map-title">🗺️ Peta Petualangan</div>
+    <div class="map-subtitle">Pilih level untuk memulai misi</div>
+
+    <div class="xp-bar-container">
+      <div class="xp-bar-label">
+        <span id="xpLabel">0 / 200 XP</span>
+        <span id="rankLabel">Boolean Explorer 🥉</span>
+      </div>
+      <div class="xp-bar-track"><div class="xp-bar-fill" id="xpBar" style="width:0%"></div></div>
+      <div class="badges-row">
+        <div class="badge-item" id="badge0">🥉 Boolean Explorer</div>
+        <div class="badge-item" id="badge1">🥈 Gate Builder</div>
+        <div class="badge-item" id="badge2">🥇 Karnaugh Solver</div>
+        <div class="badge-item" id="badge3">🏆 Logic Master</div>
+      </div>
+    </div>
+
+    <div class="map-grid" id="levelNodes"></div>
+  </div>
+</div>
+
+<!-- LEVEL PAGE -->
+<div id="levelPage" class="page">
+  <div id="levelContent" style="max-width:900px;margin:0 auto;padding:80px 20px 60px"></div>
+</div>
+
+<!-- AI TUTOR -->
+<div id="aiTutor">
+  <div class="tutor-panel" id="tutorPanel">
+    <div class="tutor-header">
+      <div class="tutor-title">🤖 Logic Assistant</div>
+      <button class="tutor-close" onclick="toggleTutor()">✕</button>
+    </div>
+    <div class="tutor-msgs" id="tutorMsgs">
+      <div class="tutor-msg bot">Halo! Saya Logic Assistant. Tanya apapun tentang gerbang logika, Boolean, atau K-Map! 💡</div>
+    </div>
+    <div class="tutor-input-row">
+      <input class="tutor-input" id="tutorInput" placeholder="Tanya sesuatu..." onkeydown="if(event.key==='Enter')sendTutorMsg()">
+      <button class="tutor-send" onclick="sendTutorMsg()">➤</button>
+    </div>
+  </div>
+  <button class="tutor-btn" onclick="toggleTutor()">🤖</button>
+</div>
+
+<!-- MODAL COMPLETE -->
+<div class="modal-overlay" id="completeModal">
+  <div class="modal-box">
+    <span class="modal-icon" id="modalIcon">🎉</span>
+    <div class="modal-title" id="modalTitle">Level Complete!</div>
+    <div class="modal-sub" id="modalSub">Hebat! Kamu telah menyelesaikan level ini.</div>
+    <div class="modal-xp" id="modalXp">+100 XP</div>
+    <button class="btn-primary" onclick="closeModal()" style="width:100%">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- MODAL INSTRUCTIONS -->
+<div class="modal-overlay" id="instrModal">
+  <div class="modal-box" style="max-width:500px">
+    <span class="modal-icon">📖</span>
+    <div class="modal-title">Petunjuk Bermain</div>
+    <ul class="instructions-list">
+      <li>🎯 Selesaikan setiap <span>level</span> secara berurutan</li>
+      <li>⚡ Jawab <span>5 soal quiz</span> di setiap level untuk XP</li>
+      <li>✅ Jawaban benar = <span>+20 XP</span></li>
+      <li>🔬 Gunakan <span>simulator interaktif</span> untuk belajar</li>
+      <li>🤖 Tanya <span>Logic Assistant</span> jika bingung</li>
+      <li>🏆 Kumpulkan semua badge untuk menjadi <span>Logic Master</span></li>
+    </ul>
+    <button class="btn-primary" onclick="closeInstrModal()" style="width:100%;margin-top:8px">Mengerti!</button>
+  </div>
+</div>
+
+<script>
+// ===== STATE =====
+let gameState = {
+  xp: 0,
+  level: 0,
+  completedLevels: [],
+  quizScores: {},
+  badges: [],
+  soundOn: true,
+  currentLevel: null,
+  currentQ: 0,
+  currentScore: 0
+};
+
+const LEVELS = [
+  {id:1, title:"Aljabar Boolean", sub:"Nilai 0, 1, AND, OR, NOT", icon:"🔢", xpReward:100},
+  {id:2, title:"Gerbang Logika Dasar", sub:"AND, OR, NOT", icon:"⚙️", xpReward:120},
+  {id:3, title:"Gerbang Logika Turunan", sub:"NAND, NOR, XOR, XNOR", icon:"🔧", xpReward:140},
+  {id:4, title:"Fungsi Boolean ke Rangkaian", sub:"Konversi & Visualisasi", icon:"📐", xpReward:160},
+  {id:5, title:"Penyederhanaan Boolean", sub:"Hukum & Teorema", icon:"🔬", xpReward:180},
+  {id:6, title:"Peta Karnaugh", sub:"K-Map 2, 3, 4 Variabel", icon:"🗺️", xpReward:200},
+  {id:7, title:"Majority Gate", sub:"f(x,y,z) = xy+xz+yz", icon:"🗳️", xpReward:160},
+  {id:8, title:"Half Adder", sub:"SUM & CARRY", icon:"➕", xpReward:180},
+  {id:9, title:"Lampu Jalan Otomatis", sub:"F = X + YZ'", icon:"🚦", xpReward:200},
+  {id:10, title:"Final Boss", sub:"Logic Master Challenge", icon:"🏆", xpReward:300},
+];
+
+// ===== LOAD / SAVE =====
+function loadState(){
+  const s = localStorage.getItem('lca_state');
+  if(s) gameState = JSON.parse(s);
+}
+function saveState(){
+  localStorage.setItem('lca_state', JSON.stringify(gameState));
+}
+
+// ===== BG CANVAS =====
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
+resizeCanvas();
+window.addEventListener('resize',resizeCanvas);
+
+for(let i=0;i<60;i++){
+  particles.push({
+    x:Math.random()*window.innerWidth,
+    y:Math.random()*window.innerHeight,
+    r:Math.random()*2+0.5,
+    vx:(Math.random()-0.5)*0.3,
+    vy:(Math.random()-0.5)*0.3,
+    color:['#00d4ff','#a855f7','#06ffd4'][Math.floor(Math.random()*3)]
+  });
+}
+function animateBg(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles.forEach(p=>{
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=p.color;
+    ctx.fill();
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0||p.x>canvas.width)p.vx*=-1;
+    if(p.y<0||p.y>canvas.height)p.vy*=-1;
+  });
+  requestAnimationFrame(animateBg);
+}
+animateBg();
+
+// ===== SOUND =====
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx;
+function getAudio(){if(!audioCtx)audioCtx=new AudioCtx();return audioCtx}
+function playTone(freq,dur,type='sine',vol=0.1){
+  if(!gameState.soundOn)return;
+  try{
+    const a=getAudio(),o=a.createOscillator(),g=a.createGain();
+    o.connect(g);g.connect(a.destination);
+    o.type=type;o.frequency.value=freq;
+    g.gain.setValueAtTime(vol,a.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001,a.currentTime+dur);
+    o.start();o.stop(a.currentTime+dur);
+  }catch(e){}
+}
+function playClick(){playTone(800,0.05,'square',0.05)}
+function playSuccess(){
+  playTone(523,0.1);setTimeout(()=>playTone(659,0.1),100);
+  setTimeout(()=>playTone(784,0.2),200);
+}
+function playError(){playTone(200,0.2,'sawtooth',0.05)}
+function playUnlock(){
+  [262,330,392,523].forEach((f,i)=>setTimeout(()=>playTone(f,0.15),i*80));
+}
+function toggleSound(){
+  gameState.soundOn=!gameState.soundOn;
+  document.getElementById('soundBtn').textContent=gameState.soundOn?'🔊':'🔇';
+  saveState();
+}
+
+// ===== NAVIGATION =====
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const nav=document.getElementById('topNav');
+  nav.classList[id==='landing'?'remove':'add']('show');
+  updateNav();
+}
+
+function startGame(){
+  playClick();
+  loadState();
+  showPage('worldMapPage');
+  renderWorldMap();
+}
+
+function showInstructions(){playClick();document.getElementById('instrModal').classList.add('show')}
+function closeInstrModal(){document.getElementById('instrModal').classList.remove('show')}
+function closeModal(){
+  document.getElementById('completeModal').classList.remove('show');
+  showPage('worldMapPage');
+  renderWorldMap();
+}
+
+// ===== UPDATE NAV =====
+function updateNav(){
+  document.getElementById('navXp').textContent=gameState.xp+' XP';
+  document.getElementById('navLvl').textContent='Lv.'+gameState.level;
+}
+
+// ===== WORLD MAP =====
+function renderWorldMap(){
+  updateNav();
+  const container=document.getElementById('levelNodes');
+  container.innerHTML='';
+  const total=gameState.completedLevels.reduce((s,_)=>s,0);
+
+  // XP Bar
+  const maxXp=1000;
+  const pct=Math.min(100,(gameState.xp/maxXp)*100);
+  const xpBar=document.getElementById('xpBar');
+  if(xpBar)xpBar.style.width=pct+'%';
+  const xpLabel=document.getElementById('xpLabel');
+  if(xpLabel)xpLabel.textContent=gameState.xp+' / '+maxXp+' XP';
+
+  // Badges
+  updateBadges();
+
+  // Nodes
+  let rows=[];
+  for(let i=0;i<LEVELS.length;i+=3){rows.push(LEVELS.slice(i,i+3))}
+  rows.forEach((row,ri)=>{
+    if(ri>0){
+      const conn=document.createElement('div');
+      conn.className='connector-line';
+      container.appendChild(conn);
+    }
+    const rowDiv=document.createElement('div');
+    rowDiv.className='map-row';
+    row.forEach(lv=>{
+      const done=gameState.completedLevels.includes(lv.id);
+      const locked=lv.id>1&&!gameState.completedLevels.includes(lv.id-1);
+      const current=!done&&!locked;
+      const node=document.createElement('div');
+      node.className='level-node';
+      node.innerHTML=`
+        <div class="node-circle ${done?'completed':locked?'locked':current?'current':''}">
+          ${lv.icon}
+          <span class="node-num">${lv.id}</span>
+        </div>
+        <div class="node-label">${lv.title}</div>
+        <div class="node-xp">+${lv.xpReward} XP</div>
+      `;
+      if(!locked){
+        node.onclick=()=>{playClick();openLevel(lv.id)};
+        node.style.cursor='pointer';
+      }
+      rowDiv.appendChild(node);
+    });
+    container.appendChild(rowDiv);
+  });
+}
+
+function updateBadges(){
+  const thresholds=[0,200,500,800];
+  const names=['badge0','badge1','badge2','badge3'];
+  names.forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(el)el.classList[gameState.xp>=thresholds[i]||i===0?'add':'remove']('earned');
+  });
+  const rankLabel=document.getElementById('rankLabel');
+  if(rankLabel){
+    if(gameState.xp>=800)rankLabel.textContent='🏆 Logic Master';
+    else if(gameState.xp>=500)rankLabel.textContent='🥇 Karnaugh Solver';
+    else if(gameState.xp>=200)rankLabel.textContent='🥈 Gate Builder';
+    else rankLabel.textContent='🥉 Boolean Explorer';
+  }
+}
+
+// ===== OPEN LEVEL =====
+function openLevel(id){
+  gameState.currentLevel=id;
+  gameState.currentQ=0;
+  gameState.currentScore=0;
+  showPage('levelPage');
+  const lv=LEVELS.find(l=>l.id===id);
+  const content=document.getElementById('levelContent');
+  content.innerHTML=`
+    <div class="level-header">
+      <div class="level-badge">${lv.icon}</div>
+      <div>
+        <div class="level-title">Level ${id}: ${lv.title}</div>
+        <div class="level-sub">${lv.sub}</div>
+      </div>
+      <button class="btn-back" onclick="showPage('worldMapPage');renderWorldMap()">← Peta</button>
+    </div>
+    <div id="levelBody"></div>
+  `;
+  renderLevel(id);
+}
+
+// ===== RENDER LEVELS =====
+function renderLevel(id){
+  const body=document.getElementById('levelBody');
+  const renders={
+    1:renderLevel1,2:renderLevel2,3:renderLevel3,4:renderLevel4,5:renderLevel5,
+    6:renderLevel6,7:renderLevel7,8:renderLevel8,9:renderLevel9,10:renderLevel10
+  };
+  if(renders[id])renders[id](body);
+}
+
+// ========== LEVEL 1: ALJABAR BOOLEAN ==========
+function renderLevel1(body){
+  body.innerHTML=`
+    <div class="content-card">
+      <h3>📚 MATERI: Nilai Biner & Operasi Dasar</h3>
+      <p>Dalam sistem digital, hanya ada dua nilai: <strong style="color:var(--neon-cyan)">0</strong> (False/Mati) dan <strong style="color:var(--neon-cyan)">1</strong> (True/Hidup). Aljabar Boolean menggunakan operasi AND, OR, dan NOT pada nilai-nilai ini.</p>
+      <ul>
+        <li><span>AND (·)</span>: Output 1 hanya jika SEMUA input 1</li>
+        <li><span>OR (+)</span>: Output 1 jika MINIMAL satu input 1</li>
+        <li><span>NOT (‾)</span>: Membalik nilai — 0 jadi 1, 1 jadi 0</li>
+      </ul>
+    </div>
+
+    <div class="content-card">
+      <h3>🔬 SIMULATOR: Saklar & Lampu</h3>
+      <p style="margin-bottom:16px;color:var(--text-secondary)">Klik saklar untuk mengubah nilai (0/1) dan lihat hasilnya secara realtime!</p>
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab(this,'tab-and')">AND</button>
+        <button class="tab-btn" onclick="switchTab(this,'tab-or')">OR</button>
+        <button class="tab-btn" onclick="switchTab(this,'tab-not')">NOT</button>
+      </div>
+
+      <div class="tab-content active" id="tab-and">
+        <div class="demo-area">
+          <div class="demo-title">Operasi AND: A · B = F</div>
+          <div class="toggle-row">
+            <span class="toggle-label">A = <span id="andA_val">0</span></span>
+            <div class="toggle-switch" id="andA" onclick="toggleSwitch('andA','andCalc')"></div>
+          </div>
+          <div class="toggle-row">
+            <span class="toggle-label">B = <span id="andB_val">0</span></span>
+            <div class="toggle-switch" id="andB" onclick="toggleSwitch('andB','andCalc')"></div>
+          </div>
+          <div class="lamp-display">
+            <div class="lamp" id="andLamp">💡</div>
+            <div>
+              <div class="lamp-val" id="andResult" style="color:var(--text-secondary)">F = 0</div>
+              <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:4px">A AND B</div>
+            </div>
+          </div>
+        </div>
+        <table class="truth-table" style="margin-top:16px">
+          <tr><th>A</th><th>B</th><th>F = A AND B</th></tr>
+          <tr id="and_00"><td>0</td><td>0</td><td class="zero">0</td></tr>
+          <tr id="and_01"><td>0</td><td>1</td><td class="zero">0</td></tr>
+          <tr id="and_10"><td>1</td><td>0</td><td class="zero">0</td></tr>
+          <tr id="and_11"><td>1</td><td>1</td><td class="one">1</td></tr>
+        </table>
+      </div>
+
+      <div class="tab-content" id="tab-or">
+        <div class="demo-area">
+          <div class="demo-title">Operasi OR: A + B = F</div>
+          <div class="toggle-row">
+            <span class="toggle-label">A = <span id="orA_val">0</span></span>
+            <div class="toggle-switch" id="orA" onclick="toggleSwitch('orA','orCalc')"></div>
+          </div>
+          <div class="toggle-row">
+            <span class="toggle-label">B = <span id="orB_val">0</span></span>
+            <div class="toggle-switch" id="orB" onclick="toggleSwitch('orB','orCalc')"></div>
+          </div>
+          <div class="lamp-display">
+            <div class="lamp" id="orLamp">💡</div>
+            <div>
+              <div class="lamp-val" id="orResult" style="color:var(--text-secondary)">F = 0</div>
+              <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:4px">A OR B</div>
+            </div>
+          </div>
+        </div>
+        <table class="truth-table" style="margin-top:16px">
+          <tr><th>A</th><th>B</th><th>F = A OR B</th></tr>
+          <tr><td>0</td><td>0</td><td class="zero">0</td></tr>
+          <tr><td>0</td><td>1</td><td class="one">1</td></tr>
+          <tr><td>1</td><td>0</td><td class="one">1</td></tr>
+          <tr><td>1</td><td>1</td><td class="one">1</td></tr>
+        </table>
+      </div>
+
+      <div class="tab-content" id="tab-not">
+        <div class="demo-area">
+          <div class="demo-title">Operasi NOT: Ā = F</div>
+          <div class="toggle-row">
+            <span class="toggle-label">A = <span id="notA_val">0</span></span>
+            <div class="toggle-switch" id="notA" onclick="toggleSwitch('notA','notCalc')"></div>
+          </div>
+          <div class="lamp-display">
+            <div class="lamp on" id="notLamp">💡</div>
+            <div>
+              <div class="lamp-val high" id="notResult">F = 1</div>
+              <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:4px">NOT A</div>
+            </div>
+          </div>
+        </div>
+        <table class="truth-table" style="margin-top:16px">
+          <tr><th>A</th><th>F = NOT A</th></tr>
+          <tr><td>0</td><td class="one">1</td></tr>
+          <tr><td>1</td><td class="zero">0</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div id="quizContainer1"></div>
+  `;
+  renderQuiz(1, getQuiz(1), document.getElementById('quizContainer1'));
+}
+
+// ========== LEVEL 2: GERBANG DASAR ==========
+function renderLevel2(body){
+  body.innerHTML=`
+    <div class="content-card">
+      <h3>📚 MATERI: Gerbang Logika Dasar</h3>
+      <p>Gerbang logika adalah blok dasar semua rangkaian digital. Setiap gerbang mengimplementasikan satu fungsi Boolean.</p>
+    </div>
+
+    <div class="content-card">
+      <h3>🔬 SIMULATOR: Gerbang Interaktif</h3>
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab(this,'g-and')">AND Gate</button>
+        <button class="tab-btn" onclick="switchTab(this,'g-or')">OR Gate</button>
+        <button class="tab-btn" onclick="switchTab(this,'g-not')">NOT Gate</button>
+      </div>
+      ${makeGateSimulator('g-and','AND',true)}
+      ${makeGateSimulator('g-or','OR',false)}
+      ${makeGateSimulatorNot('g-not')}
+    </div>
+
+    <div id="quizContainer2"></div>
+  `;
+  renderQuiz(2,getQuiz(2),document.getElementById('quizContainer2'));
+}
+
+function makeGateSimulator(tabId,type,isFirst){
+  return `<div class="tab-content ${isFirst?'active':''}" id="${tabId}">
+    <div class="demo-area">
+      <div class="demo-title">Gerbang ${type} — Klik input untuk mengubah</div>
+      <div class="gate-display">
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="toggle-row">
+            <span class="toggle-label">A=<span id="${tabId}_av">0</span></span>
+            <div class="toggle-switch" id="${tabId}_a" onclick="gateToggle('${tabId}','${type}')"></div>
+          </div>
+          <div class="toggle-row">
+            <span class="toggle-label">B=<span id="${tabId}_bv">0</span></span>
+            <div class="toggle-switch" id="${tabId}_b" onclick="gateToggle('${tabId}','${type}')"></div>
+          </div>
+        </div>
+        <div style="text-align:center">
+          <svg width="100" height="80" viewBox="0 0 100 80">
+            ${type==='AND'?
+              '<path d="M20 15 L50 15 Q80 15 80 40 Q80 65 50 65 L20 65 Z" fill="rgba(0,212,255,0.1)" stroke="#00d4ff" stroke-width="2"/><line x1="5" y1="28" x2="20" y2="28" stroke="#00d4ff" stroke-width="2"/><line x1="5" y1="52" x2="20" y2="52" stroke="#00d4ff" stroke-width="2"/><line x1="80" y1="40" x2="95" y2="40" stroke="#00d4ff" stroke-width="2"/><text x="50" y="44" text-anchor="middle" font-size="10" fill="#00d4ff">AND</text>':
+              '<path d="M20 15 Q35 15 50 15 Q80 15 80 40 Q80 65 50 65 Q35 65 20 65 Q30 40 20 15Z" fill="rgba(0,212,255,0.1)" stroke="#00d4ff" stroke-width="2"/><line x1="5" y1="28" x2="25" y2="28" stroke="#00d4ff" stroke-width="2"/><line x1="5" y1="52" x2="25" y2="52" stroke="#00d4ff" stroke-width="2"/><line x1="80" y1="40" x2="95" y2="40" stroke="#00d4ff" stroke-width="2"/><text x="50" y="44" text-anchor="middle" font-size="10" fill="#00d4ff">OR</text>'
+            }
+          </svg>
+        </div>
+        <div class="lamp" id="${tabId}_lamp">💡</div>
+      </div>
+      <div style="text-align:center;margin-top:8px">
+        <span class="lamp-val" id="${tabId}_res" style="color:var(--text-secondary)">Output = 0</span>
+      </div>
+    </div>
+    <table class="truth-table" style="margin-top:12px">
+      <tr><th>A</th><th>B</th><th>F (${type})</th></tr>
+      ${type==='AND'?
+        '<tr><td>0</td><td>0</td><td class="zero">0</td></tr><tr><td>0</td><td>1</td><td class="zero">0</td></tr><tr><td>1</td><td>0</td><td class="zero">0</td></tr><tr><td>1</td><td>1</td><td class="one">1</td></tr>':
+        '<tr><td>0</td><td>0</td><td class="zero">0</td></tr><tr><td>0</td><td>1</td><td class="one">1</td></tr><tr><td>1</td><td>0</td><td class="one">1</td></tr><tr><td>1</td><td>1</td><td class="one">1</td></tr>'
+      }
+    </table>
+  </div>`;
+}
+
+function makeGateSimulatorNot(tabId){
+  return `<div class="tab-content" id="${tabId}">
+    <div class="demo-area">
+      <div class="demo-title">Gerbang NOT — Inverter</div>
+      <div class="gate-display">
+        <div class="toggle-row">
+          <span class="toggle-label">A=<span id="${tabId}_av">0</span></span>
+          <div class="toggle-switch" id="${tabId}_a" onclick="notToggle('${tabId}')"></div>
+        </div>
+        <svg width="100" height="60" viewBox="0 0 100 60">
+          <polygon points="15,10 15,50 75,30" fill="rgba(168,85,247,0.1)" stroke="#a855f7" stroke-width="2"/>
+          <circle cx="80" cy="30" r="6" fill="none" stroke="#a855f7" stroke-width="2"/>
+          <line x1="0" y1="30" x2="15" y2="30" stroke="#a855f7" stroke-width="2"/>
+          <line x1="86" y1="30" x2="100" y2="30" stroke="#a855f7" stroke-width="2"/>
+          <text x="40" y="34" text-anchor="middle" font-size="9" fill="#a855f7">NOT</text>
+        </svg>
+        <div class="lamp on" id="${tabId}_lamp">💡</div>
+      </div>
+      <div style="text-align:center;margin-top:8px">
+        <span class="lamp-val high" id="${tabId}_res">Output = 1</span>
+      </div>
+    </div>
+    <table class="truth-table" style="margin-top:12px">
+      <tr><th>A</th><th>F = Ā</th></tr>
+      <tr><td>0</td><td class="one">1</td></tr>
+      <tr><td>1</td><td class="zero">0</td></tr>
+    </table>
+  </div>`;
+}
+
+// ========== LEVEL 3: GERBANG TURUNAN ==========
+function renderLevel3(body){
+  body.innerHTML=`
+    <div class="content-card">
+      <h3>📚 MATERI: Gerbang Logika Turunan</h3>
+      <p>Gerbang turunan dibentuk dari kombinasi gerbang dasar. Masing-masing memiliki karakteristik unik.</p>
+      <ul>
+        <li><span>NAND</span>: NOT-AND — Output 0 HANYA saat semua input 1</li>
+        <li><span>NOR</span>: NOT-OR — Output 1 HANYA saat semua input 0</li>
+        <li><span>XOR</span>: Exclusive OR — Output 1 saat input BERBEDA</li>
+        <li><span>XNOR</span>: Exclusive NOR — Output 1 saat input SAMA</li>
+      </ul>
+    </div>
+
+    <div class="content-card">
+      <h3>🔬 SIMULATOR: Pilih Gerbang</h3>
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab(this,'d-nand')">NAND</button>
+        <button class="tab-btn" onclick="switchTab(this,'d-nor')">NOR</button>
+        <button class="tab-btn" onclick="switchTab(this,'d-xor')">XOR ⭐</button>
+        <button class="tab-btn" onclick="switchTab(this,'d-xnor')">XNOR</button>
+      </div>
+      ${['NAND','NOR','XOR','XNOR'].map((g,i)=>makeDerivedGate(`d-${g.toLowerCase()}`,g,i===0)).join('')}
+    </div>
+
+    <div id="quizContainer3"></div>
+  `;
+  renderQuiz(3,getQuiz(3),document.getElementById('quizContainer3'));
+}
+
+function makeDerivedGate(tabId,type,isFirst){
+  const truth={
+    NAND:[[0,0,'one','1'],[0,1,'one','1'],[1,0,'one','1'],[1,1,'zero','0']],
+    NOR: [[0,0,'one','1'],[0,1,'zero','0'],[1,0,'zero','0'],[1,1,'zero','0']],
+    XOR: [[0,0,'zero','0'],[0,1,'one','1'],[1,0,'one','1'],[1,1,'zero','0']],
+    XNOR:[[0,0,'one','1'],[0,1,'zero','0'],[1,0,'zero','0'],[1,1,'one','1']]
+  };
+  const t=truth[type];
+  const gateColors={NAND:'#ff006e',NOR:'#ff006e',XOR:'#ffd700',XNOR:'#ffd700'};
+  const color=gateColors[type]||'#00d4ff';
+  return `<div class="tab-content ${isFirst?'active':''}" id="${tabId}">
+    <div class="demo-area">
+      <div class="demo-title">Gerbang ${type}</div>
+      <div style="text-align:center;padding:10px 0;font-size:0.8rem;color:var(--text-secondary);margin-bottom:12px">
+        ${type==='XOR'?'"Si Pembanding" — Output 1 saat input berbeda':
+          type==='XNOR'?'"Si Penyama" — Output 1 saat input sama':
+          type==='NAND'?'"Universal Gate" — Inversi dari AND':
+          '"Universal Gate" — Inversi dari OR'}
+      </div>
+      <div class="gate-display">
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="toggle-row">
+            <span class="toggle-label">A=<span id="${tabId}_av">0</span></span>
+            <div class="toggle-switch" id="${tabId}_a" onclick="derivedGateToggle('${tabId}','${type}')"></div>
+          </div>
+          <div class="toggle-row">
+            <span class="toggle-label">B=<span id="${tabId}_bv">0</span></span>
+            <div class="toggle-switch" id="${tabId}_b" onclick="derivedGateToggle('${tabId}','${type}')"></div>
+          </div>
+        </div>
+        <svg width="110" height="80" viewBox="0 0 110 80" style="filter:drop-shadow(0 0 8px ${color})">
+          <path d="M20 15 Q35 15 50 15 Q80 15 80 40 Q80 65 50 65 Q35 65 20 65 Q30 40 20 15Z" fill="rgba(0,0,0,0.2)" stroke="${color}" stroke-width="2"/>
+          ${type.startsWith('N')?'<circle cx="86" cy="40" r="5" fill="none" stroke="'+color+'" stroke-width="2"/><line x1="5" y1="28" x2="25" y2="28" stroke="'+color+'" stroke-width="2"/><line x1="5" y1="52" x2="25" y2="52" stroke="'+color+'" stroke-width="2"/><line x1="91" y1="40" x2="105" y2="40" stroke="'+color+'" stroke-width="2"/>':'<line x1="5" y1="28" x2="25" y2="28" stroke="'+color+'" stroke-width="2"/><line x1="5" y1="52" x2="25" y2="52" stroke="'+color+'" stroke-width="2"/><line x1="80" y1="40" x2="105" y2="40" stroke="'+color+'" stroke-width="2"/>'}
+          ${type.includes('XOR')?'<path d="M13 15 Q23 40 13 65" fill="none" stroke="'+color+'" stroke-width="2"/>':''}
+          <text x="50" y="44" text-anchor="middle" font-size="9" fill="${color}">${type}</text>
+        </svg>
+        <div class="lamp" id="${tabId}_lamp">💡</div>
+      </div>
+      <div style="text-align:center;margin-top:8px">
+        <span class="lamp-val" id="${tabId}_res" style="color:var(--text-secondary)">Output = ${t[0][3]}</span>
+      </div>
+    </div>
+    <table class="truth-table" style="margin-top:12px">
+      <tr><th>A</th><th>B</th><th>F (${type})</th></tr>
+      ${t.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="${r[2]}">${r[3]}</td></tr>`).join('')}
+    </table>
+  </div>`;
+}
+
+// ========== LEVEL 4: KONVERSI FUNGSI ==========
+function renderLevel4(body){
+  body.innerHTML=`
+    <div class="content-card">
+      <h3>📚 MATERI: Konversi Fungsi Boolean ke Rangkaian</h3>
+      <p>Setiap fungsi Boolean dapat direalisasikan menjadi rangkaian logika. Proses konversinya sistematis dan logis.</p>
+    </div>
+
+    <div class="content-card">
+      <h3>🔬 CONTOH: F = XY + X'Y</h3>
+      <div class="formula-box">F = XY + X'Y</div>
+      
+      <div id="convSteps">
+        <div class="formula-step step-item" style="opacity:0;transform:translateX(-20px)">
+          <strong>Langkah 1: Identifikasi Term</strong><br>
+          <span>Term 1: XY</span> &nbsp;|&nbsp; <span>Term 2: X'Y</span>
+        </div>
+        <div class="formula-step step-item" style="opacity:0;transform:translateX(-20px)">
+          <strong>Langkah 2: Bangun Gerbang AND</strong><br>
+          <span>AND Gate 1:</span> X · Y → menghasilkan XY<br>
+          <span>AND Gate 2:</span> X' · Y → menghasilkan X'Y (X diinvert dulu via NOT)
+        </div>
+        <div class="formula-step step-item" style="opacity:0;transform:translateX(-20px)">
+          <strong>Langkah 3: Bangun Gerbang OR</strong><br>
+          <span>OR Gate:</span> XY + X'Y → Output F
+        </div>
+        <div class="formula-step step-item" style="opacity:0;transform:translateX(-20px)">
+          <strong>Langkah 4: Sederhanakan</strong><br>
+          F = XY + X'Y = Y(X + X') = Y(1) = <span>Y</span><br>
+          → Ternyata F hanya bergantung pada Y saja!
+        </div>
+      </div>
+      <button class="btn-primary" onclick="animateSteps()" style="margin-top:16px">▶ Animasi Langkah</button>
+    </div>
+
+    <div class="content-card">
+      <h3>🔬 SIMULATOR: F = X + YZ'</h3>
+      <div class="formula-box">F = X + Y·Z'</div>
+      <div class="demo-area">
+        <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px">
+          ${['X','Y','Z'].map(v=>`
+            <div class="toggle-row">
+              <span class="toggle-label">${v}=<span id="f4_${v.toLowerCase()}_val">0</span></span>
+              <div class="toggle-switch" id="f4_${v.toLowerCase()}" onclick="calcF4()"></div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="lamp-display">
+          <div class="lamp" id="f4_lamp">💡</div>
+          <div>
+            <span class="lamp-val" id="f4_res" style="color:var(--text-secondary)">F = 0</span>
+            <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:4px">F = X + YZ'</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="quizContainer4"></div>
+  `;
+  setTimeout(()=>{
+    document.querySelectorAll('.step-item').forEach((el,i)=>{
+      setTimeout(()=>{el.style.transition='all 0.5s';el.style.opacity='1';el.style.transform='translateX(0)'},i*300);
+    });
+  },300);
+  renderQuiz(4,getQuiz(4),document.getElementById('quizContainer4'));
+}
+
+// ========== LEVEL 5: PENYEDERHANAAN ==========
+function renderLevel5(body){
+  body.innerHTML=`
+    <div class="content-card">
+      <h3>📚 MATERI: Hukum Aljabar Boolean</h3>
+      <ul>
+        <li><span>Identitas:</span> A+0=A, A·1=A</li>
+        <li><span>Null:</span> A+1=1, A·0=0</li>
+        <li><span>Komplemen:</span> A+Ā=1, A·Ā=0</li>
+        <li><span>Absorpsi:</span> A+AB=A, A(A+B)=A</li>
+        <li><span>De Morgan:</span> (A+B)'=Ā·B̄, (AB)'=Ā+B̄</li>
+        <li><span>Distribusi:</span> A(B+C)=AB+AC</li>
+      </ul>
+    </div>
+
+    <div class="content-card">
+      <h3>🔬 ANIMASI PENYEDERHANAAN</h3>
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab(this,'s-ex1');startSimplify1()">X + XY → X</button>
+        <button class="tab-btn" onclick="switchTab(this,'s-ex2');startSimplify2()">AB + AB' → A</button>
+        <button class="tab-btn" onclick="switchTab(this,'s-ex3');startSimplify3()">De Morgan</button>
+      </div>
+
+      <div class="tab-content active" id="s-ex1">
+        <div class="simplify-demo">
+          <div class="expr-before" id="simp1_before">
+            <span class="expr-term" id="s1_t1">X</span>
+            <span style="color:var(--neon-purple)"> + </span>
+            <span class="expr-term" id="s1_t2">XY</span>
+          </div>
+          <div id="s1_eq" style="opacity:0;transition:all 0.5s">
+            <span class="arrow-down">↓ Hukum Absorpsi: A + AB = A</span>
+            <div class="expr-after">X</div>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="startSimplify1()" style="display:block;margin:0 auto">▶ Jalankan</button>
+        <div class="formula-step" style="margin-top:16px">
+          <strong>Penjelasan:</strong> X + XY = X(1 + Y) = X · 1 = <span>X</span><br>
+          Karena 1 + Y = 1 (Hukum Null)
+        </div>
+      </div>
+
+      <div class="tab-content" id="s-ex2">
+        <div class="simplify-demo">
+          <div class="expr-before">
+            <span class="expr-term" id="s2_t1">AB</span>
+            <span style="color:var(--neon-purple)"> + </span>
+            <span class="expr-term" id="s2_t2">AB'</span>
+          </div>
+          <div id="s2_eq" style="opacity:0;transition:all 0.5s">
+            <span class="arrow-down">↓ Hukum Komplemen: B + B' = 1</span>
+            <div class="expr-after">A</div>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="startSimplify2()" style="display:block;margin:0 auto">▶ Jalankan</button>
+        <div class="formula-step" style="margin-top:16px">
+          <strong>Penjelasan:</strong> AB + AB' = A(B + B') = A · 1 = <span>A</span>
+        </div>
+      </div>
+
+      <div class="tab-content" id="s-ex3">
+        <div class="simplify-demo" style="padding:20px">
+          <div class="formula-box">(A + B)' = Ā · B̄</div>
+          <div class="arrow-down">↓ De Morgan's Law</div>
+          <div class="formula-box">( A · B)' = Ā + B̄</div>
+          <p style="color:var(--text-secondary);font-size:0.85rem;margin-top:16px">
+            Hukum De Morgan membolehkan kita mengubah NOR menjadi AND, dan NAND menjadi OR — sangat berguna dalam desain rangkaian!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div id="quizContainer5"></div>
+  `;
+  setTimeout(startSimplify1,500);
+  renderQuiz(5,getQuiz(5),document.getElementById('quizContainer5'));
+}
+
+// ========== LEVEL 6: K-MAP ==========
+function renderLevel6(body){
+  body.innerHTML=`
+    <div class="content-card">
+      <h3>📚 MATERI: Peta Karnaugh (K-Map)</h3>
+      <p>K-Map adalah alat visual untuk menyederhanakan fungsi Boolean. Sel-sel yang bersebelahan (termasuk wrap-around) dapat dikelompokkan.</p>
+      <ul>
+        <li><span>Pasangan (2)</span>: Eliminasi 1 variabel</li>
+        <li><span>Kuad (4)</span>: Eliminasi 2 variabel</li>
+        <li><span>Oktet (8)</span>: Eliminasi 3 variabel</li>
+      </ul>
+    </div>
+
+    <div class="content-card">
+      <h3>🔬 K-MAP 2 VARIABEL — Klik sel untuk toggle 0/1</h3>
+      <div id="kmap2_area"></div>
+      <div style="margin-top:16px;font-size:0.9rem;color:var(--text-secondary)">
+        Hasil: <span id="kmap2_result" style="color:var(--neon-cyan);font-family:Orbitron,monospace">F = 0</span>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <h3>🔬 K-MAP 3 VARIABEL</h3>
+      <div id="kmap3_area"></div>
+      <div style="margin-top:16px;font-size:0.9rem;color:var(--text-secondary)">
+        Hasil: <span id="kmap3_result" style="color:var(--neon-cyan);font-family:Orbitron,monospace">F = 0</span>
+      </div>
+    </div>
+
+    <div id="quizContainer6"></div>
+  `;
+  renderKmap2();
+  renderKmap3();
+  renderQuiz(6,getQuiz(6),document.getElementById('quizContainer6'));
+}
+
+function renderKmap2(){
+  const area=document.getElementById('kmap2_area');
+  let vals=[0,0,0,0];
+  const labels_col=['B=0','B=1'];
+  const labels_row=['A=0','A=1'];
+  function draw(){
+    area.innerHTML=`
+      <div style="overflow-x:auto">
+      <table style="border-collapse:collapse">
+        <tr>
+          <td style="padding:4px 8px;font-size:0.7rem;color:var(--text-secondary)">A\\B</td>
+          ${labels_col.map(l=>`<td style="padding:4px 12px;text-align:center;font-size:0.75rem;color:var(--neon-cyan)">${l}</td>`).join('')}
+        </tr>
+        ${labels_row.map((lr,r)=>`<tr>
+          <td style="padding:4px 8px;font-size:0.75rem;color:var(--neon-cyan)">${lr}</td>
+          ${[0,1].map(c=>{
+            const idx=r*2+c;
+            const v=vals[idx];
+            return `<td><div class="kmap-cell ${v?'selected':''}" onclick="kmap2Toggle(${idx})">${v}</div></td>`;
+          }).join('')}
+        </tr>`).join('')}
+      </table></div>
+    `;
+    // attach toggle
+    window.kmap2Toggle=(idx)=>{
+      vals[idx]=vals[idx]?0:1;
+      playClick();
+      draw();
+      updateKmap2Result();
+    };
+    updateKmap2Result();
+  }
+  function updateKmap2Result(){
+    const terms=[];
+    if(vals[0])terms.push("Ā·B̄");
+    if(vals[1])terms.push("Ā·B");
+    if(vals[2])terms.push("A·B̄");
+    if(vals[3])terms.push("A·B");
+    const res=document.getElementById('kmap2_result');
+    if(res)res.textContent=terms.length?'F = '+terms.join(' + '):'F = 0';
+  }
+  draw();
+}
+
+function renderKmap3(){
+  const area=document.getElementById('kmap3_area');
+  let vals=Array(8).fill(0);
+  const cols=['00','01','11','10'];
+  const rows=['C=0','C=1'];
+  function draw(){
+    area.innerHTML=`
+      <div style="overflow-x:auto">
+      <p style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:8px">Variabel: A, B, C | Kolom = AB, Baris = C</p>
+      <table style="border-collapse:collapse">
+        <tr>
+          <td style="padding:4px 8px;font-size:0.7rem;color:var(--text-secondary)">C\\AB</td>
+          ${cols.map(c=>`<td style="padding:4px 12px;text-align:center;font-size:0.75rem;color:var(--neon-cyan)">${c}</td>`).join('')}
+        </tr>
+        ${rows.map((rlab,r)=>`<tr>
+          <td style="padding:4px 8px;font-size:0.75rem;color:var(--neon-cyan)">${rlab}</td>
+          ${cols.map((col,c)=>{
+            const grayC=[0,1,3,2][c];
+            const idx=r*4+c;
+            const v=vals[idx];
+            return `<td><div class="kmap-cell ${v?'group1':''}" onclick="kmap3Toggle(${idx})">${v}</div></td>`;
+          }).join('')}
+        </tr>`).join('')}
+      </table></div>
+    `;
+    window.kmap3Toggle=(idx)=>{vals[idx]=vals[idx]?0:1;playClick();draw()};
+  }
+  draw();
+}
+
+// ========== LEVEL 7: MAJORITY GATE ==========
+function renderLevel7(body){
+  body.innerHTML=`
+    <div class="content-card">
+      <h3>📚 MATERI: Majority Gate</h3>
+      <p>Majority Gate menghasilkan output 1 jika MAYORITAS (minimal 2 dari 3) input bernilai 1.</p>
+      <div class="formula-box">f(x,y,z) = xy + xz + yz</div>
+      <p style="color:var(--text-secondary)">Ini adalah fungsi "voting" — seperti pengambilan keputusan dengan suara terbanyak!</p>
+    </div>
+
+    <div class="content-card">
+      <h3>🔬 SIMULATOR: Majority Gate</h3>
+      <div class="demo-area">
+        <div class="majority-inputs">
+          ${['x','y','z'].map(v=>`
+            <div class="input-col">
+              <div class="input-letter">${v.toUpperCase()}</div>
+              <div class="toggle-switch" id="maj_${v}" onclick="calcMajority()"></div>
+              <div class="lamp-val" id="maj_${v}_val" style="color:var(--text-secondary)">0</div>
+            </div>
+          `).join('')}
+        </div>
+        <div style="text-align:center;margin-top:16px">
+          <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:12px">Minimal 2 dari 3 harus ON</div>
+          <div class="lamp" id="maj_lamp" style="width:80px;height:80px;margin:0 auto;font-size:2.5rem">🏮</div>
+          <div class="lamp-val" id="maj_res" style="color:var(--text-secondary);margin-top:8px">Output = 0</div>
+          <div id="maj_detail" style="font-size:0.8rem;color:var(--text-secondary);margin-top:8px"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <h3>📊 Tabel Kebenaran</h3>
+      <table class="truth-table">
+        <tr><th>x</th><th>y</th><th>z</th><th>xy</th><th>xz</th><th>yz</th><th>f</th></tr>
+        <tr><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="zero">0</td></tr>
+        <tr><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td class="zero">0</td></tr>
+        <tr><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="zero">0</td></tr>
+        <tr><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td class="one">1</td></tr>
+        <tr><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="zero">0</td></tr>
+        <tr><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td class="one">1</td></tr>
+        <tr><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td class="one">1</td></tr>
+        <tr><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td class="one">1</td></tr>
+      </table>
+    </div>
+
+    <div id="quizContainer7"></div>
+  `;
+  renderQuiz(7,getQuiz(7),document.getElementById('quizContainer7'));
+}
+
+// ========== LEVEL 8: HALF ADDER ==========
+function renderLevel8(body){
+  body.innerHTML=`
+    <div class="content-card">
+      <h3>📚 MATERI: Half Adder</h3>
+      <p>Half Adder adalah rangkaian yang menjumlahkan dua bit biner dan menghasilkan dua output: SUM dan CARRY.</p>
+      <ul>
+        <li><span>SUM (S)</span> = X XOR Y = X ⊕ Y</li>
+        <li><span>CARRY (C)</span> = X AND Y = X · Y</li>
+      </ul>
+      <p style="color:var(--text-secondary)">Contoh: 1 + 1 = 10 (biner) → SUM=0, CARRY=1</p>
+    </div>
+
+    <div class="content-card">
+      <h3>🔬 SIMULATOR: Half Adder</h3>
+      <div class="demo-area">
+        <div class="adder-display">
+          <div class="adder-bit" id="ha_x" onclick="toggleHA('x')">0</div>
+          <div style="font-size:1.5rem;color:var(--neon-purple)">+</div>
+          <div class="adder-bit" id="ha_y" onclick="toggleHA('y')">0</div>
+          <div style="font-size:1.5rem;color:var(--text-secondary)">=</div>
+          <div id="ha_binary" style="font-family:Orbitron,monospace;font-size:1.8rem;color:var(--neon-cyan)">00</div>
+        </div>
+        <div class="adder-result">
+          <div class="result-box">
+            <div class="result-label">SUM (S = X⊕Y)</div>
+            <div class="result-val" id="ha_sum">0</div>
+          </div>
+          <div class="result-box">
+            <div class="result-label">CARRY (C = X·Y)</div>
+            <div class="result-val" id="ha_carry">0</div>
+          </div>
+        </div>
+        <div id="ha_explain" style="text-align:center;margin-top:16px;font-size:0.85rem;color:var(--text-secondary)"></div>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <h3>📊 Tabel Kebenaran Half Adder</h3>
+      <table class="truth-table">
+        <tr><th>X</th><th>Y</th><th>SUM (S)</th><th>CARRY (C)</th><th>Desimal</th></tr>
+        <tr id="ha_row_00"><td>0</td><td>0</td><td class="zero">0</td><td class="zero">0</td><td>0+0=0</td></tr>
+        <tr id="ha_row_01"><td>0</td><td>1</td><td class="one">1</td><td class="zero">0</td><td>0+1=1</td></tr>
+        <tr id="ha_row_10"><td>1</td><td>0</td><td class="one">1</td><td class="zero">0</td><td>1+0=1</td></tr>
+        <tr id="ha_row_11"><td>1</td><td>1</td><td class="zero">0</td><td class="one">1</td><td>1+1=10₂</td></tr>
+      </table>
+    </div>
+
+    <div id="quizContainer8"></div>
+  `;
+  window._haX=0;window._haY=0;
+  window.toggleHA=(bit)=>{
+    if(bit==='x')window._haX=window._haX?0:1;
+    else window._haY=window._haY?0:1;
+    updateHA();playClick();
+  };
+  updateHA();
+  renderQuiz(8,getQuiz(8),document.getElementById('quizContainer8'));
+}
+
+function updateHA(){
+  const x=window._haX||0,y=window._haY||0;
+  const sum=x^y,carry=x&y;
+  const xEl=document.getElementById('ha_x'),yEl=document.getElementById('ha_y');
+  const sEl=document.getElementById('ha_sum'),cEl=document.getElementById('ha_carry');
+  const bEl=document.getElementById('ha_binary');
+  const eEl=document.getElementById('ha_explain');
+  if(xEl){xEl.textContent=x;xEl.className='adder-bit'+(x?' one':'');
+    xEl.style.borderColor=x?'var(--neon-cyan)':'var(--glass-border)';
+    xEl.style.color=x?'var(--neon-cyan)':'var(--text-primary)';
+    xEl.style.background=x?'rgba(0,212,255,0.1)':'var(--bg-mid)';
+  }
+  if(yEl){yEl.textContent=y;yEl.style.borderColor=y?'var(--neon-cyan)':'var(--glass-border)';
+    yEl.style.color=y?'var(--neon-cyan)':'var(--text-primary)';
+    yEl.style.background=y?'rgba(0,212,255,0.1)':'var(--bg-mid)';
+  }
+  if(sEl){sEl.textContent=sum;sEl.className='result-val'+(sum?' active':'');sEl.style.color=sum?'var(--neon-cyan)':'var(--text-secondary)'}
+  if(cEl){cEl.textContent=carry;cEl.className='result-val'+(carry?' active':'');cEl.style.color=carry?'var(--neon-pink)':'var(--text-secondary)'}
+  if(bEl)bEl.textContent=''+carry+sum;
+  if(eEl){
+    const descs={
+      '00':'0 + 0 = 0 (tidak ada carry)',
+      '01':'0 + 1 = 1 (tidak ada carry)',
+      '10':'1 + 0 = 1 (tidak ada carry)',
+      '11':'1 + 1 = 10₂ → SUM=0, CARRY=1 !'
+    };
+    eEl.textContent=descs[''+x+y]||'';
+  }
+  // highlight table row
+  ['00','01','10','11'].forEach(r=>{
+    const el=document.getElementById('ha_row_'+r);
+    if(el)el.classList.toggle('active',r===(''+x+y));
+  });
+}
+
+// ========== LEVEL 9: LAMPU JALAN ==========
+function renderLevel9(body){
+  body.innerHTML=`
+    <div class="content-card">
+      <h3>📚 STUDI KASUS: Lampu Jalan Otomatis</h3>
+      <p>Sebuah lampu jalan menyala berdasarkan kondisi tiga variabel input:</p>
+      <ul>
+        <li><span>X</span> = Switch Manual (1=ON, 0=OFF)</li>
+        <li><span>Y</span> = Timer (1=Malam, 0=Siang)</li>
+        <li><span>Z</span> = Sensor Cahaya (1=Terang, 0=Gelap)</li>
+      </ul>
+      <div class="formula-box">F = X + Y·Z'</div>
+      <p style="color:var(--text-secondary)">Lampu menyala jika: Switch ON, ATAU (Malam DAN Tidak Terang)</p>
+    </div>
+
+    <div class="content-card">
+      <h3>🔬 SIMULATOR: Kendali Lampu Jalan</h3>
+      <div class="city-demo" id="city_demo">
+        <div class="street-lamp" id="city_lamp">🌃</div>
+        <div class="sky-text" id="sky_text">Malam — Gelap — Switch OFF</div>
+      </div>
+      <div class="demo-area" style="margin-top:16px">
+        <div class="toggle-row">
+          <span class="toggle-label">X (Switch Manual) = <span id="lj_x_val">0</span></span>
+          <div class="toggle-switch" id="lj_x" onclick="calcLampuJalan()"></div>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Y (Timer/Malam) = <span id="lj_y_val">0</span></span>
+          <div class="toggle-switch" id="lj_y" onclick="calcLampuJalan()"></div>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Z (Sensor Terang) = <span id="lj_z_val">0</span></span>
+          <div class="toggle-switch" id="lj_z" onclick="calcLampuJalan()"></div>
+        </div>
+        <div class="lamp-display" style="margin-top:16px">
+          <div class="lamp" id="lj_lamp">💡</div>
+          <div>
+            <span class="lamp-val" id="lj_res" style="color:var(--text-secondary)">F = 0 (MATI)</span>
+            <div id="lj_explain" style="font-size:0.75rem;color:var(--text-secondary);margin-top:4px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="quizContainer9"></div>
+  `;
+  calcLampuJalan();
+  renderQuiz(9,getQuiz(9),document.getElementById('quizContainer9'));
+}
+
+// ========== LEVEL 10: FINAL BOSS ==========
+function renderLevel10(body){
+  body.innerHTML=`
+    <div class="content-card">
+      <h3>🏆 FINAL BOSS: Logic Master Challenge</h3>
+      <p>Kamu telah mempelajari semua konsep! Sekarang tunjukkan kemampuanmu dengan tantangan terakhir.</p>
+    </div>
+
+    <div class="boss-challenge">
+      <h3 style="font-family:Orbitron,monospace;color:var(--neon-purple);margin-bottom:16px">🎯 Tantangan: Rancang Rangkaian dari Tabel Kebenaran</h3>
+      <p style="color:var(--text-secondary);margin-bottom:16px">Fungsi Boolean 3 variabel dengan minterm: m(1, 3, 5, 7)</p>
+      <table class="truth-table" style="max-width:400px">
+        <tr><th>A</th><th>B</th><th>C</th><th>F</th></tr>
+        <tr><td>0</td><td>0</td><td>0</td><td class="zero">0</td></tr>
+        <tr><td>0</td><td>0</td><td>1</td><td class="one">1</td></tr>
+        <tr><td>0</td><td>1</td><td>0</td><td class="zero">0</td></tr>
+        <tr><td>0</td><td>1</td><td>1</td><td class="one">1</td></tr>
+        <tr><td>1</td><td>0</td><td>0</td><td class="zero">0</td></tr>
+        <tr><td>1</td><td>0</td><td>1</td><td class="one">1</td></tr>
+        <tr><td>1</td><td>1</td><td>0</td><td class="zero">0</td></tr>
+        <tr><td>1</td><td>1</td><td>1</td><td class="one">1</td></tr>
+      </table>
+
+      <div style="margin-top:24px">
+        <p style="color:var(--text-secondary);margin-bottom:12px">Pilih persamaan yang benar:</p>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="quiz-opt" id="boss_opt1" onclick="checkBoss(1)">A. F = A</div>
+          <div class="quiz-opt" id="boss_opt2" onclick="checkBoss(2)">B. F = C</div>
+          <div class="quiz-opt" id="boss_opt3" onclick="checkBoss(3)">C. F = A + B</div>
+          <div class="quiz-opt" id="boss_opt4" onclick="checkBoss(4)">D. F = AB + BC</div>
+        </div>
+      </div>
+
+      <div class="boss-result" id="boss_result">
+        <div class="trophy-anim">🏆</div>
+        <div style="font-family:Orbitron,monospace;font-size:1.5rem;color:var(--gold);margin:16px 0">LOGIC MASTER ACHIEVED!</div>
+        <p style="color:var(--text-secondary)">Luar biasa! Kamu telah menguasai perancangan rangkaian logika digital!</p>
+        <div style="margin-top:16px;font-family:Orbitron,monospace;font-size:1.2rem;color:var(--neon-cyan)">
+          F = C ✓
+        </div>
+        <p style="color:var(--text-secondary);font-size:0.85rem;margin-top:8px">
+          Karena output 1 hanya saat C=1 — terlepas dari nilai A dan B!
+        </p>
+      </div>
+    </div>
+  `;
+  window.checkBoss=(n)=>{
+    if(n===2){
+      playSuccess();
+      showConfetti();
+      document.getElementById('boss_result').classList.add('show');
+      document.querySelectorAll('#boss_opt1,#boss_opt2,#boss_opt3,#boss_opt4').forEach(el=>el.classList.add('disabled'));
+      document.getElementById('boss_opt2').classList.add('correct');
+      if(!gameState.completedLevels.includes(10)){
+        gameState.completedLevels.push(10);
+        gameState.xp+=300;
+        gameState.level=10;
+        saveState();
+        setTimeout(()=>{
+          showModal('🏆','Logic Master!','Kamu telah menyelesaikan semua level!','+300 XP');
+        },2000);
+      }
+    } else {
+      playError();
+      document.getElementById('boss_opt'+n).classList.add('wrong');
+      setTimeout(()=>document.getElementById('boss_opt'+n).classList.remove('wrong'),800);
+      showToast('Coba lagi! Perhatikan pola output F...','error');
+    }
+  };
+}
+
+// ===== TOGGLE FUNCTIONS =====
+function toggleSwitch(id,calc){
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.classList.toggle('on');
+  playClick();
+  if(calc==='andCalc')calcAnd();
+  else if(calc==='orCalc')calcOr();
+  else if(calc==='notCalc')calcNot();
+}
+
+function getVal(id){return document.getElementById(id)?.classList.contains('on')?1:0}
+function setLamp(id,on){
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.classList.toggle('on',on);
+}
+function setResult(id,v){
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.textContent='F = '+v;
+  el.style.color=v?'var(--neon-cyan)':'var(--text-secondary)';
+}
+
+function calcAnd(){
+  const a=getVal('andA'),b=getVal('andB'),f=a&b;
+  document.getElementById('andA_val').textContent=a;
+  document.getElementById('andB_val').textContent=b;
+  setLamp('andLamp',f);setResult('andResult',f);
+  ['00','01','10','11'].forEach(k=>{
+    const r=document.getElementById('and_'+k);
+    if(r)r.classList.toggle('active',k===(''+a+b));
+  });
+}
+function calcOr(){
+  const a=getVal('orA'),b=getVal('orB'),f=a|b;
+  document.getElementById('orA_val').textContent=a;
+  document.getElementById('orB_val').textContent=b;
+  setLamp('orLamp',f);setResult('orResult',f);
+}
+function calcNot(){
+  const a=getVal('notA'),f=a?0:1;
+  document.getElementById('notA_val').textContent=a;
+  setLamp('notLamp',f);
+  const res=document.getElementById('notResult');
+  if(res){res.textContent='F = '+f;res.className='lamp-val '+(f?'high':'low')}
+}
+
+function gateToggle(tabId,type){
+  const a=getVal(tabId+'_a'),b=getVal(tabId+'_b');
+  document.getElementById(tabId+'_av').textContent=a;
+  document.getElementById(tabId+'_bv').textContent=b;
+  const f=type==='AND'?(a&b):(a|b);
+  setLamp(tabId+'_lamp',f);
+  const res=document.getElementById(tabId+'_res');
+  if(res){res.textContent='Output = '+f;res.style.color=f?'var(--neon-cyan)':'var(--text-secondary)'}
+  playClick();
+}
+
+function notToggle(tabId){
+  const a=getVal(tabId+'_a');
+  document.getElementById(tabId+'_av').textContent=a;
+  const f=a?0:1;
+  setLamp(tabId+'_lamp',f);
+  const res=document.getElementById(tabId+'_res');
+  if(res){res.textContent='Output = '+f;res.style.color=f?'var(--neon-cyan)':'var(--text-secondary)'}
+  playClick();
+}
+
+function derivedGateToggle(tabId,type){
+  const a=getVal(tabId+'_a'),b=getVal(tabId+'_b');
+  document.getElementById(tabId+'_av').textContent=a;
+  document.getElementById(tabId+'_bv').textContent=b;
+  let f;
+  if(type==='NAND')f=!(a&&b)?1:0;
+  else if(type==='NOR')f=!(a||b)?1:0;
+  else if(type==='XOR')f=a^b;
+  else if(type==='XNOR')f=!(a^b)?1:0;
+  setLamp(tabId+'_lamp',f);
+  const res=document.getElementById(tabId+'_res');
+  if(res){res.textContent='Output = '+f;res.style.color=f?'var(--neon-cyan)':'var(--text-secondary)'}
+  playClick();
+}
+
+function calcF4(){
+  const x=getVal('f4_x'),y=getVal('f4_y'),z=getVal('f4_z');
+  ['x','y','z'].forEach(v=>{
+    const el=document.getElementById('f4_'+v+'_val');
+    if(el)el.textContent=eval(''+v.toUpperCase().toLowerCase()==='x'?x:v==='y'?y:z);
+  });
+  document.getElementById('f4_x_val').textContent=x;
+  document.getElementById('f4_y_val').textContent=y;
+  document.getElementById('f4_z_val').textContent=z;
+  const f=x||(y&&!z)?1:0;
+  setLamp('f4_lamp',f);
+  const res=document.getElementById('f4_res');
+  if(res){res.textContent='F = '+f;res.style.color=f?'var(--neon-cyan)':'var(--text-secondary)'}
+  playClick();
+}
+
+function calcMajority(){
+  const x=getVal('maj_x'),y=getVal('maj_y'),z=getVal('maj_z');
+  ['x','y','z'].forEach(v=>{
+    const sw=document.getElementById('maj_'+v);
+    const vl=document.getElementById('maj_'+v+'_val');
+    const val=sw?.classList.contains('on')?1:0;
+    if(vl)vl.textContent=val;
+    if(vl)vl.style.color=val?'var(--neon-cyan)':'var(--text-secondary)';
+  });
+  const xv=document.getElementById('maj_x')?.classList.contains('on')?1:0;
+  const yv=document.getElementById('maj_y')?.classList.contains('on')?1:0;
+  const zv=document.getElementById('maj_z')?.classList.contains('on')?1:0;
+  const f=(xv&yv)|(xv&zv)|(yv&zv)?1:0;
+  const lamp=document.getElementById('maj_lamp');
+  if(lamp){lamp.textContent=f?'🔆':'🏮';lamp.style.filter=f?'drop-shadow(0 0 20px #ffd700) drop-shadow(0 0 40px rgba(255,215,0,0.5))':'none'}
+  const res=document.getElementById('maj_res');
+  if(res){res.textContent='Output = '+f;res.style.color=f?'var(--gold)':'var(--text-secondary)'}
+  const detail=document.getElementById('maj_detail');
+  if(detail){
+    const on=xv+yv+zv;
+    detail.textContent=on+' dari 3 input ON — '+(f?'Mayoritas tercapai ✓':'Belum mayoritas');
+    detail.style.color=f?'var(--success)':'var(--text-secondary)';
+  }
+  playClick();
+}
+
+function calcLampuJalan(){
+  const x=getVal('lj_x'),y=getVal('lj_y'),z=getVal('lj_z');
+  document.getElementById('lj_x_val').textContent=x;
+  document.getElementById('lj_y_val').textContent=y;
+  document.getElementById('lj_z_val').textContent=z;
+  const f=x||(y&&!z)?1:0;
+  setLamp('lj_lamp',f);
+  const res=document.getElementById('lj_res');
+  if(res){res.textContent='F = '+f+' ('+(f?'MENYALA':'MATI')+')';res.style.color=f?'var(--neon-cyan)':'var(--text-secondary)'}
+  const explain=document.getElementById('lj_explain');
+  if(explain){
+    let reason='';
+    if(x)reason='Switch manual ON';
+    else if(y&&!z)reason='Malam + Sensor Gelap → Lampu Otomatis ON';
+    else if(y&&z)reason='Malam tapi Sensor Terang → Lampu OFF';
+    else reason='Siang hari → Lampu OFF';
+    explain.textContent=reason;
+  }
+  const city=document.getElementById('city_demo');
+  const skyLamp=document.getElementById('city_lamp');
+  const skyText=document.getElementById('sky_text');
+  if(city){
+    city.className='city-demo'+(y?'':' day');
+    if(skyLamp)skyLamp.textContent=y?'🌃':'🌅';
+    if(skyLamp)skyLamp.className='street-lamp'+(f?' on':'');
+    if(skyText)skyText.textContent=(y?'Malam':'Siang')+'—'+(z?'Terang':'Gelap')+'—Switch '+(x?'ON':'OFF');
+  }
+  playClick();
+}
+
+// ===== SIMPLIFY ANIMATIONS =====
+function startSimplify1(){
+  const t1=document.getElementById('s1_t1'),t2=document.getElementById('s1_t2'),eq=document.getElementById('s1_eq');
+  if(!t1)return;
+  t1.className='expr-term';t2.className='expr-term';eq.style.opacity='0';
+  setTimeout(()=>{t2.classList.add('removing')},600);
+  setTimeout(()=>{t1.classList.add('merged');eq.style.opacity='1'},1200);
+}
+function startSimplify2(){
+  const t1=document.getElementById('s2_t1'),t2=document.getElementById('s2_t2'),eq=document.getElementById('s2_eq');
+  if(!t1)return;
+  t1.className='expr-term';t2.className='expr-term';eq.style.opacity='0';
+  setTimeout(()=>{t2.classList.add('removing')},600);
+  setTimeout(()=>{t1.classList.add('merged');eq.style.opacity='1'},1200);
+}
+function startSimplify3(){}
+
+function animateSteps(){
+  document.querySelectorAll('.step-item').forEach((el,i)=>{
+    el.style.opacity='0';el.style.transform='translateX(-20px)';
+    setTimeout(()=>{el.style.transition='all 0.5s';el.style.opacity='1';el.style.transform='translateX(0)'},i*400);
+  });
+}
+
+// ===== TAB SWITCHER =====
+function switchTab(btn,tabId){
+  const parent=btn.closest('.content-card')||btn.closest('.boss-challenge')||btn.parentElement.parentElement;
+  parent.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  parent.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  const tab=document.getElementById(tabId);
+  if(tab)tab.classList.add('active');
+  playClick();
+}
+
+// ===== QUIZ DATA =====
+function getQuiz(level){
+  const quizzes={
+    1:[
+      {q:"Berapakah hasil dari 1 AND 0?",opts:["0","1","Undefined","Error"],ans:0,exp:"AND menghasilkan 1 hanya jika SEMUA input 1. Karena salah satu input 0, hasilnya 0."},
+      {q:"Berapakah hasil dari 0 OR 1?",opts:["0","1","Keduanya","Tidak ada"],ans:1,exp:"OR menghasilkan 1 jika MINIMAL satu input 1. Input kedua adalah 1, jadi hasilnya 1."},
+      {q:"Berapakah NOT(1)?",opts:["1","0","2","-1"],ans:1,exp:"NOT membalik nilai: NOT(1) = 0"},
+      {q:"Manakah pernyataan benar tentang nilai Boolean?",opts:["Ada 3 nilai","Hanya 0 dan 1","Bisa desimal","Tidak terbatas"],ans:1,exp:"Sistem Boolean hanya mengenal dua nilai: 0 (False) dan 1 (True)."},
+      {q:"1 AND 1 AND 0 = ?",opts:["1","0","Undefined","3"],ans:1,exp:"AND dari semua input harus 1 untuk menghasilkan 1. Karena ada 0, hasilnya 0."},
+    ],
+    2:[
+      {q:"Gerbang apa yang selalu menghasilkan 0 jika salah satu input 0?",opts:["OR","NOT","AND","XOR"],ans:2,exp:"Gerbang AND hanya menghasilkan 1 jika SEMUA input bernilai 1."},
+      {q:"Berapa output NOT Gate untuk input 0?",opts:["0","1","Tidak tentu","Error"],ans:1,exp:"NOT Gate membalik: NOT(0) = 1"},
+      {q:"OR Gate dengan A=0, B=0 menghasilkan?",opts:["1","0","Error","Undefined"],ans:1,exp:"OR menghasilkan 0 hanya jika SEMUA input 0."},
+      {q:"Gerbang logika apa yang disebut 'inverter'?",opts:["AND","OR","NOT","NAND"],ans:2,exp:"NOT Gate disebut inverter karena membalik (menginversi) nilai inputnya."},
+      {q:"AND Gate dengan A=1, B=1 menghasilkan?",opts:["0","1","2","Tak tentu"],ans:1,exp:"AND(1,1) = 1. Kedua input 1, sehingga output 1."},
+    ],
+    3:[
+      {q:"NAND Gate menghasilkan 0 saat:",opts:["Semua input 0","Semua input 1","Salah satu input 1","Tak ada input"],ans:1,exp:"NAND = NOT AND. Outputnya 0 HANYA saat semua input 1."},
+      {q:"XOR Gate menghasilkan 1 saat:",opts:["Semua input sama","Input berbeda","Semua input 0","Semua input 1"],ans:1,exp:"XOR (Exclusive OR) menghasilkan 1 hanya saat input BERBEDA."},
+      {q:"NOR(1,0) = ?",opts:["1","0","Error","Sama dengan OR"],ans:1,exp:"NOR = NOT OR. OR(1,0)=1, NOT(1)=0. Jadi NOR(1,0) = 0."},
+      {q:"XNOR Gate adalah kebalikan dari:",opts:["AND","OR","NOR","XOR"],ans:3,exp:"XNOR (Exclusive NOR) adalah NOT dari XOR."},
+      {q:"XOR(1,1) = ?",opts:["1","0","2","Undefined"],ans:1,exp:"XOR(1,1) = 0. Karena kedua input SAMA, XOR menghasilkan 0."},
+    ],
+    4:[
+      {q:"F = XY + X'Y dapat disederhanakan menjadi:",opts:["F = X","F = Y","F = X+Y","F = XY"],ans:1,exp:"F = XY + X'Y = Y(X+X') = Y(1) = Y. Gunakan hukum komplemen X+X'=1."},
+      {q:"Untuk merealisasikan F = AB, gerbang apa yang digunakan?",opts:["OR Gate","NOT Gate","AND Gate","XOR Gate"],ans:2,exp:"Perkalian Boolean (AB) diimplementasikan dengan AND Gate."},
+      {q:"F = A + B membutuhkan gerbang:",opts:["AND","NOT","OR","NAND"],ans:2,exp:"Penjumlahan Boolean (A+B) diimplementasikan dengan OR Gate."},
+      {q:"F = X + YZ', variabel apa yang langsung masuk OR?",opts:["Y","Z","X","Z'"],ans:2,exp:"X langsung masuk ke OR Gate. YZ' diproses AND Gate terlebih dahulu."},
+      {q:"Simbol operasi AND dalam Boolean adalah:",opts:["+","·","⊕","∑"],ans:1,exp:"Operator AND dalam aljabar Boolean dilambangkan dengan titik (·) atau tanpa operator (AB)."},
+    ],
+    5:[
+      {q:"X + XY = ? (Hukum Absorpsi)",opts:["XY","X+Y","X","Y"],ans:2,exp:"Hukum Absorpsi: A + AB = A. Jadi X + XY = X."},
+      {q:"A·Ā = ? (Hukum Komplemen)",opts:["1","A","0","Ā"],ans:2,exp:"Hukum Komplemen: A · Ā = 0. Suatu variabel di-AND dengan komplemennya selalu 0."},
+      {q:"Teorema De Morgan menyatakan (AB)' = ?",opts:["A'+B'","A·B","A'+B","AB'"],ans:0,exp:"De Morgan: (AB)' = A' + B'. NAND = inversi dari AND-nya masing-masing lalu di-OR."},
+      {q:"A + Ā = ?",opts:["A","0","1","Ā"],ans:2,exp:"Hukum Komplemen: A + Ā = 1. OR dari variabel dan komplemennya selalu 1."},
+      {q:"Hukum apa yang menyatakan A(B+C) = AB + AC?",opts:["Absorpsi","Distribusi","Komplemen","Identitas"],ans:1,exp:"Hukum Distribusi: A(B+C) = AB + AC — sama seperti distribusi dalam aljabar biasa."},
+    ],
+    6:[
+      {q:"K-Map digunakan untuk:",opts:["Membuat diagram","Menyederhanakan Boolean","Menambah gerbang","Mengubah ke desimal"],ans:1,exp:"K-Map (Karnaugh Map) adalah alat visual untuk menyederhanakan fungsi Boolean."},
+      {q:"Mengelompokkan 4 sel dalam K-Map (Kuad) mengeliminasi berapa variabel?",opts:["1","2","3","4"],ans:1,exp:"Kuad (kelompok 4) mengeliminasi 2 variabel dari persamaan akhir."},
+      {q:"Dalam K-Map, urutan kolom yang benar adalah:",opts:["00,01,10,11","00,01,11,10","00,10,01,11","01,00,11,10"],ans:1,exp:"Urutan K-Map menggunakan kode Gray: 00,01,11,10. Hanya satu bit yang berubah setiap langkah."},
+      {q:"Oktet dalam K-Map terdiri dari berapa sel?",opts:["2","4","8","16"],ans:2,exp:"Oktet = kelompok 8 sel dalam K-Map, yang mengeliminasi 3 variabel."},
+      {q:"Sel-sel dalam K-Map yang dapat dikelompokkan harus berjumlah:",opts:["Sembarang","Kelipatan 3","Pangkat 2 (1,2,4,8)","Genap"],ans:2,exp:"Pengelompokan K-Map harus berjumlah pangkat 2: 1, 2, 4, 8 sel."},
+    ],
+    7:[
+      {q:"Majority Gate menghasilkan 1 ketika:",opts:["Semua input 0","Semua input 1","Minimal 2 dari 3 input bernilai 1","Tepat 1 input bernilai 1"],ans:2,exp:"Majority Gate: output 1 jika mayoritas (>50%) input bernilai 1."},
+      {q:"f(x,y,z) = xy + xz + yz. Jika x=1,y=0,z=1, maka f = ?",opts:["0","1","Tak tentu","Error"],ans:1,exp:"xy=0, xz=1·1=1, yz=0. f = 0+1+0 = 1"},
+      {q:"Majority Gate dengan 3 input: x=0,y=0,z=1, outputnya?",opts:["1","0","Undefined","2"],ans:1,exp:"Hanya 1 dari 3 input bernilai 1. Tidak mencapai mayoritas. Output = 0."},
+      {q:"Majority Gate terdiri dari berapa AND Gate?",opts:["1","2","3","4"],ans:2,exp:"f = xy + xz + yz membutuhkan 3 AND Gate (untuk xy, xz, yz) dan 1 OR Gate."},
+      {q:"Jika semua input Majority Gate = 1, outputnya?",opts:["0","1","Error","Tak tentu"],ans:1,exp:"Ketiga input 1 → xy=1, xz=1, yz=1 → f = 1+1+1 = 1"},
+    ],
+    8:[
+      {q:"Half Adder menghasilkan output:",opts:["SUM saja","CARRY saja","SUM dan CARRY","SUM, CARRY, dan BORROW"],ans:2,exp:"Half Adder menghasilkan dua output: SUM (bit jumlah) dan CARRY (bit pindahan)."},
+      {q:"SUM dalam Half Adder menggunakan gerbang:",opts:["AND","OR","XOR","NAND"],ans:2,exp:"SUM = X XOR Y. Gerbang XOR menghasilkan 1 saat input berbeda, tepat sesuai penjumlahan bit."},
+      {q:"Half Adder: X=1, Y=1. SUM = ?",opts:["1","0","2","Error"],ans:1,exp:"1+1=10₂. SUM = 0 (bit kanan), CARRY = 1 (bit kiri)."},
+      {q:"CARRY dalam Half Adder menggunakan gerbang:",opts:["OR","XOR","AND","NOT"],ans:2,exp:"CARRY = X AND Y. Pindahan terjadi hanya saat KEDUA bit input adalah 1."},
+      {q:"Half Adder: X=1, Y=0. CARRY = ?",opts:["1","0","Undefined","Same as SUM"],ans:1,exp:"CARRY = X·Y = 1·0 = 0. Tidak ada pindahan saat 1+0."},
+    ],
+    9:[
+      {q:"Lampu jalan F = X + YZ'. Lampu menyala saat:",opts:["Z=1 saja","X=0 dan Y=0","X=1 ATAU (Y=1 DAN Z=0)","Y=1 saja"],ans:2,exp:"F = X + YZ'. Menyala jika X=1, atau Y=1 bersamaan Z=0."},
+      {q:"Jika Switch X=0, Timer Y=1 (malam), Sensor Z=1 (terang), lampu?",opts:["Menyala","Mati","Error","Tidak tentu"],ans:1,exp:"F = 0 + 1·0 = 0. Z=1 berarti Z'=0. Malam tapi terang → lampu mati (tidak perlu lampu)."},
+      {q:"Dalam F = X + YZ', Z' berarti:",opts:["Z sama dengan 1","Z sama dengan 0","Kebalikan Z","Z lebih dari 1"],ans:2,exp:"Z' (Z komplemen) adalah kebalikan Z. Jika Z=1 (terang), Z'=0. Jika Z=0 (gelap), Z'=1."},
+      {q:"Variabel Z pada lampu jalan mewakili:",opts:["Timer","Switch manual","Sensor cahaya","Tegangan"],ans:2,exp:"Sesuai soal: Z = Sensor Cahaya (1=Terang, 0=Gelap)."},
+      {q:"F = X + YZ' jika X=0, Y=0, Z=0, maka F = ?",opts:["1","0","Undefined","Sama dengan X"],ans:1,exp:"F = 0 + 0·1 = 0 + 0 = 0. Siang (Y=0) dan Switch OFF → lampu mati."},
+    ],
+  };
+  return quizzes[level]||[];
+}
+
+// ===== QUIZ RENDERER =====
+function renderQuiz(lvlId,questions,container){
+  if(!questions.length||!container)return;
+  let qi=0,score=0;
+  function render(){
+    if(qi>=questions.length){
+      // Done
+      const earned=score*20;
+      container.innerHTML=`
+        <div class="content-card">
+          <h3>✅ Quiz Selesai!</h3>
+          <div style="text-align:center;padding:20px">
+            <div style="font-size:3rem;margin-bottom:16px">${score>=4?'🏆':score>=3?'⭐':'💪'}</div>
+            <div style="font-family:Orbitron,monospace;font-size:1.5rem;color:var(--neon-cyan)">${score}/${questions.length}</div>
+            <div style="color:var(--text-secondary);margin:8px 0">+${earned} XP diperoleh!</div>
+          </div>
+          <button class="btn-primary" onclick="completeLevel(${lvlId},${earned})" style="width:100%">
+            ${score>=3?'✅ Selesaikan Level':'🔄 Lanjutkan Quand Score OK'}
+          </button>
+        </div>`;
+      return;
+    }
+    const q=questions[qi];
+    container.innerHTML=`
+      <div class="quiz-box">
+        <div class="quiz-header">
+          <span class="quiz-q-num">Soal ${qi+1}/${questions.length}</span>
+          <span class="quiz-score-disp">Score: ${score} | +${score*20} XP</span>
+        </div>
+        <div class="quiz-progress"><div class="quiz-progress-fill" style="width:${(qi/questions.length)*100}%"></div></div>
+        <div class="quiz-question">${q.q}</div>
+        <div class="quiz-options">
+          ${q.opts.map((o,i)=>`<button class="quiz-opt" onclick="answerQuiz(${i},${q.ans},${lvlId})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}
+        </div>
+        <div class="quiz-feedback" id="quiz_fb"></div>
+        <div class="quiz-nav">
+          <div class="quiz-xp-badge">+20 XP per benar</div>
+          <button class="btn-next" id="quiz_next" onclick="nextQ()">Selanjutnya →</button>
+        </div>
+      </div>`;
+
+    window.answerQuiz=(chosen,correct,lv)=>{
+      const opts=container.querySelectorAll('.quiz-opt');
+      opts.forEach(o=>o.classList.add('disabled'));
+      const fb=document.getElementById('quiz_fb');
+      const next=document.getElementById('quiz_next');
+      if(chosen===correct){
+        opts[chosen].classList.add('correct');
+        score++;playSuccess();
+        if(fb){fb.className='quiz-feedback correct show';fb.innerHTML='✅ Benar! '+q.exp}
+      } else {
+        opts[chosen].classList.add('wrong');
+        opts[correct].classList.add('correct');
+        playError();
+        if(fb){fb.className='quiz-feedback wrong show';fb.innerHTML='❌ Salah. '+q.exp}
+      }
+      if(next)next.classList.add('show');
+    };
+    window.nextQ=()=>{qi++;render()};
+  }
+  render();
+}
+
+function completeLevel(id,xpEarned){
+  if(!gameState.completedLevels.includes(id)){
+    gameState.completedLevels.push(id);
+    gameState.xp+=LEVELS.find(l=>l.id===id)?.xpReward||0;
+    gameState.xp+=xpEarned;
+    gameState.level=gameState.completedLevels.length;
+    saveState();
+    showConfetti();
+    playUnlock();
+  }
+  const lv=LEVELS.find(l=>l.id===id);
+  showModal('🎉','Level '+id+' Selesai!',`Hebat! Kamu menguasai ${lv?.title}!`,`+${(lv?.xpReward||0)+xpEarned} XP`);
+  updateNav();
+}
+
+// ===== MODAL =====
+function showModal(icon,title,sub,xp){
+  document.getElementById('modalIcon').textContent=icon;
+  document.getElementById('modalTitle').textContent=title;
+  document.getElementById('modalSub').textContent=sub;
+  document.getElementById('modalXp').textContent=xp;
+  document.getElementById('completeModal').classList.add('show');
+}
+
+// ===== TOAST =====
+function showToast(msg,type='info'){
+  const t=document.createElement('div');
+  t.className=`toast ${type}`;t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),3100);
+}
+
+// ===== CONFETTI =====
+function showConfetti(){
+  const colors=['#00d4ff','#a855f7','#06ffd4','#ffd700','#ff006e'];
+  for(let i=0;i<60;i++){
+    const el=document.createElement('div');
+    el.className='confetti-piece';
+    el.style.left=Math.random()*100+'vw';
+    el.style.top='-20px';
+    el.style.background=colors[Math.floor(Math.random()*colors.length)];
+    el.style.animationDelay=Math.random()*1+'s';
+    el.style.transform=`rotate(${Math.random()*360}deg)`;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),3000);
+  }
+}
+
+// ===== AI TUTOR =====
+function toggleTutor(){
+  document.getElementById('tutorPanel').classList.toggle('open');
+}
+
+const tutorKB={
+  'and':'AND Gate menghasilkan 1 HANYA jika semua input bernilai 1. Simbol: A·B atau AB',
+  'or':'OR Gate menghasilkan 1 jika MINIMAL satu input bernilai 1. Simbol: A+B',
+  'not':'NOT Gate membalik nilai input. NOT(0)=1, NOT(1)=0. Disebut juga inverter.',
+  'nand':'NAND = NOT AND. Output 0 hanya saat semua input 1. Ini "Universal Gate"!',
+  'nor':'NOR = NOT OR. Output 1 hanya saat semua input 0. Ini juga "Universal Gate"!',
+  'xor':'XOR (Exclusive OR) menghasilkan 1 saat input BERBEDA. Simbol: A⊕B',
+  'xnor':'XNOR = NOT XOR. Menghasilkan 1 saat input SAMA.',
+  'boolean':'Aljabar Boolean hanya mengenal nilai 0 dan 1. Operasi dasar: AND(·), OR(+), NOT(\')',
+  'kmap':'K-Map (Karnaugh Map) adalah tabel visual untuk menyederhanakan fungsi Boolean. Kelompokkan sel 1 dalam kelipatan 2.',
+  'half adder':'Half Adder menjumlahkan 2 bit. Menghasilkan SUM=A⊕B dan CARRY=A·B',
+  'majority':'Majority Gate: output 1 jika lebih dari setengah input bernilai 1. f(x,y,z)=xy+xz+yz',
+  'de morgan':'Hukum De Morgan: (AB)\'=A\'+B\' dan (A+B)\'=A\'·B\'',
+  'absorpsi':'Hukum Absorpsi: A+AB=A dan A(A+B)=A',
+  'komplemen':'Hukum Komplemen: A+Ā=1 dan A·Ā=0',
+};
+
+function sendTutorMsg(){
+  const input=document.getElementById('tutorInput');
+  const msgs=document.getElementById('tutorMsgs');
+  const text=input.value.trim();
+  if(!text)return;
+  input.value='';
+  const userMsg=document.createElement('div');
+  userMsg.className='tutor-msg user';userMsg.textContent=text;
+  msgs.appendChild(userMsg);
+
+  const lower=text.toLowerCase();
+  let reply='Maaf, saya belum punya jawaban untuk itu. Coba tanya tentang: AND, OR, NOT, NAND, NOR, XOR, K-Map, Half Adder, atau Majority Gate!';
+  for(const [key,val] of Object.entries(tutorKB)){
+    if(lower.includes(key)){reply=val;break}
+  }
+
+  setTimeout(()=>{
+    const botMsg=document.createElement('div');
+    botMsg.className='tutor-msg bot';botMsg.textContent=reply;
+    msgs.appendChild(botMsg);
+    msgs.scrollTop=msgs.scrollHeight;
+  },600);
+  msgs.scrollTop=msgs.scrollHeight;
+  playClick();
+}
+
+// ===== INIT =====
+loadState();
+
+// Add some animation to landing page circuit lines
+for(let i=0;i<8;i++){
+  const line=document.createElement('div');
+  line.className='circuit-line';
+  line.style.top=(10+i*12)+'%';
+  line.style.animationDelay=(i*0.4)+'s';
+  line.style.animationDuration=(2+Math.random()*3)+'s';
+  document.querySelector('.landing-circuit')?.appendChild(line);
+}
+</script>
+</body>
+</html>

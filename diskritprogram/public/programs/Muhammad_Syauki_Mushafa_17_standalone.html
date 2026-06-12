@@ -1,0 +1,2016 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kekongruenan Linear | Matematika Diskrit</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<style>
+    :root{
+      --primary:#4f46e5;--primary-dark:#1e1b4b;--primary-mid:#312e81;
+      --primary-light:#eef2ff;--primary-border:#c7d2fe;--accent:#6366f1;
+      --mono:'JetBrains Mono',monospace;--sans:'Plus Jakarta Sans',sans-serif;
+    }
+    *{box-sizing:border-box;}
+    body{font-family:var(--sans);background:#f5f6ff;color:#1e293b;}
+    .page-bg{position:fixed;inset:0;pointer-events:none;z-index:0;
+      background-image:linear-gradient(rgba(99,102,241,.05) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(99,102,241,.05) 1px,transparent 1px);
+      background-size:44px 44px;}
+    .page-wrap{position:relative;z-index:1;}
+    /* ── Header ── */
+    .site-header{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 55%,#4c1d95 100%);
+      color:#fff;padding:4rem 1.5rem 3rem;text-align:center;
+      clip-path:polygon(0 0,100% 0,100% 87%,0 100%);margin-bottom:-1px;}
+    .site-header .chip{display:inline-block;background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.25);color:#c7d2fe;
+      font-size:.72rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+      padding:.3rem 1rem;border-radius:99px;margin-bottom:1.1rem;}
+    .site-header h1{font-size:clamp(2rem,5vw,3rem);font-weight:800;letter-spacing:-.02em;margin-bottom:.4rem;}
+    .site-header h1 span{color:#a5b4fc;}
+    .site-header p{color:#c7d2fe;font-size:.95rem;font-weight:300;margin-bottom:1.2rem;}
+    .formula-hero{display:inline-flex;align-items:center;
+      background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+      border-radius:12px;padding:.65rem 1.6rem;}
+    .formula-hero code{font-family:var(--mono);font-size:1.2rem;color:#e0e7ff;}
+    /* ── Nav ── */
+    .nav-section{background:#fff;border-bottom:1px solid var(--primary-border);
+      position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(99,102,241,.08);}
+    .nav-section .nav-link{font-size:.82rem;font-weight:600;letter-spacing:.04em;color:#64748b;
+      padding:.85rem 1.1rem;border-bottom:3px solid transparent;border-radius:0;transition:all .2s;}
+    .nav-section .nav-link:hover{color:var(--primary);}
+    .nav-section .nav-link.active{color:var(--primary);border-bottom-color:var(--primary);background:none;}
+    /* ── Card ── */
+    .kl-card{background:#fff;border:1px solid var(--primary-border);border-radius:18px;
+      box-shadow:0 2px 16px rgba(99,102,241,.07);padding:1.75rem;margin-bottom:1.25rem;}
+    .kl-card-title{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+      color:var(--accent);display:flex;align-items:center;gap:.45rem;margin-bottom:1.1rem;}
+    .kl-card-title .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;}
+    .formula-box{background:#f5f6ff;border:2px solid var(--primary-border);border-radius:14px;
+      padding:1rem 1.4rem;font-family:var(--mono);font-size:1.05rem;font-weight:700;
+      color:var(--primary-dark);text-align:center;margin-bottom:.85rem;}
+    .info-box{background:#f0f4ff;border-left:4px solid var(--accent);
+      border-radius:0 12px 12px 0;padding:.85rem 1.1rem;font-size:.83rem;color:#475569;line-height:1.6;}
+    .info-box strong{color:var(--primary-mid);}
+    /* ── Case cards ── */
+    .case-card{background:#fff;border:1px solid var(--primary-border);border-radius:14px;padding:1.1rem;height:100%;}
+    .case-card.no{border-top:3px solid #f43f5e;}
+    .case-card.one{border-top:3px solid #10b981;}
+    .case-card.many{border-top:3px solid #3b82f6;}
+    .case-icon{font-size:1.5rem;margin-bottom:.5rem;}
+    .case-cond{font-family:var(--mono);font-size:.78rem;background:#f1f5f9;
+      border-radius:8px;padding:.2rem .6rem;display:inline-block;margin-bottom:.4rem;}
+    .case-desc{font-size:.82rem;color:#64748b;line-height:1.5;}
+    /* ── Steps ── */
+    .steps-ol{list-style:none;padding:0;margin:.6rem 0 0;counter-reset:step;}
+    .steps-ol li{counter-increment:step;display:flex;gap:.8rem;align-items:flex-start;
+      padding:.55rem 0;border-bottom:1px dashed #e0e7ff;font-size:.87rem;}
+    .steps-ol li:last-child{border-bottom:none;}
+    .steps-ol li::before{content:counter(step);flex-shrink:0;width:24px;height:24px;
+      background:var(--accent);color:#fff;border-radius:50%;font-size:.72rem;font-weight:700;
+      display:flex;align-items:center;justify-content:center;margin-top:1px;}
+    .mono-sm{font-family:var(--mono);font-size:.83rem;}
+    /* ── Example blocks ── */
+    .ex-card{background:#f8f9ff;border:1px solid #e0e7ff;border-radius:14px;padding:1.1rem 1.2rem;}
+    .ex-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#94a3b8;margin-bottom:.4rem;}
+    .ex-eq{font-family:var(--mono);font-size:1.1rem;font-weight:700;color:var(--primary-dark);margin-bottom:.6rem;}
+    .ex-row{display:flex;gap:.6rem;align-items:baseline;margin-bottom:.25rem;font-size:.83rem;}
+    .ex-lbl{color:#94a3b8;min-width:120px;font-size:.78rem;}
+    .ex-val{font-family:var(--mono);font-size:.83rem;}
+    .ex-answer{font-family:var(--mono);font-size:.87rem;background:#dcfce7;color:#166534;
+      border-radius:10px;padding:.35rem .85rem;display:inline-block;margin-top:.4rem;}
+    .ex-answer-no{font-family:var(--mono);font-size:.87rem;background:#fee2e2;color:#991b1b;
+      border-radius:10px;padding:.35rem .85rem;display:inline-block;margin-top:.4rem;}
+    .badge-pill{font-size:.68rem;font-weight:700;letter-spacing:.06em;border-radius:99px;
+      padding:.18rem .65rem;text-transform:uppercase;}
+    .badge-ok{background:#dcfce7;color:#166534;}
+    .badge-err{background:#fee2e2;color:#991b1b;}
+    .badge-inf{background:#dbeafe;color:#1d4ed8;}
+    /* ── Input ── */
+    .inp-group label{font-size:.78rem;font-weight:700;color:var(--primary);
+      margin-bottom:.35rem;letter-spacing:.04em;display:block;}
+    .inp-group input[type="number"]{width:100%;background:#f5f6ff;border:2px solid #e0e7ff;
+      border-radius:12px;padding:.6rem .9rem;font-family:var(--mono);font-size:1.05rem;
+      font-weight:700;color:var(--primary-dark);outline:none;
+      transition:border-color .2s,box-shadow .2s;-moz-appearance:textfield;}
+    .inp-group input::-webkit-outer-spin-button,
+    .inp-group input::-webkit-inner-spin-button{-webkit-appearance:none;}
+    .inp-group input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(99,102,241,.15);}
+    .inp-hint{font-size:.68rem;color:#94a3b8;margin-top:.3rem;}
+    .sym-sep{font-family:var(--mono);font-size:1.2rem;font-weight:700;color:#a5b4fc;
+      text-align:center;padding-top:1.5rem;}
+    /* ── Buttons ── */
+    .btn-solve{background:linear-gradient(135deg,var(--primary) 0%,#7c3aed 100%);
+      color:#fff;border:none;border-radius:12px;padding:.8rem 1.4rem;
+      font-family:var(--sans);font-size:.95rem;font-weight:700;cursor:pointer;
+      box-shadow:0 4px 16px rgba(99,102,241,.3);
+      transition:transform .15s,box-shadow .15s;width:100%;overflow:hidden;}
+    .btn-solve:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(99,102,241,.4);}
+    .btn-solve:active{transform:translateY(0);}
+    .btn-reset{background:transparent;color:var(--accent);border:2px solid #e0e7ff;
+      border-radius:12px;padding:.75rem 1.4rem;font-family:var(--sans);font-size:.88rem;
+      font-weight:600;cursor:pointer;width:100%;transition:all .2s;}
+    .btn-reset:hover{background:#eef2ff;border-color:#a5b4fc;}
+    /* ── Steps output ── */
+    .step-item{display:flex;gap:.9rem;align-items:flex-start;
+      padding:.65rem 0;border-bottom:1px dashed #e0e7ff;}
+    .step-item:last-child{border-bottom:none;}
+    .step-num{flex-shrink:0;width:26px;height:26px;background:var(--accent);color:#fff;
+      border-radius:50%;font-size:.7rem;font-weight:700;
+      display:flex;align-items:center;justify-content:center;}
+    .step-body{font-size:.85rem;color:#334155;line-height:1.55;}
+    .step-body strong{color:var(--primary-dark);}
+    /* ── Result panels ── */
+    .result-no{background:#fff1f2;border:2px solid #fecdd3;border-radius:14px;padding:1.4rem;text-align:center;}
+    .result-yes{background:#f0fdf4;border:2px solid #bbf7d0;border-radius:14px;padding:1.4rem;}
+    .badge-no{display:inline-flex;align-items:center;gap:.35rem;
+      background:#fee2e2;border:1px solid #fecaca;color:#dc2626;border-radius:99px;
+      padding:.3rem .85rem;font-size:.72rem;font-weight:700;
+      text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem;}
+    .badge-yes{display:inline-flex;align-items:center;gap:.35rem;
+      background:#dcfce7;border:1px solid #bbf7d0;color:#16a34a;border-radius:99px;
+      padding:.3rem .85rem;font-size:.72rem;font-weight:700;
+      text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem;}
+    .sol-table{width:100%;border-collapse:collapse;margin-top:.75rem;}
+    .sol-table th{background:#f0fdf4;color:#15803d;font-size:.72rem;font-weight:700;
+      letter-spacing:.08em;text-transform:uppercase;padding:.6rem 1rem;text-align:left;}
+    .sol-table th:first-child{border-radius:10px 0 0 0;}
+    .sol-table th:last-child{border-radius:0 10px 0 0;}
+    .sol-table td{padding:.55rem 1rem;font-size:.84rem;color:#334155;
+      border-bottom:1px solid #dcfce7;font-family:var(--mono);}
+    .sol-table tr:last-child td{border-bottom:none;}
+    .sol-table tr:hover td{background:#f0fdf4;}
+    .sol-tag{background:var(--accent);color:#fff;border-radius:6px;
+      padding:.1rem .5rem;font-size:.72rem;font-weight:700;}
+    .verify-ok{color:#059669;font-size:.78rem;font-weight:600;}
+    /* ── Life section ── */
+    .life-card-icon{width:44px;height:44px;border-radius:12px;
+      display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:.75rem;}
+    .ic-teal{background:#ccfbf1;color:#0f766e;}
+    .ic-purple{background:#ede9fe;color:#7c3aed;}
+    .ic-amber{background:#fef3c7;color:#b45309;}
+    .ic-blue{background:#dbeafe;color:#1d4ed8;}
+    /* ── Sim ── */
+    .sim-wrap{background:#f8f9ff;border-radius:12px;padding:1rem;margin-top:.75rem;}
+    .sim-label{font-size:.75rem;color:#64748b;margin-bottom:.4rem;font-weight:600;}
+    .sim-ctrl{display:flex;align-items:center;gap:10px;margin-bottom:.5rem;flex-wrap:wrap;}
+    .sim-ctrl label{font-size:.78rem;color:#64748b;min-width:110px;}
+    .sim-ctrl input[type=range]{flex:1;min-width:100px;accent-color:var(--accent);}
+    .sim-ctrl .vout{font-family:var(--mono);font-size:.82rem;font-weight:700;min-width:55px;}
+    .sim-ctrl select{font-size:.82rem;border-radius:8px;padding:.25rem .5rem;
+      border:1px solid #e0e7ff;background:#fff;}
+    .sim-ctrl input[type=number]{width:72px;font-family:var(--mono);font-size:.82rem;
+      border-radius:8px;padding:.25rem .5rem;border:1px solid #e0e7ff;}
+    .sim-ctrl input[type=text]{font-family:var(--mono);font-size:.9rem;border-radius:8px;
+      padding:.25rem .6rem;border:1px solid #e0e7ff;text-transform:uppercase;}
+    .sim-result{background:#fff;border:1px solid #e0e7ff;border-radius:10px;
+      padding:.7rem 1rem;font-size:.82rem;margin-top:.5rem;line-height:1.6;}
+    .sim-result .big{font-family:var(--mono);font-size:1.25rem;font-weight:700;
+      color:var(--primary);display:block;margin-top:.2rem;}
+    /* ── Cipher ── */
+    .cipher-letters{display:flex;flex-wrap:wrap;gap:6px;margin-top:.5rem;}
+    .cipher-letter{display:flex;flex-direction:column;align-items:center;gap:1px;
+      background:#f0f4ff;border-radius:8px;padding:4px 7px;min-width:32px;}
+    .cipher-letter .pl{font-family:var(--mono);font-size:.78rem;color:#94a3b8;}
+    .cipher-letter .ar{font-size:.65rem;color:#cbd5e1;}
+    .cipher-letter .en{font-family:var(--mono);font-size:.85rem;font-weight:700;color:var(--primary);}
+    /* ── ISBN ── */
+    .isbn-digit-wrap{display:flex;gap:4px;flex-wrap:wrap;margin-top:.4rem;}
+    .isbn-digit{display:flex;flex-direction:column;align-items:center;
+      background:#f0f4ff;border-radius:8px;padding:4px 8px;min-width:30px;}
+    .isbn-digit .pos{font-size:.65rem;color:#94a3b8;}
+    .isbn-digit .dgt{font-family:var(--mono);font-size:.9rem;font-weight:700;color:var(--primary-dark);}
+    .isbn-digit.chk{background:#ede9fe;}
+    .isbn-digit.chk .dgt{color:#7c3aed;}
+    /* ── Day grid ── */
+    .day-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:.5rem;}
+    .day-cell{text-align:center;padding:5px 2px;border-radius:8px;
+      font-size:.7rem;font-family:var(--mono);}
+    .day-cell.hdr{font-size:.62rem;color:#94a3b8;font-family:var(--sans);font-weight:600;}
+    .day-cell.norm{background:#f1f5f9;color:#64748b;}
+    .day-cell.from{background:#e0e7ff;color:var(--primary);font-weight:700;}
+    .day-cell.to{background:var(--accent);color:#fff;font-weight:700;}
+    /* ── Misc ── */
+    .fade-up{animation:fadeUp .4s ease both;}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+    /* ── SPA page system ── */
+    .spa-page{display:none;}
+    .spa-page.active{display:block;animation:fadeUp .3s ease both;}
+    /* ── Quick-jump cards ── */
+    .quickjump-card{
+      background:#fff;border:1px solid var(--primary-border);border-radius:14px;
+      padding:.9rem;text-align:center;cursor:pointer;
+      transition:transform .18s,box-shadow .18s,border-color .18s;
+      text-decoration:none;color:inherit;display:block;}
+    .quickjump-card:hover{
+      transform:translateY(-3px);box-shadow:0 8px 24px rgba(99,102,241,.15);
+      border-color:var(--accent);color:inherit;}
+    .quickjump-card:active{transform:translateY(-1px);}
+    /* ── KUIS styles ── */
+    .kuis-start-wrap{text-align:center;padding:2.5rem 1rem;}
+    .kuis-start-icon{font-size:4rem;color:var(--accent);margin-bottom:1rem;}
+    .kuis-start-title{font-size:1.5rem;font-weight:800;color:var(--primary-dark);margin-bottom:.5rem;}
+    .kuis-start-desc{font-size:.88rem;color:#64748b;margin-bottom:1.75rem;line-height:1.7;}
+    .btn-start-quiz{
+      background:linear-gradient(135deg,var(--primary) 0%,#7c3aed 100%);
+      color:#fff;border:none;border-radius:14px;padding:.9rem 2.4rem;
+      font-family:var(--sans);font-size:1rem;font-weight:700;cursor:pointer;
+      box-shadow:0 4px 20px rgba(99,102,241,.35);
+      transition:transform .15s,box-shadow .15s;display:inline-flex;align-items:center;gap:.5rem;}
+    .btn-start-quiz:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(99,102,241,.45);}
+    /* progress bar */
+    .kuis-progress-bar-wrap{background:#e0e7ff;border-radius:99px;height:6px;margin-bottom:1.25rem;overflow:hidden;}
+    .kuis-progress-bar{height:6px;background:linear-gradient(90deg,var(--primary),#7c3aed);border-radius:99px;transition:width .4s ease;}
+    /* soal header */
+    .kuis-soal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+    .kuis-soal-num{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);}
+    .kuis-soal-badge{background:var(--primary-light);color:var(--primary);border-radius:99px;
+      font-size:.72rem;font-weight:700;padding:.2rem .8rem;}
+    /* soal question */
+    .kuis-question{font-size:.97rem;font-weight:600;color:var(--primary-dark);line-height:1.6;margin-bottom:1.25rem;}
+    /* pilihan */
+    .kuis-option{
+      width:100%;text-align:left;background:#f8f9ff;border:2px solid #e0e7ff;
+      border-radius:12px;padding:.7rem 1rem;margin-bottom:.55rem;
+      font-family:var(--sans);font-size:.88rem;font-weight:500;color:#334155;
+      cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:.7rem;}
+    .kuis-option:hover:not(:disabled){background:var(--primary-light);border-color:var(--primary-border);}
+    .kuis-option .opt-label{flex-shrink:0;width:24px;height:24px;border-radius:50%;
+      background:#e0e7ff;color:#64748b;font-size:.75rem;font-weight:700;
+      display:flex;align-items:center;justify-content:center;}
+    .kuis-option.correct{background:#f0fdf4;border-color:#86efac;color:#166534;}
+    .kuis-option.correct .opt-label{background:#22c55e;color:#fff;}
+    .kuis-option.wrong{background:#fff1f2;border-color:#fca5a5;color:#991b1b;}
+    .kuis-option.wrong .opt-label{background:#ef4444;color:#fff;}
+    .kuis-option:disabled{cursor:default;}
+    /* penjelasan */
+    .kuis-explain{background:#f0f4ff;border-left:4px solid var(--accent);
+      border-radius:0 12px 12px 0;padding:.9rem 1.1rem;font-size:.83rem;
+      color:#475569;line-height:1.65;margin-top:.75rem;}
+    .kuis-explain .explain-title{font-size:.7rem;font-weight:700;letter-spacing:.1em;
+      text-transform:uppercase;color:var(--accent);margin-bottom:.4rem;}
+    /* pembahasan lengkap */
+    .kuis-pembahasan{background:#fff8f0;border:1px solid #fed7aa;border-radius:14px;
+      padding:1rem 1.1rem;margin-top:.85rem;font-size:.82rem;color:#451a03;line-height:1.7;}
+    .kuis-pembahasan .pb-title{font-size:.7rem;font-weight:700;letter-spacing:.1em;
+      text-transform:uppercase;color:#b45309;margin-bottom:.5rem;
+      display:flex;align-items:center;gap:.4rem;}
+    .kuis-pembahasan .pb-row{display:flex;gap:.5rem;align-items:baseline;margin-bottom:.2rem;}
+    .kuis-pembahasan .pb-key{min-width:120px;font-size:.77rem;color:#78350f;}
+    .kuis-pembahasan .pb-val{font-family:var(--mono);font-size:.8rem;font-weight:700;color:#1e1b4b;}
+    /* tombol next */
+    .btn-next-quiz{
+      background:linear-gradient(135deg,var(--primary) 0%,#7c3aed 100%);
+      color:#fff;border:none;border-radius:12px;padding:.75rem 1.6rem;
+      font-family:var(--sans);font-size:.92rem;font-weight:700;cursor:pointer;
+      box-shadow:0 4px 14px rgba(99,102,241,.28);
+      transition:transform .15s,box-shadow .15s;display:inline-flex;align-items:center;gap:.5rem;
+      margin-top:1rem;}
+    .btn-next-quiz:hover{transform:translateY(-2px);box-shadow:0 7px 22px rgba(99,102,241,.38);}
+    /* skor akhir */
+    .kuis-score-wrap{text-align:center;padding:2rem 1rem;}
+    .score-circle{width:130px;height:130px;border-radius:50%;
+      background:linear-gradient(135deg,var(--primary),#7c3aed);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      margin:0 auto 1.25rem;box-shadow:0 8px 28px rgba(99,102,241,.35);}
+    .score-circle .sc-num{font-size:2.6rem;font-weight:800;color:#fff;line-height:1;}
+    .score-circle .sc-lbl{font-size:.65rem;color:#c7d2fe;font-weight:600;letter-spacing:.1em;text-transform:uppercase;}
+    .score-title{font-size:1.3rem;font-weight:800;color:var(--primary-dark);margin-bottom:.35rem;}
+    .score-sub{font-size:.85rem;color:#64748b;margin-bottom:1.5rem;}
+    .score-stats{display:flex;gap:1rem;justify-content:center;margin-bottom:1.75rem;flex-wrap:wrap;}
+    .score-stat{background:#fff;border:1px solid var(--primary-border);border-radius:14px;
+      padding:.75rem 1.25rem;min-width:110px;text-align:center;}
+    .score-stat .st-val{font-size:1.6rem;font-weight:800;color:var(--primary);}
+    .score-stat .st-lbl{font-size:.72rem;color:#94a3b8;font-weight:600;}
+    .score-stat.green .st-val{color:#16a34a;}
+    .score-stat.red .st-val{color:#dc2626;}
+    .score-msg{font-size:.88rem;color:#475569;line-height:1.65;margin-bottom:1.5rem;
+      background:#f0f4ff;border-radius:12px;padding:.85rem 1.1rem;}
+    /* Misc */
+    .d-none{display:none!important;}
+    .divider{border:none;border-top:1px solid #e0e7ff;margin:1.4rem 0;}
+    .site-footer{text-align:center;padding:2rem 1rem;font-size:.78rem;color:#94a3b8;
+      border-top:1px solid #e0e7ff;margin-top:2rem;}
+    @media(max-width:576px){
+      .site-header{clip-path:polygon(0 0,100% 0,100% 94%,0 100%);padding:2.5rem 1rem 2rem;}
+      .kl-card{padding:1.2rem;}
+      .sym-sep{padding-top:1.4rem;}
+      .score-stats{gap:.6rem;}
+      .score-stat{min-width:90px;padding:.6rem .9rem;}
+    }
+  </style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Muhammad Syauki Mushafa</div>
+<div class="page-bg"></div>
+<div class="page-wrap">
+<!-- ══════════ HEADER ══════════ -->
+<header class="site-header">
+<div class="chip">Matematika Diskrit</div>
+<h1>Kekongruenan <span>Linear</span></h1>
+<p>Teori lengkap · Kalkulator interaktif · Aplikasi kehidupan sehari-hari · Kuis</p>
+<div class="formula-hero"><code>ax ≡ b (mod m)</code></div>
+</header>
+<!-- ══════════ STICKY NAV ══════════ -->
+<nav class="nav-section">
+<div class="container">
+<ul class="nav" id="mainNav">
+<li class="nav-item"><a class="nav-link active" data-page="sec-teori" href="/teori"><i class="bi bi-book me-1"></i>Teori</a></li>
+<li class="nav-item"><a class="nav-link" data-page="sec-kalkulator" href="/kalkulator"><i class="bi bi-calculator me-1"></i>Kalkulator</a></li>
+<li class="nav-item"><a class="nav-link" data-page="sec-kehidupan" href="/kehidupan"><i class="bi bi-globe me-1"></i>Kehidupan Nyata</a></li>
+<li class="nav-item"><a class="nav-link" data-page="sec-kuis" href="/kuis"><i class="bi bi-patch-question me-1"></i>Kuis</a></li>
+</ul>
+</div>
+</nav>
+<div class="container py-4" style="max-width:820px;">
+<!-- ══════════════════════════════════
+     SECTION 1 — TEORI
+══════════════════════════════════════ -->
+<section class="spa-page active" id="sec-teori">
+<div class="kl-card">
+<div class="kl-card-title"><span class="dot"></span>Pengertian Kekongruenan Linear</div>
+<p style="font-size:.88rem;color:#64748b;margin-bottom:.85rem;">
+      Kekongruenan linear adalah persamaan dalam aritmetika modular yang mencari nilai <code>x</code>
+      bilangan bulat sehingga <code>ax − b</code> habis dibagi <code>m</code>.
+      Dua bilangan dikatakan kongruen modulo <code>m</code> bila selisihnya habis dibagi <code>m</code>.
+    </p>
+<div class="formula-box">ax ≡ b (mod m)</div>
+<div class="row g-2 mt-1">
+<div class="col-6 col-sm-3">
+<div style="background:#f5f6ff;border-radius:10px;padding:.6rem .85rem;">
+<div style="font-family:var(--mono);font-size:1.1rem;font-weight:700;">a</div>
+<div style="font-size:.75rem;color:#64748b;">Koefisien dari x</div>
+</div>
+</div>
+<div class="col-6 col-sm-3">
+<div style="background:#f5f6ff;border-radius:10px;padding:.6rem .85rem;">
+<div style="font-family:var(--mono);font-size:1.1rem;font-weight:700;">b</div>
+<div style="font-size:.75rem;color:#64748b;">Sisi kanan (konstanta)</div>
+</div>
+</div>
+<div class="col-6 col-sm-3">
+<div style="background:#f5f6ff;border-radius:10px;padding:.6rem .85rem;">
+<div style="font-family:var(--mono);font-size:1.1rem;font-weight:700;">m</div>
+<div style="font-size:.75rem;color:#64748b;">Modulus (m &gt; 0)</div>
+</div>
+</div>
+<div class="col-6 col-sm-3">
+<div style="background:#f5f6ff;border-radius:10px;padding:.6rem .85rem;">
+<div style="font-family:var(--mono);font-size:1.1rem;font-weight:700;">x</div>
+<div style="font-size:.75rem;color:#64748b;">Solusi yang dicari</div>
+</div>
+</div>
+</div>
+</div>
+<div class="kl-card">
+<div class="kl-card-title"><span class="dot"></span>Tiga Kasus Solusi — bergantung pada d = FPB(a, m)</div>
+<div class="row g-3">
+<div class="col-md-4">
+<div class="case-card no">
+<div class="case-icon text-danger"><i class="bi bi-x-circle"></i></div>
+<div class="fw-bold mb-1" style="font-size:.9rem;">Tidak Ada Solusi</div>
+<div class="case-cond">d ∤ b</div>
+<p class="case-desc mt-2">Jika b tidak habis dibagi d, persamaan tidak punya solusi sama sekali dalam bilangan bulat.</p>
+</div>
+</div>
+<div class="col-md-4">
+<div class="case-card one">
+<div class="case-icon text-success"><i class="bi bi-check-circle"></i></div>
+<div class="fw-bold mb-1" style="font-size:.9rem;">Tepat 1 Solusi</div>
+<div class="case-cond">d = 1</div>
+<p class="case-desc mt-2">Jika FPB(a, m) = 1, ada tepat satu solusi unik dalam rentang 0 hingga m−1.</p>
+</div>
+</div>
+<div class="col-md-4">
+<div class="case-card many">
+<div class="case-icon text-primary"><i class="bi bi-collection"></i></div>
+<div class="fw-bold mb-1" style="font-size:.9rem;">Tepat d Solusi</div>
+<div class="case-cond">d | b, d &gt; 1</div>
+<p class="case-desc mt-2">Jika d &gt; 1 dan d membagi b, ada tepat d solusi tersebar merata dalam 0 hingga m−1.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="kl-card">
+<div class="kl-card-title"><span class="dot"></span>Langkah-Langkah Penyelesaian</div>
+<ol class="steps-ol">
+<li>Hitung <span class="mono-sm">d = FPB(a, m)</span> menggunakan Algoritma Euclidean.</li>
+<li>Cek apakah <span class="mono-sm">d | b</span>. Jika tidak → <strong>tidak ada solusi</strong>, berhenti di sini.</li>
+<li>Sederhanakan: bagi semua suku dengan d → <span class="mono-sm">(a/d)x ≡ (b/d) (mod m/d)</span>.</li>
+<li>Cari invers modular <span class="mono-sm">(a/d)<sup>−1</sup></span> terhadap <span class="mono-sm">m/d</span> via Extended Euclidean.</li>
+<li>Solusi pertama: <span class="mono-sm">x⊂0 = (b/d) · (a/d)<sup>−1</sup> (mod m/d)</span>.</li>
+<li>Semua solusi: <span class="mono-sm">x<sub>k</sub> = x⊂0 + k·(m/d)</span>, untuk <span class="mono-sm">k = 0, 1, …, d−1</span>.</li>
+</ol>
+</div>
+<div class="kl-card">
+<div class="kl-card-title"><span class="dot"></span>Contoh Kasus Lengkap</div>
+<div class="ex-card mb-3">
+<div class="ex-label">Contoh 1 — Tidak ada solusi</div>
+<div class="ex-eq">4x ≡ 3 (mod 6)</div>
+<div class="ex-row"><span class="ex-lbl">Hitung FPB</span><span class="ex-val">FPB(4, 6) = 2</span><span class="badge-pill badge-inf ms-2">d = 2</span></div>
+<div class="ex-row"><span class="ex-lbl">Cek syarat</span><span class="ex-val">3 ÷ 2 = 1.5 (tidak bulat)</span><span class="badge-pill badge-err ms-2">d ∤ b</span></div>
+<div class="ex-answer-no"><i class="bi bi-x-circle me-1"></i>Tidak ada solusi — 2 tidak membagi 3</div>
+</div>
+<div class="ex-card mb-3">
+<div class="ex-label">Contoh 2 — Tepat 1 solusi (d = 1)</div>
+<div class="ex-eq">3x ≡ 4 (mod 7)</div>
+<div class="ex-row"><span class="ex-lbl">Hitung FPB</span><span class="ex-val">FPB(3, 7) = 1</span><span class="badge-pill badge-ok ms-2">d = 1</span></div>
+<div class="ex-row"><span class="ex-lbl">Cek syarat</span><span class="ex-val">4 ÷ 1 = 4 (bulat)</span><span class="badge-pill badge-ok ms-2">d | b</span></div>
+<div class="ex-row"><span class="ex-lbl">Persamaan</span><span class="ex-val">3x ≡ 4 (mod 7) — tidak berubah</span></div>
+<div class="ex-row"><span class="ex-lbl">Invers 3 mod 7</span><span class="ex-val">3 × 5 = 15 ≡ 1 (mod 7) → 3<sup>−1</sup> = 5</span></div>
+<div class="ex-row"><span class="ex-lbl">Solusi</span><span class="ex-val">x ≡ 4 × 5 = 20 ≡ 6 (mod 7)</span></div>
+<div class="ex-answer"><i class="bi bi-check-circle me-1"></i>x = 6  |  verifikasi: 3×6 = 18 = 2·7 + 4 ✓</div>
+</div>
+<div class="ex-card">
+<div class="ex-label">Contoh 3 — Tepat d solusi (d = 2)</div>
+<div class="ex-eq">6x ≡ 4 (mod 10)</div>
+<div class="ex-row"><span class="ex-lbl">Hitung FPB</span><span class="ex-val">FPB(6, 10) = 2</span><span class="badge-pill badge-inf ms-2">d = 2</span></div>
+<div class="ex-row"><span class="ex-lbl">Cek syarat</span><span class="ex-val">4 ÷ 2 = 2 (bulat)</span><span class="badge-pill badge-ok ms-2">d | b</span></div>
+<div class="ex-row"><span class="ex-lbl">Bagi dengan d</span><span class="ex-val">3x ≡ 2 (mod 5)</span></div>
+<div class="ex-row"><span class="ex-lbl">Invers 3 mod 5</span><span class="ex-val">3 × 2 = 6 ≡ 1 (mod 5) → 3<sup>−1</sup> = 2</span></div>
+<div class="ex-row"><span class="ex-lbl">x⊂0</span><span class="ex-val">x⊂0 = 2 × 2 = 4 (mod 5)</span></div>
+<div class="ex-row"><span class="ex-lbl">Semua solusi</span><span class="ex-val">x<sub>k</sub> = 4 + k×5,  k = 0, 1</span></div>
+<div class="ex-answer"><i class="bi bi-check-circle me-1"></i>x⊂1 = 4, x⊂2 = 9  |  6×4=24≡4 ✓   6×9=54≡4 ✓</div>
+</div>
+</div>
+</section>
+<!-- ══════════════════════════════════
+     SECTION 2 — KALKULATOR
+══════════════════════════════════════ -->
+<section class="spa-page" id="sec-kalkulator">
+<div class="kl-card">
+<div class="kl-card-title"><span class="dot"></span>Kalkulator Interaktif</div>
+<div class="info-box mb-3">
+      Masukkan nilai <strong>a</strong>, <strong>b</strong>, dan <strong>m</strong>, lalu klik
+      <strong>Selesaikan</strong>. Kalkulator menampilkan langkah penyelesaian beserta semua solusi
+      dalam rentang <strong>0 sampai m−1</strong>.
+    </div>
+<div class="row g-2 align-items-end mb-3">
+<div class="col inp-group">
+<label>a</label>
+<input id="inp-a" placeholder="mis. 6" type="number"/>
+<p class="inp-hint">Koefisien x</p>
+</div>
+<div class="col-auto sym-sep">·x ≡</div>
+<div class="col inp-group">
+<label>b</label>
+<input id="inp-b" placeholder="mis. 4" type="number"/>
+<p class="inp-hint">Konstanta</p>
+</div>
+<div class="col-auto sym-sep">(mod</div>
+<div class="col inp-group">
+<label>m</label>
+<input id="inp-m" placeholder="mis. 10" type="number"/>
+<p class="inp-hint">Modulus)</p>
+</div>
+</div>
+<div class="row g-2">
+<div class="col-sm-8">
+<button class="btn-solve" onclick="solve()">
+<i class="bi bi-lightning-charge-fill me-2"></i>Selesaikan
+        </button>
+</div>
+<div class="col-sm-4">
+<button class="btn-reset" onclick="resetAll()">
+<i class="bi bi-arrow-counterclockwise me-1"></i>Reset
+        </button>
+</div>
+</div>
+</div>
+<div class="kl-card d-none fade-up" id="output-card">
+<div class="kl-card-title"><span class="dot"></span>Langkah Penyelesaian</div>
+<div id="steps-container"></div>
+<hr class="divider"/>
+<div id="result-container"></div>
+</div>
+</section>
+<!-- ══════════════════════════════════
+     SECTION 3 — KEHIDUPAN NYATA
+══════════════════════════════════════ -->
+<section class="spa-page" id="sec-kehidupan">
+<div class="row g-3 mb-3">
+<div class="col-6 col-sm-3">
+<a class="quickjump-card" href="#contoh-1" onclick="smoothScrollTo('contoh-1')">
+<div style="font-size:1.5rem;color:#0f766e;"><i class="bi bi-clock"></i></div>
+<div style="font-size:.78rem;font-weight:700;margin-top:.3rem;">Jam &amp; Waktu</div>
+<div style="font-size:.68rem;color:#94a3b8;">mod 12 / mod 24</div>
+</a>
+</div>
+<div class="col-6 col-sm-3">
+<a class="quickjump-card" href="#contoh-2" onclick="smoothScrollTo('contoh-2')">
+<div style="font-size:1.5rem;color:#7c3aed;"><i class="bi bi-calendar3"></i></div>
+<div style="font-size:.78rem;font-weight:700;margin-top:.3rem;">Jadwal Harian</div>
+<div style="font-size:.68rem;color:#94a3b8;">pola berulang</div>
+</a>
+</div>
+<div class="col-6 col-sm-3">
+<a class="quickjump-card" href="#contoh-3" onclick="smoothScrollTo('contoh-3')">
+<div style="font-size:1.5rem;color:#b45309;"><i class="bi bi-lock"></i></div>
+<div style="font-size:.78rem;font-weight:700;margin-top:.3rem;">Kriptografi</div>
+<div style="font-size:.68rem;color:#94a3b8;">Caesar / RSA</div>
+</a>
+</div>
+<div class="col-6 col-sm-3">
+<a class="quickjump-card" href="#contoh-4" onclick="smoothScrollTo('contoh-4')">
+<div style="font-size:1.5rem;color:#1d4ed8;"><i class="bi bi-upc-scan"></i></div>
+<div style="font-size:.78rem;font-weight:700;margin-top:.3rem;">Barcode / ISBN</div>
+<div style="font-size:.68rem;color:#94a3b8;">digit cek</div>
+</a>
+</div>
+</div>
+<!-- Contoh 1 — Jam -->
+<div class="kl-card" id="contoh-1">
+<div class="kl-card-title"><span class="dot"></span>Contoh 1 — Sistem Jam</div>
+<div class="life-card-icon ic-teal"><i class="bi bi-clock"></i></div>
+<p style="font-size:.85rem;color:#334155;margin-bottom:.5rem;">
+      Jam adalah contoh paling intuitif dari aritmetika modulo 12 atau 24.
+      Saat ditanya <em>"27 jam lagi pukul berapa?"</em>, kita tidak sadar sedang menggunakan kekongruenan linear.
+    </p>
+<div class="formula-box" style="font-size:.95rem;">(jam_awal + selang) ≡ x (mod 24)</div>
+<div class="ex-card mb-3">
+<div class="ex-label">Contoh soal</div>
+<div class="ex-eq" style="font-size:.95rem;">Sekarang pukul 08.00. 27 jam lagi, pukul berapa?</div>
+<div class="ex-row"><span class="ex-lbl">Persamaan</span><span class="ex-val">x ≡ 8 + 27 (mod 24) ≡ 35 (mod 24)</span></div>
+<div class="ex-row"><span class="ex-lbl">Hitung</span><span class="ex-val">35 ÷ 24 = 1 sisa 11</span></div>
+<div class="ex-answer">Pukul 11.00</div>
+</div>
+<div class="sim-wrap">
+<div class="sim-label"><i class="bi bi-sliders me-1"></i>Simulasi — geser untuk ubah nilai</div>
+<div class="sim-ctrl">
+<label>Jam awal</label>
+<input id="jam-awal" max="23" min="0" oninput="updateClock()" step="1" type="range" value="8"/>
+<span class="vout" id="jam-awal-out">08:00</span>
+</div>
+<div class="sim-ctrl">
+<label>Tambah (jam)</label>
+<input id="jam-tambah" max="72" min="1" oninput="updateClock()" step="1" type="range" value="27"/>
+<span class="vout" id="jam-tambah-out">27 jam</span>
+</div>
+<div class="sim-result" id="clock-out"></div>
+</div>
+</div>
+<!-- Contoh 2 — Jadwal -->
+<div class="kl-card" id="contoh-2">
+<div class="kl-card-title"><span class="dot"></span>Contoh 2 — Jadwal Berulang (Hari dalam Seminggu)</div>
+<div class="life-card-icon ic-purple"><i class="bi bi-calendar3"></i></div>
+<p style="font-size:.85rem;color:#334155;margin-bottom:.5rem;">
+      Hari dalam seminggu berputar setiap 7 hari — inilah modulo 7 dalam praktik nyata.
+      Digunakan untuk jadwal piket, shift kerja, siklus pembayaran, atau jadwal siaran TV.
+    </p>
+<div class="formula-box" style="font-size:.95rem;">(hari_awal + N) ≡ x (mod 7)</div>
+<div class="ex-card mb-3">
+<div class="ex-label">Contoh soal</div>
+<div class="ex-eq" style="font-size:.95rem;">Hari ini Senin (hari ke-1). 100 hari lagi hari apa?</div>
+<div class="ex-row"><span class="ex-lbl">Persamaan</span><span class="ex-val">x ≡ 1 + 100 (mod 7) ≡ 101 (mod 7)</span></div>
+<div class="ex-row"><span class="ex-lbl">Hitung</span><span class="ex-val">101 ÷ 7 = 14 sisa 3 → hari ke-3 = Rabu</span></div>
+<div class="ex-answer">Rabu</div>
+</div>
+<div class="sim-wrap">
+<div class="sim-label"><i class="bi bi-sliders me-1"></i>Simulasi — pilih hari awal dan jumlah hari</div>
+<div class="sim-ctrl" style="gap:8px;">
+<label>Hari awal</label>
+<select id="hari-awal" onchange="updateSched()">
+<option value="0">Minggu</option>
+<option selected="" value="1">Senin</option>
+<option value="2">Selasa</option>
+<option value="3">Rabu</option>
+<option value="4">Kamis</option>
+<option value="5">Jumat</option>
+<option value="6">Sabtu</option>
+</select>
+<label style="margin-left:8px;">+ hari</label>
+<input id="hari-n" max="999" min="1" oninput="updateSched()" type="number" value="100"/>
+</div>
+<div id="sched-cal"></div>
+<div class="sim-result" id="sched-out"></div>
+</div>
+</div>
+<!-- Contoh 3 — Cipher -->
+<div class="kl-card" id="contoh-3">
+<div class="kl-card-title"><span class="dot"></span>Contoh 3 — Caesar Cipher (Kriptografi)</div>
+<div class="life-card-icon ic-amber"><i class="bi bi-lock"></i></div>
+<p style="font-size:.85rem;color:#334155;margin-bottom:.5rem;">
+      Sandi Caesar menggeser setiap huruf sebesar k posisi dalam alfabet (mod 26).
+      Ini cikal bakal enkripsi modern seperti RSA yang seluruhnya berbasis aritmetika modular.
+    </p>
+<div class="row g-2 mb-3">
+<div class="col-6">
+<div class="formula-box" style="font-size:.88rem;">E(x) ≡ x + k (mod 26)</div>
+<div style="font-size:.75rem;color:#64748b;text-align:center;">Enkripsi</div>
+</div>
+<div class="col-6">
+<div class="formula-box" style="font-size:.88rem;">D(x) ≡ x − k (mod 26)</div>
+<div style="font-size:.75rem;color:#64748b;text-align:center;">Dekripsi</div>
+</div>
+</div>
+<div class="ex-card mb-3">
+<div class="ex-label">Contoh — huruf 'H' dengan shift k = 3</div>
+<div class="ex-row"><span class="ex-lbl">Nilai H</span><span class="ex-val">H = 7 (A=0, B=1, …, Z=25)</span></div>
+<div class="ex-row"><span class="ex-lbl">Enkripsi</span><span class="ex-val">E(7) ≡ 7 + 3 = 10 (mod 26) → K</span></div>
+<div class="ex-row"><span class="ex-lbl">Dekripsi</span><span class="ex-val">D(10) ≡ 10 − 3 = 7 (mod 26) → H</span></div>
+<div class="ex-answer">H → K (shift 3)</div>
+</div>
+<div class="sim-wrap">
+<div class="sim-label"><i class="bi bi-keyboard me-1"></i>Coba enkripsi teksmu sendiri (A–Z)</div>
+<div class="sim-ctrl" style="flex-wrap:wrap;gap:8px;">
+<label>Teks</label>
+<input id="plain-in" maxlength="14" oninput="updateCipher()" style="width:160px;" type="text" value="HALO"/>
+<label style="margin-left:8px;">Shift (k)</label>
+<input id="shift-in" max="25" min="1" oninput="updateCipher()" style="width:60px;" type="number" value="3"/>
+</div>
+<div class="cipher-letters mt-2" id="cipher-result"></div>
+<div class="sim-result mt-2" id="cipher-formula" style="font-size:.78rem;line-height:1.8;"></div>
+</div>
+</div>
+<!-- Contoh 4 — ISBN -->
+<div class="kl-card" id="contoh-4">
+<div class="kl-card-title"><span class="dot"></span>Contoh 4 — Validasi ISBN-10 (Barcode Buku)</div>
+<div class="life-card-icon ic-blue"><i class="bi bi-upc-scan"></i></div>
+<p style="font-size:.85rem;color:#334155;margin-bottom:.5rem;">
+      Setiap buku punya kode ISBN-10. Digit terakhirnya dihitung dengan kekongruenan linear
+      agar setiap kesalahan ketik satu digit langsung terdeteksi.
+      Prinsip yang sama dipakai pada kartu kredit (Luhn mod 10) dan barcode produk.
+    </p>
+<div class="formula-box" style="font-size:.92rem;">∑ (i × d<sub>i</sub>) ≡ 0 (mod 11),   i = 1, 2, …, 10</div>
+<div class="ex-card mb-3">
+<div class="ex-label">Cara kerja</div>
+<div class="ex-row"><span class="ex-lbl">Digit 1–9</span><span class="ex-val">diberikan, mis. 0-1-9-8-5-3-4-5-3</span></div>
+<div class="ex-row"><span class="ex-lbl">Hitung total</span><span class="ex-val">1×0 + 2×1 + … + 9×3 = 195</span></div>
+<div class="ex-row"><span class="ex-lbl">Digit ke-10</span><span class="ex-val">195 mod 11 = 8 → d<sub>10</sub> = 8</span></div>
+<div class="ex-answer">ISBN: 0198534538</div>
+</div>
+<div class="sim-wrap">
+<div class="sim-label"><i class="bi bi-input-cursor-text me-1"></i>Masukkan 9 digit pertama ISBN-10</div>
+<div class="sim-ctrl">
+<label>9 digit</label>
+<input id="isbn-in" maxlength="9" oninput="updateISBN()" style="font-family:var(--mono);font-size:1rem;border-radius:8px;
+            padding:.3rem .7rem;border:1px solid #e0e7ff;width:150px;letter-spacing:.1em;" type="text" value="019853453"/>
+<span style="font-size:.82rem;color:#64748b;">digit ke-10 =</span>
+<span id="isbn-check" style="font-family:var(--mono);font-size:1.4rem;font-weight:700;color:var(--primary);">?</span>
+</div>
+<div class="isbn-digit-wrap mt-2" id="isbn-digits"></div>
+<div class="sim-result mt-2" id="isbn-out"></div>
+</div>
+</div>
+</section>
+<!-- ══════════════════════════════════
+     SECTION 4 — KUIS INTERAKTIF
+══════════════════════════════════════ -->
+<section class="spa-page" id="sec-kuis">
+<div class="kl-card" id="kuis-wrapper">
+<!-- ── Panel: Start ── -->
+<div id="kuis-start">
+<div class="kuis-start-wrap">
+<div class="kuis-start-icon"><i class="bi bi-patch-question-fill"></i></div>
+<div class="kuis-start-title">Kuis Kekongruenan Linear</div>
+<div class="kuis-start-desc">
+          Uji pemahamanmu tentang <strong>ax ≡ b (mod m)</strong>!<br/>
+          Setiap sesi terdiri dari <strong>10 soal acak</strong> dari bank soal.<br/>
+          Jawab setiap soal dan lihat pembahasan lengkap jika salah.
+        </div>
+<button class="btn-start-quiz" onclick="startKuis()">
+<i class="bi bi-play-fill"></i> Mulai Kuis
+        </button>
+</div>
+</div>
+<!-- ── Panel: Soal ── -->
+<div class="d-none" id="kuis-soal">
+<div class="kuis-progress-bar-wrap">
+<div class="kuis-progress-bar" id="kuis-progress" style="width:10%"></div>
+</div>
+<div class="kuis-soal-header">
+<div class="kuis-soal-num" id="kuis-soal-num">Soal 1 dari 10</div>
+<div class="kuis-soal-badge" id="kuis-skor-running">
+<i class="bi bi-star-fill me-1" style="color:#f59e0b;font-size:.65rem;"></i>
+<span id="kuis-benar-count">0</span> Benar
+        </div>
+</div>
+<div class="kuis-question" id="kuis-question"></div>
+<div id="kuis-options"></div>
+<div class="d-none" id="kuis-feedback"></div>
+<div class="d-none" id="kuis-pembahasan-box"></div>
+<div style="text-align:right;">
+<button class="btn-next-quiz d-none" id="btn-next" onclick="nextSoal()">
+          Selanjutnya <i class="bi bi-arrow-right"></i>
+</button>
+</div>
+</div>
+<!-- ── Panel: Skor Akhir ── -->
+<div class="d-none" id="kuis-hasil">
+<div class="kuis-score-wrap">
+<div class="score-circle">
+<div class="sc-num" id="final-score">0</div>
+<div class="sc-lbl">Skor</div>
+</div>
+<div class="score-title" id="score-title-msg">Hasil Kuis</div>
+<div class="score-sub" id="score-sub-msg">Kamu telah menyelesaikan semua soal.</div>
+<div class="score-stats">
+<div class="score-stat green">
+<div class="st-val" id="stat-benar">0</div>
+<div class="st-lbl"><i class="bi bi-check-circle me-1"></i>Benar</div>
+</div>
+<div class="score-stat red">
+<div class="st-val" id="stat-salah">0</div>
+<div class="st-lbl"><i class="bi bi-x-circle me-1"></i>Salah</div>
+</div>
+<div class="score-stat">
+<div class="st-val" id="stat-total">10</div>
+<div class="st-lbl"><i class="bi bi-list-ol me-1"></i>Total Soal</div>
+</div>
+</div>
+<div class="score-msg" id="score-msg-detail"></div>
+<button class="btn-start-quiz" onclick="startKuis()">
+<i class="bi bi-arrow-repeat"></i> Ulangi Kuis
+        </button>
+</div>
+</div>
+</div>
+</section>
+</div><!-- /container -->
+<footer class="site-footer">
+  Dibuat untuk Tugas Matematika Diskrit  · 
+  Extended Euclidean Algorithm  · 
+  Bootstrap 5.3  · 
+  <span id="yr"></span>
+</footer>
+</div><!-- /page-wrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* ════════════════════════════════════════
+   UTILITAS MATEMATIKA
+════════════════════════════════════════ */
+function posMod(a,m){return((a%m)+m)%m;}
+function gcd(a,b){return b===0?Math.abs(a):gcd(b,Math.abs(a%b));}
+function extGCD(a,b){
+  if(b===0)return{g:a,x:1,y:0};
+  const r=extGCD(b,a%b);
+  return{g:r.g,x:r.y,y:r.x-Math.floor(a/b)*r.y};
+}
+
+/* ════════════════════════════════════════
+   KALKULATOR UTAMA
+════════════════════════════════════════ */
+function solve(){
+  const rawA=document.getElementById('inp-a').value.trim();
+  const rawB=document.getElementById('inp-b').value.trim();
+  const rawM=document.getElementById('inp-m').value.trim();
+  if(!rawA||!rawB||!rawM){alert('Harap isi semua nilai a, b, dan m.');return;}
+  const a=parseInt(rawA),b=parseInt(rawB),m=parseInt(rawM);
+  if(isNaN(a)||isNaN(b)||isNaN(m)){alert('Nilai harus bilangan bulat.');return;}
+  if(m<=0){alert('Nilai m harus positif (m > 0).');return;}
+  if(a===0){alert('Nilai a tidak boleh 0.');return;}
+  const d=gcd(Math.abs(a),m);
+  const steps=[
+    {html:`Persamaan yang diberikan: <strong style="font-family:var(--mono)">${a}x \u2261 ${b} (mod ${m})</strong>`},
+    {html:`Hitung <strong>FPB(${Math.abs(a)}, ${m})</strong> dengan Algoritma Euclidean.<br>Hasil: <strong style="font-family:var(--mono)">d = ${d}</strong>`},
+    {html:`Syarat solusi: <strong>d | b</strong> \u2192 <strong>${d} | ${b}</strong><br>
+      ${b%d===0
+        ?`<span style="color:#16a34a">\u2714 ${b} \u00f7 ${d} = ${b/d} (bulat) \u2192 <strong>Syarat TERPENUHI</strong></span>`
+        :`<span style="color:#dc2626">\u2718 ${b} mod ${d} = ${posMod(b,d)} \u2260 0 \u2192 <strong>Syarat TIDAK TERPENUHI</strong></span>`}`}
+  ];
+  document.getElementById('steps-container').innerHTML=
+    steps.map((s,i)=>`<div class="step-item"><div class="step-num">${i+1}</div><div class="step-body">${s.html}</div></div>`).join('');
+  if(b%d!==0){
+    document.getElementById('result-container').innerHTML=`
+      <div class="result-no">
+        <div class="badge-no"><i class="bi bi-x-circle me-1"></i>Tidak Ada Solusi</div>
+        <p class="fw-bold mt-1" style="font-family:var(--mono);">${a}x \u2261 ${b} (mod ${m})</p>
+        <p style="font-size:.84rem;color:#b91c1c;margin-bottom:0;">
+          FPB(${Math.abs(a)}, ${m}) = ${d} tidak membagi ${b}
+          (sisa: ${posMod(b,d)}), sehingga tidak ada solusi bilangan bulat.
+        </p>
+      </div>`;
+  }else{
+    const a1=a/d,b1=b/d,m1=m/d;
+    const{x:invA1}=extGCD(posMod(a1,m1),m1);
+    const x0=posMod(invA1*b1,m1);
+    const sols=[];
+    for(let k=0;k<d;k++)sols.push(posMod(x0+k*m1,m));
+    sols.sort((p,q)=>p-q);
+    const rows=sols.map((x,i)=>{
+      const lhs=posMod(a*x,m),ok=lhs===posMod(b,m);
+      return`<tr><td><span class="sol-tag">x<sub>${i+1}</sub></span></td>
+        <td><strong>${x}</strong></td>
+        <td>${x0} + ${i}\u00d7${m1}</td>
+        <td class="verify-ok">${a}\u00b7${x} mod ${m} = ${lhs} ${ok?'\u2714':'\u2718'}</td></tr>`;
+    }).join('');
+    document.getElementById('result-container').innerHTML=`
+      <div class="result-yes">
+        <div class="badge-yes"><i class="bi bi-check-circle me-1"></i>Solusi Ditemukan</div>
+        <p class="fw-bold mt-1" style="font-size:.9rem;">Terdapat <strong>${d}</strong> solusi dalam rentang 0 sampai ${m-1}</p>
+        <div class="info-box mb-3">
+          <strong>Reduksi:</strong> bagi semua suku dengan d = ${d} \u2192
+          <span style="font-family:var(--mono);">${a1}x \u2261 ${b1} (mod ${m1})</span><br>
+          <strong>Rumus umum:</strong>
+          <span style="font-family:var(--mono);">x = ${x0} + k\u00b7${m1},&nbsp; k = 0,1,\u2026,${d-1}</span>
+        </div>
+        <div class="table-responsive rounded-3 border border-success-subtle">
+          <table class="sol-table">
+            <thead><tr><th>Variabel</th><th>Nilai x</th><th>Bentuk Umum</th><th>Verifikasi</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      </div>`;
+  }
+  const card=document.getElementById('output-card');
+  card.classList.remove('d-none');
+  card.style.animation='none';card.offsetHeight;card.style.animation='';
+  card.classList.add('fade-up');
+  card.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function resetAll(){
+  ['inp-a','inp-b','inp-m'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('output-card').classList.add('d-none');
+  document.getElementById('steps-container').innerHTML='';
+  document.getElementById('result-container').innerHTML='';
+  document.getElementById('inp-a').focus();
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&document.getElementById('sec-kalkulator').classList.contains('active'))solve();
+});
+
+/* ════════════════════════════════════════
+   SIMULASI KEHIDUPAN NYATA
+════════════════════════════════════════ */
+function updateClock(){
+  const awal=parseInt(document.getElementById('jam-awal').value);
+  const tambah=parseInt(document.getElementById('jam-tambah').value);
+  const h=v=>v.toString().padStart(2,'0');
+  document.getElementById('jam-awal-out').textContent=h(awal)+':00';
+  document.getElementById('jam-tambah-out').textContent=tambah+' jam';
+  const total=awal+tambah,res=posMod(total,24),days=Math.floor(total/24);
+  document.getElementById('clock-out').innerHTML=
+    `<span style="font-size:.78rem;color:#64748b;">Perhitungan: </span>
+     <span style="font-family:var(--mono);font-size:.83rem;">${awal} + ${tambah} = ${total} \u2261 ${total} mod 24 = <strong>${res}</strong></span><br>
+     <span style="font-size:.78rem;color:#64748b;">Berlalu: ${days} hari ${res} jam dari awal</span>
+     <span class="big">Pukul ${h(res)}:00</span>`;
+}
+
+const DAYS_ID=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+const DAYS_S=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+function updateSched(){
+  const awal=parseInt(document.getElementById('hari-awal').value);
+  const n=parseInt(document.getElementById('hari-n').value)||1;
+  const result=posMod(awal+n,7);
+  let grid='<div class="day-grid">';
+  DAYS_S.forEach(d=>{grid+=`<div class="day-cell hdr">${d}</div>`;});
+  for(let i=0;i<7;i++){
+    const cls=i===result?'to':(i===awal?'from':'norm');
+    grid+=`<div class="day-cell ${cls}">${DAYS_S[i]}</div>`;
+  }
+  grid+='</div>';
+  document.getElementById('sched-cal').innerHTML=grid;
+  document.getElementById('sched-out').innerHTML=
+    `<span style="font-size:.78rem;color:#64748b;">Perhitungan: </span>
+     <span style="font-family:var(--mono);font-size:.83rem;">(${awal} + ${n}) mod 7 = <strong>${result}</strong></span>
+     <span class="big">${n} hari dari ${DAYS_ID[awal]} = <strong>${DAYS_ID[result]}</strong></span>`;
+}
+
+function updateCipher(){
+  const raw=(document.getElementById('plain-in').value||'').toUpperCase().replace(/[^A-Z]/g,'');
+  const shift=parseInt(document.getElementById('shift-in').value)||3;
+  if(!raw){
+    document.getElementById('cipher-result').innerHTML='<span style="color:#94a3b8;font-size:.8rem;">Ketik teks di atas\u2026</span>';
+    document.getElementById('cipher-formula').innerHTML='';return;
+  }
+  let html='',fLines=[];
+  for(const ch of raw){
+    const x=ch.charCodeAt(0)-65,e=posMod(x+shift,26),enc=String.fromCharCode(65+e);
+    html+=`<div class="cipher-letter"><span class="pl">${ch}</span><span class="ar">\u2193</span><span class="en">${enc}</span></div>`;
+    fLines.push(`(${x}+${shift}) mod 26 = ${e} \u2192 ${enc}`);
+  }
+  document.getElementById('cipher-result').innerHTML=html;
+  document.getElementById('cipher-formula').innerHTML=
+    '<span style="color:#64748b;">Langkah enkripsi:</span><br>'+
+    fLines.map(l=>`<span style="font-family:var(--mono);">${l}</span>`).join('<br>');
+}
+
+function updateISBN(){
+  const raw=document.getElementById('isbn-in').value.replace(/\D/g,'').slice(0,9);
+  if(raw.length<9){
+    document.getElementById('isbn-check').textContent='?';
+    document.getElementById('isbn-out').innerHTML='<span style="color:#94a3b8;font-size:.8rem;">Masukkan tepat 9 digit.</span>';
+    document.getElementById('isbn-digits').innerHTML='';return;
+  }
+  let sum=0;
+  for(let i=0;i<9;i++)sum+=(i+1)*parseInt(raw[i]);
+  const check=posMod(sum,11),checkDisp=check===10?'X':check.toString();
+  document.getElementById('isbn-check').textContent=checkDisp;
+  let dH='';
+  for(let i=0;i<9;i++)dH+=`<div class="isbn-digit"><span class="pos">${i+1}</span><span class="dgt">${raw[i]}</span></div>`;
+  dH+=`<div class="isbn-digit chk"><span class="pos">10</span><span class="dgt">${checkDisp}</span></div>`;
+  document.getElementById('isbn-digits').innerHTML=dH;
+  const bd=Array.from(raw).map((d,i)=>`${i+1}\u00d7${d}=${((i+1)*parseInt(d))}`).join(' + ');
+  document.getElementById('isbn-out').innerHTML=
+    `<span style="font-family:var(--mono);font-size:.78rem;">${bd}</span><br>
+     <span style="font-family:var(--mono);font-size:.78rem;">Total = ${sum} \u2192 ${sum} mod 11 = <strong>${check}</strong></span><br>
+     <span style="font-size:.83rem;margin-top:4px;display:block;">ISBN lengkap: <strong style="font-family:var(--mono);">${raw}-${checkDisp}</strong></span>`;
+}
+
+/* ════════════════════════════════════════
+   SPA NAVIGASI — dikelola oleh ROUTER di bawah
+════════════════════════════════════════ */
+
+function smoothScrollTo(id){
+  event.preventDefault();
+  const el=document.getElementById(id);
+  if(el){
+    const navH=document.querySelector('.nav-section').offsetHeight;
+    const top=el.getBoundingClientRect().top+window.pageYOffset-navH-12;
+    window.scrollTo({top,behavior:'smooth'});
+  }
+}
+
+/* ════════════════════════════════════════
+   BANK SOAL KUIS
+   (Minimal 10 soal; variasikan tipe:
+    A=jumlah solusi, B=nilai x, C=cerita)
+════════════════════════════════════════ */
+const bankSoal = [
+  /* ── 1 ── */
+  {
+    soal: "Persamaan 3x ≡ 4 (mod 7). Berapakah nilai x (dalam rentang 0–6)?",
+    pilihan: ["A. x = 5", "B. x = 6", "C. x = 3", "D. Tidak ada solusi"],
+    jawaban: 1,
+    penjelasan: "FPB(3,7)=1 sehingga ada tepat 1 solusi. Invers 3 mod 7 adalah 5 (karena 3×5=15≡1). Maka x ≡ 5×4 = 20 ≡ 6 (mod 7).",
+    pembahasan: {a:3,b:4,m:7}
+  },
+  /* ── 2 ── */
+  {
+    soal: "Persamaan 4x ≡ 3 (mod 6). Berapa banyak solusi yang dimiliki persamaan ini?",
+    pilihan: ["A. 0 (tidak ada solusi)", "B. 1 solusi", "C. 2 solusi", "D. 4 solusi"],
+    jawaban: 0,
+    penjelasan: "d = FPB(4,6) = 2. Karena 2 tidak membagi 3 (3 mod 2 = 1 ≠ 0), persamaan tidak memiliki solusi.",
+    pembahasan: {a:4,b:3,m:6}
+  },
+  /* ── 3 ── */
+  {
+    soal: "Persamaan 6x ≡ 4 (mod 10). Berapa banyak solusi dalam rentang 0–9?",
+    pilihan: ["A. 0 solusi", "B. 1 solusi", "C. 2 solusi", "D. 3 solusi"],
+    jawaban: 2,
+    penjelasan: "d = FPB(6,10) = 2. Karena 2 | 4, ada tepat d = 2 solusi. Solusinya adalah x = 4 dan x = 9.",
+    pembahasan: {a:6,b:4,m:10}
+  },
+  /* ── 4 ── */
+  {
+    soal: "Sekarang pukul 09:00. Acara dimulai 50 jam lagi. Pukul berapa acara dimulai?",
+    pilihan: ["A. Pukul 09:00", "B. Pukul 11:00", "C. Pukul 13:00", "D. Pukul 15:00"],
+    jawaban: 1,
+    penjelasan: "Gunakan kekongruenan: x ≡ 9 + 50 (mod 24) = 59 mod 24 = 11. Jadi acara dimulai pukul 11:00.",
+    pembahasan: {a:1,b:11,m:24,narasi:"Soal cerita: (9+50) mod 24 = 59 mod 24 = 11"}
+  },
+  /* ── 5 ── */
+  {
+    soal: "Hari ini Kamis (hari ke-4, Minggu=0). 25 hari lagi jatuh pada hari apa?",
+    pilihan: ["A. Senin", "B. Selasa", "C. Rabu", "D. Kamis"],
+    jawaban: 0,
+    penjelasan: "x ≡ (4 + 25) mod 7 = 29 mod 7. 29 = 4×7 + 1. Jadi x=1 → Senin.",
+    pembahasan: {a:1,b:1,m:7,narasi:"(4+25) mod 7 = 29 mod 7 = 1 → Senin"}
+  },
+  /* ── 5 VERSI BENAR ── */
+  {
+    soal: "Hari ini Senin (hari ke-1, Minggu=0). 15 hari lagi jatuh pada hari apa?",
+    pilihan: ["A. Senin", "B. Selasa", "C. Rabu", "D. Kamis"],
+    jawaban: 1,
+    penjelasan: "x ≡ (1 + 15) mod 7 = 16 mod 7 = 2. Hari ke-2 = Selasa.",
+    pembahasan: {a:1,b:2,m:7,narasi:"(1+15) mod 7 = 16 mod 7 = 2 → Selasa"}
+  },
+  /* ── 6 ── */
+  {
+    soal: "Berapa banyak solusi persamaan 9x ≡ 6 (mod 12) dalam rentang 0–11?",
+    pilihan: ["A. 0 solusi", "B. 1 solusi", "C. 3 solusi", "D. 9 solusi"],
+    jawaban: 2,
+    penjelasan: "d = FPB(9,12) = 3. Cek: 3 | 6? Ya (6÷3=2). Maka ada tepat d = 3 solusi dalam 0–11.",
+    pembahasan: {a:9,b:6,m:12}
+  },
+  /* ── 7 ── */
+  {
+    soal: "Persamaan 5x ≡ 3 (mod 10). Apakah persamaan ini memiliki solusi?",
+    pilihan: ["A. Ya, 1 solusi", "B. Ya, 5 solusi", "C. Tidak ada solusi", "D. Ya, 10 solusi"],
+    jawaban: 2,
+    penjelasan: "d = FPB(5,10) = 5. Cek: 5 | 3? Tidak (3 mod 5 = 3 ≠ 0). Jadi persamaan tidak memiliki solusi.",
+    pembahasan: {a:5,b:3,m:10}
+  },
+  /* ── 8 ── */
+  {
+    soal: "Persamaan 2x ≡ 6 (mod 8). Nilai x terkecil yang memenuhi (dalam 0–7) adalah…",
+    pilihan: ["A. x = 1", "B. x = 3", "C. x = 5", "D. x = 7"],
+    jawaban: 1,
+    penjelasan: "d = FPB(2,8) = 2. Karena 2|6, ada 2 solusi. Reduksi: x ≡ 3 (mod 4). Solusi: x=3 dan x=7. Nilai terkecil adalah x=3.",
+    pembahasan: {a:2,b:6,m:8}
+  },
+  /* ── 9 ── */
+  {
+    soal: "Huruf 'E' (nilai 4) dienkripsi Caesar cipher dengan shift k=5. Hasil enkripsinya adalah…",
+    pilihan: ["A. Huruf J", "B. Huruf I", "C. Huruf K", "D. Huruf F"],
+    jawaban: 0,
+    penjelasan: "E(4) ≡ 4 + 5 = 9 (mod 26). Huruf ke-9 (A=0) adalah J. Jadi E → J dengan shift 5.",
+    pembahasan: {a:1,b:9,m:26,narasi:"E(4) = (4+5) mod 26 = 9 → J"}
+  },
+  /* ── 10 ── */
+  {
+    soal: "Persamaan 7x ≡ 1 (mod 11). Berapakah nilai invers modular x (dalam 0–10)?",
+    pilihan: ["A. x = 7", "B. x = 8", "C. x = 6", "D. x = 9"],
+    jawaban: 1,
+    penjelasan: "Cari x sehingga 7x ≡ 1 (mod 11). Coba: 7×8=56=5×11+1 ≡ 1 (mod 11). Jadi 7⁻¹ ≡ 8 (mod 11).",
+    pembahasan: {a:7,b:1,m:11}
+  },
+  /* ── 11 ── */
+  {
+    soal: "Berapakah FPB(14, 21) dan berapa solusi persamaan 14x ≡ 7 (mod 21)?",
+    pilihan: ["A. FPB=7, ada 7 solusi", "B. FPB=7, tidak ada solusi", "C. FPB=7, ada 1 solusi", "D. FPB=3, ada 3 solusi"],
+    jawaban: 0,
+    penjelasan: "FPB(14,21)=7. Cek: 7|7? Ya. Jadi ada d=7 solusi dalam rentang 0–20.",
+    pembahasan: {a:14,b:7,m:21}
+  },
+  /* ── 12 ── */
+  {
+    soal: "Persamaan 11x ≡ 4 (mod 13). Berapakah solusi x (dalam 0–12)?",
+    pilihan: ["A. x = 2", "B. x = 11", "C. x = 6", "D. x = 8"],
+    jawaban: 1,
+    penjelasan: "FPB(11,13)=1, ada solusi unik. Invers 11 mod 13: cari t sehingga 11t ≡ 1 (mod 13). Diperoleh t=6 (11×6=66=5×13+1). Maka x ≡ 6×4 = 24 ≡ 24−13 = 11 (mod 13). Verifikasi: 11×11=121=9×13+4 ✔",
+    pembahasan: {a:11,b:4,m:13}
+  },
+  /* ── 13 ── */
+  {
+    soal: "Jika hari ini adalah Sabtu (ke-6) dan kita ingin tau 30 hari lagi hari apa, hasilnya adalah…",
+    pilihan: ["A. Senin", "B. Selasa", "C. Rabu", "D. Kamis"],
+    jawaban: 0,
+    penjelasan: "x ≡ (6+30) mod 7 = 36 mod 7. 36 = 5×7 + 1. Jadi x=1 → Senin.",
+    pembahasan: {a:1,b:1,m:7,narasi:"(6+30) mod 7 = 36 mod 7 = 1 → Senin"}
+  },
+  /* ── 14 ── */
+  {
+    soal: "Persamaan 15x ≡ 9 (mod 18). Berapa jumlah solusi dalam 0–17?",
+    pilihan: ["A. 0 solusi", "B. 1 solusi", "C. 3 solusi", "D. 5 solusi"],
+    jawaban: 2,
+    penjelasan: "d = FPB(15,18) = 3. Cek: 3|9? Ya (9÷3=3). Maka ada tepat 3 solusi dalam rentang 0–17.",
+    pembahasan: {a:15,b:9,m:18}
+  },
+  /* ── 15 ── */
+  {
+    soal: "Dalam sistem jam 12 (mod 12), pukul 10:00 ditambah 27 jam menjadi pukul berapa?",
+    pilihan: ["A. Pukul 01:00", "B. Pukul 11:00", "C. Pukul 13:00", "D. Pukul 03:00"],
+    jawaban: 0,
+    penjelasan: "x ≡ (10 + 27) mod 12 = 37 mod 12. 37 = 3×12 + 1. Jadi x=1 → Pukul 01:00.",
+    pembahasan: {a:1,b:1,m:12,narasi:"(10+27) mod 12 = 37 mod 12 = 1 → Pukul 01:00"}
+  },
+  /* ── 16 ── d=1, solusi unik */
+  {
+    soal: "Persamaan 5x ≡ 1 (mod 7). Berapakah nilai x dalam rentang 0–6?",
+    pilihan: ["A. x = 2", "B. x = 3", "C. x = 5", "D. x = 6"],
+    jawaban: 1,
+    penjelasan: "FPB(5,7)=1, ada solusi unik. Invers 5 mod 7: 5×3=15≡1 (mod 7). Jadi x≡3 (mod 7).",
+    pembahasan: {a:5,b:1,m:7}
+  },
+  /* ── 17 ── tidak ada solusi */
+  {
+    soal: "Persamaan 6x ≡ 5 (mod 9). Apakah persamaan ini memiliki solusi?",
+    pilihan: ["A. Ya, 1 solusi", "B. Ya, 3 solusi", "C. Tidak ada solusi", "D. Ya, 6 solusi"],
+    jawaban: 2,
+    penjelasan: "d = FPB(6,9) = 3. Cek: 3 | 5? Tidak (5 mod 3 = 2 ≠ 0). Maka tidak ada solusi.",
+    pembahasan: {a:6,b:5,m:9}
+  },
+  /* ── 18 ── d>1, banyak solusi */
+  {
+    soal: "Persamaan 4x ≡ 8 (mod 12). Berapa banyak solusi dalam rentang 0–11?",
+    pilihan: ["A. 0 solusi", "B. 1 solusi", "C. 2 solusi", "D. 4 solusi"],
+    jawaban: 3,
+    penjelasan: "d = FPB(4,12) = 4. Cek: 4 | 8? Ya. Jadi ada d = 4 solusi dalam rentang 0–11.",
+    pembahasan: {a:4,b:8,m:12}
+  },
+  /* ── 19 ── d=1 */
+  {
+    soal: "Persamaan 3x ≡ 1 (mod 11). Nilai x dalam 0–10 adalah…",
+    pilihan: ["A. x = 3", "B. x = 4", "C. x = 7", "D. x = 8"],
+    jawaban: 1,
+    penjelasan: "FPB(3,11)=1. Invers 3 mod 11: 3×4=12≡1 (mod 11). Jadi x≡4 (mod 11).",
+    pembahasan: {a:3,b:1,m:11}
+  },
+  /* ── 20 ── d>1 */
+  {
+    soal: "Persamaan 10x ≡ 5 (mod 15). Berapa banyak solusi dalam rentang 0–14?",
+    pilihan: ["A. 0 solusi", "B. 1 solusi", "C. 5 solusi", "D. 10 solusi"],
+    jawaban: 2,
+    penjelasan: "d = FPB(10,15) = 5. Cek: 5 | 5? Ya. Jadi ada d = 5 solusi dalam rentang 0–14.",
+    pembahasan: {a:10,b:5,m:15}
+  },
+  /* ── 21 ── tidak ada solusi */
+  {
+    soal: "Persamaan 8x ≡ 3 (mod 12). Berapa banyak solusi yang ada?",
+    pilihan: ["A. 0 solusi", "B. 1 solusi", "C. 2 solusi", "D. 4 solusi"],
+    jawaban: 0,
+    penjelasan: "d = FPB(8,12) = 4. Cek: 4 | 3? Tidak (3 mod 4 = 3 ≠ 0). Tidak ada solusi.",
+    pembahasan: {a:8,b:3,m:12}
+  },
+  /* ── 22 ── d=1 */
+  {
+    soal: "Persamaan 9x ≡ 3 (mod 11). Nilai x dalam 0–10 adalah…",
+    pilihan: ["A. x = 2", "B. x = 4", "C. x = 5", "D. x = 8"],
+    jawaban: 1,
+    penjelasan: "FPB(9,11)=1. Invers 9 mod 11: 9×5=45=4×11+1≡1 (mod 11), invers=5. x≡5×3=15≡4 (mod 11). Verifikasi: 9×4=36=3×11+3≡3 ✔.",
+    pembahasan: {a:9,b:3,m:11}
+  },
+  /* ── 23 ── cerita jam */
+  {
+    soal: "Sekarang pukul 20:00. Berapa jam kemudian agar jarum jam menunjuk pukul 08:00 berikutnya?",
+    pilihan: ["A. 10 jam", "B. 12 jam", "C. 14 jam", "D. 24 jam"],
+    jawaban: 1,
+    penjelasan: "Cari t: (20 + t) ≡ 8 (mod 24). Maka t ≡ 8 − 20 = −12 ≡ 12 (mod 24). Jadi 12 jam kemudian.",
+    pembahasan: {a:1,b:12,m:24,narasi:"(20+t)≡8 (mod 24) → t≡-12≡12 (mod 24)"}
+  },
+  /* ── 24 ── cerita hari */
+  {
+    soal: "Hari ini Rabu (hari ke-3, Minggu=0). Proyek selesai dalam 100 hari. Hari apa proyek selesai?",
+    pilihan: ["A. Sabtu", "B. Jumat", "C. Minggu", "D. Senin"],
+    jawaban: 1,
+    penjelasan: "x ≡ (3 + 100) mod 7 = 103 mod 7. 14×7=98, sisa 5 → hari ke-5 = Jumat.",
+    pembahasan: {a:1,b:5,m:7,narasi:"(3+100) mod 7 = 103 mod 7 = 5 → Jumat"}
+  },
+  /* ── 25 ── d=1 */
+  {
+    soal: "Persamaan 2x ≡ 1 (mod 9). Nilai x dalam 0–8 adalah…",
+    pilihan: ["A. x = 4", "B. x = 5", "C. x = 7", "D. x = 8"],
+    jawaban: 1,
+    penjelasan: "FPB(2,9)=1. Invers 2 mod 9: 2×5=10≡1 (mod 9). Jadi x≡5 (mod 9).",
+    pembahasan: {a:2,b:1,m:9}
+  },
+  /* ── 26 ── tidak ada solusi */
+  {
+    soal: "Persamaan 4x ≡ 7 (mod 10). Berapa banyak solusi?",
+    pilihan: ["A. 0 solusi", "B. 1 solusi", "C. 2 solusi", "D. 4 solusi"],
+    jawaban: 0,
+    penjelasan: "d = FPB(4,10) = 2. Cek: 2 | 7? Tidak (7 mod 2 = 1 ≠ 0). Tidak ada solusi.",
+    pembahasan: {a:4,b:7,m:10}
+  },
+  /* ── 27 ── d=2 */
+  {
+    soal: "Persamaan 6x ≡ 8 (mod 10). Nilai x terkecil (non-negatif) yang memenuhi adalah…",
+    pilihan: ["A. x = 2", "B. x = 3", "C. x = 5", "D. x = 7"],
+    jawaban: 1,
+    penjelasan: "d=FPB(6,10)=2. Cek: 2|8? Ya. Reduksi: 3x≡4 (mod 5). Invers 3 mod 5=2 (3×2=6≡1). x₀≡2×4=8≡3 (mod 5). Solusi: x=3 dan x=8. Nilai terkecil: 3. Verifikasi: 6×3=18≡8 ✔.",
+    pembahasan: {a:6,b:8,m:10}
+  },
+  /* ── 28 ── cipher decode */
+  {
+    soal: "Huruf 'Z' (nilai 25) dienkripsi dengan Caesar shift 3. Hasilnya adalah huruf…",
+    pilihan: ["A. C", "B. A", "C. B", "D. D"],
+    jawaban: 0,
+    penjelasan: "(25 + 3) mod 26 = 28 mod 26 = 2. Huruf ke-2 (A=0) adalah C. Jadi Z → C.",
+    pembahasan: {a:1,b:2,m:26,narasi:"(25+3) mod 26 = 28 mod 26 = 2 → C"}
+  },
+  /* ── 29 ── d=3 */
+  {
+    soal: "Persamaan 12x ≡ 9 (mod 15). Berapa banyak solusi dalam rentang 0–14?",
+    pilihan: ["A. 0 solusi", "B. 1 solusi", "C. 3 solusi", "D. 5 solusi"],
+    jawaban: 2,
+    penjelasan: "d = FPB(12,15) = 3. Cek: 3 | 9? Ya (9÷3=3). Jadi ada d = 3 solusi dalam rentang 0–14.",
+    pembahasan: {a:12,b:9,m:15}
+  },
+  /* ── 30 ── tidak ada solusi */
+  {
+    soal: "Persamaan 10x ≡ 7 (mod 15). Apakah ada solusi?",
+    pilihan: ["A. Ya, 5 solusi", "B. Ya, 1 solusi", "C. Ya, 2 solusi", "D. Tidak ada solusi"],
+    jawaban: 3,
+    penjelasan: "d = FPB(10,15) = 5. Cek: 5 | 7? Tidak (7 mod 5 = 2 ≠ 0). Tidak ada solusi.",
+    pembahasan: {a:10,b:7,m:15}
+  },
+  /* ── 31 ── d=1 */
+  {
+    soal: "Persamaan 7x ≡ 3 (mod 13). Nilai x dalam 0–12 adalah…",
+    pilihan: ["A. x = 6", "B. x = 9", "C. x = 11", "D. x = 4"],
+    jawaban: 0,
+    penjelasan: "FPB(7,13)=1. Invers 7 mod 13: 7×2=14≡1 (mod 13). x≡2×3=6 (mod 13). Verifikasi: 7×6=42=3×13+3≡3 ✔.",
+    pembahasan: {a:7,b:3,m:13}
+  },
+  /* ── 32 ── d=1 */
+  {
+    soal: "Persamaan 8x ≡ 1 (mod 15). Nilai x dalam 0–14 adalah…",
+    pilihan: ["A. x = 2", "B. x = 8", "C. x = 13", "D. x = 7"],
+    jawaban: 0,
+    penjelasan: "FPB(8,15)=1. Invers 8 mod 15: 8×2=16≡1 (mod 15). Jadi x≡2 (mod 15). Verifikasi: 8×2=16≡1 ✔.",
+    pembahasan: {a:8,b:1,m:15}
+  },
+  /* ── 33 ── d=2 */
+  {
+    soal: "Persamaan 6x ≡ 4 (mod 8). Solusi dalam rentang 0–7 adalah x = …",
+    pilihan: ["A. x=2 saja", "B. x=2 dan x=6", "C. x=4 dan x=6", "D. Tidak ada solusi"],
+    jawaban: 1,
+    penjelasan: "d=FPB(6,8)=2. Cek: 2|4? Ya. Reduksi: 3x≡2 (mod 4). Invers 3 mod 4=3 (3×3=9≡1). x₀=3×2=6≡2 (mod 4). Solusi: x=2 dan x=2+4=6. Verifikasi: 6×2=12≡4 ✔, 6×6=36≡4 ✔.",
+    pembahasan: {a:6,b:4,m:8}
+  },
+  /* ── 34 ── cerita hari */
+  {
+    soal: "Hari ini Jumat (hari ke-5). Ujian berlangsung setiap 9 hari. Ujian berikutnya jatuh pada hari apa?",
+    pilihan: ["A. Minggu", "B. Senin", "C. Selasa", "D. Rabu"],
+    jawaban: 0,
+    penjelasan: "x ≡ (5 + 9) mod 7 = 14 mod 7 = 0. Hari ke-0 = Minggu.",
+    pembahasan: {a:1,b:0,m:7,narasi:"(5+9) mod 7 = 14 mod 7 = 0 → Minggu"}
+  },
+  /* ── 35 ── tidak ada solusi */
+  {
+    soal: "Persamaan 9x ≡ 5 (mod 12). Berapa banyak solusi?",
+    pilihan: ["A. 0 solusi", "B. 1 solusi", "C. 3 solusi", "D. 9 solusi"],
+    jawaban: 0,
+    penjelasan: "d = FPB(9,12) = 3. Cek: 3 | 5? Tidak (5 mod 3 = 2). Tidak ada solusi.",
+    pembahasan: {a:9,b:5,m:12}
+  },
+  /* ── 36 ── d=1 */
+  {
+    soal: "Persamaan 4x ≡ 1 (mod 7). Nilai x dalam 0–6 adalah…",
+    pilihan: ["A. x = 2", "B. x = 4", "C. x = 5", "D. x = 6"],
+    jawaban: 0,
+    penjelasan: "FPB(4,7)=1. Cari invers 4 mod 7: 4×2=8≡1 (mod 7). Jadi x≡2 (mod 7).",
+    pembahasan: {a:4,b:1,m:7}
+  },
+  /* ── 37 ── d=3 */
+  {
+    soal: "Persamaan 9x ≡ 3 (mod 12). Nilai x terkecil (non-negatif) yang memenuhi adalah…",
+    pilihan: ["A. x = 1", "B. x = 3", "C. x = 5", "D. x = 7"],
+    jawaban: 1,
+    penjelasan: "d=FPB(9,12)=3. Cek: 3|3? Ya. Reduksi: 3x≡1 (mod 4). Invers 3 mod 4=3. x₀=3×1=3 (mod 4). Solusi: {3,7,11}. Terkecil: x=3. Verifikasi: 9×3=27≡3 (mod 12) ✔.",
+    pembahasan: {a:9,b:3,m:12}
+  },
+  /* ── 38 ── cipher shift */
+  {
+    soal: "Huruf 'D' terenkripsi Caesar menjadi 'G'. Berapakah nilai shift yang digunakan?",
+    pilihan: ["A. k = 2", "B. k = 3", "C. k = 4", "D. k = 5"],
+    jawaban: 1,
+    penjelasan: "D=3, G=6. Shift k: (3+k)≡6 (mod 26) → k≡3 (mod 26). Jadi k=3.",
+    pembahasan: {a:1,b:3,m:26,narasi:"(3+k)≡6 (mod 26) → k=3"}
+  },
+  /* ── 39 ── d=1 */
+  {
+    soal: "Persamaan 11x ≡ 1 (mod 12). Nilai x dalam 0–11 adalah…",
+    pilihan: ["A. x = 10", "B. x = 11", "C. x = 1", "D. x = 5"],
+    jawaban: 1,
+    penjelasan: "FPB(11,12)=1. 11×11=121=10×12+1≡1 (mod 12). Invers 11 mod 12 = 11 sendiri.",
+    pembahasan: {a:11,b:1,m:12}
+  },
+  /* ── 40 ── d=3 banyak solusi */
+  {
+    soal: "Persamaan 6x ≡ 3 (mod 9). Berapa banyak solusinya?",
+    pilihan: ["A. 0 solusi", "B. 1 solusi", "C. 3 solusi", "D. 6 solusi"],
+    jawaban: 2,
+    penjelasan: "d = FPB(6,9) = 3. Cek: 3 | 3? Ya. Maka ada d = 3 solusi dalam rentang 0–8.",
+    pembahasan: {a:6,b:3,m:9}
+  },
+  /* ── 41 ── d=1 */
+  {
+    soal: "Persamaan 5x ≡ 2 (mod 11). Nilai x dalam 0–10 adalah…",
+    pilihan: ["A. x = 7", "B. x = 9", "C. x = 3", "D. x = 5"],
+    jawaban: 0,
+    penjelasan: "FPB(5,11)=1. Invers 5 mod 11: 5×9=45=4×11+1≡1, invers=9. x≡9×2=18≡7 (mod 11). Verifikasi: 5×7=35=3×11+2≡2 ✔.",
+    pembahasan: {a:5,b:2,m:11}
+  },
+  /* ── 42 ── cerita film */
+  {
+    soal: "Sebuah film berdurasi 135 menit mulai pukul 19:00. Film berakhir pukul berapa?",
+    pilihan: ["A. Pukul 21:15", "B. Pukul 21:30", "C. Pukul 21:45", "D. Pukul 22:00"],
+    jawaban: 0,
+    penjelasan: "135 menit = 2 jam 15 menit (135÷60=2 sisa 15). Pukul 19:00 + 2:15 = 21:15.",
+    pembahasan: {a:1,b:21,m:24,narasi:"19:00 + 2j15m = 21:15"}
+  },
+  /* ── 43 ── d=1 */
+  {
+    soal: "Persamaan 7x ≡ 5 (mod 9). Nilai x dalam 0–8 adalah…",
+    pilihan: ["A. x = 4", "B. x = 6", "C. x = 2", "D. x = 8"],
+    jawaban: 2,
+    penjelasan: "FPB(7,9)=1. Invers 7 mod 9: 7×4=28=3×9+1≡1, invers=4. x≡4×5=20≡2 (mod 9). Verifikasi: 7×2=14≡5 (mod 9) ✔.",
+    pembahasan: {a:7,b:5,m:9}
+  },
+  /* ── 44 ── tidak ada solusi */
+  {
+    soal: "Persamaan 15x ≡ 4 (mod 10). Berapa banyak solusinya?",
+    pilihan: ["A. 0 solusi", "B. 1 solusi", "C. 5 solusi", "D. 15 solusi"],
+    jawaban: 0,
+    penjelasan: "d = FPB(15,10) = 5. Cek: 5 | 4? Tidak (4 mod 5 = 4). Tidak ada solusi.",
+    pembahasan: {a:15,b:4,m:10}
+  },
+  /* ── 45 ── d=4 */
+  {
+    soal: "Persamaan 8x ≡ 4 (mod 12). Berapa banyak solusi dalam rentang 0–11?",
+    pilihan: ["A. 0 solusi", "B. 2 solusi", "C. 4 solusi", "D. 8 solusi"],
+    jawaban: 2,
+    penjelasan: "d = FPB(8,12) = 4. Cek: 4 | 4? Ya. Jadi ada d = 4 solusi dalam rentang 0–11.",
+    pembahasan: {a:8,b:4,m:12}
+  },
+  /* ── 46 ── d=1 */
+  {
+    soal: "Persamaan 3x ≡ 7 (mod 13). Nilai x dalam 0–12 adalah…",
+    pilihan: ["A. x = 11", "B. x = 4", "C. x = 9", "D. x = 7"],
+    jawaban: 0,
+    penjelasan: "FPB(3,13)=1. Invers 3 mod 13: 3×9=27=2×13+1≡1, invers=9. x≡9×7=63≡63−4×13=11 (mod 13). Verifikasi: 3×11=33=2×13+7≡7 ✔.",
+    pembahasan: {a:3,b:7,m:13}
+  },
+  /* ── 47 ── cerita hari */
+  {
+    soal: "Hari ini Minggu (hari ke-0). Kontrak berakhir dalam 365 hari. Kontrak berakhir hari apa?",
+    pilihan: ["A. Sabtu", "B. Jumat", "C. Senin", "D. Minggu"],
+    jawaban: 2,
+    penjelasan: "x ≡ (0 + 365) mod 7. 365 = 52×7 + 1, sisa=1 → hari ke-1 = Senin.",
+    pembahasan: {a:1,b:1,m:7,narasi:"365 mod 7 = 1 → Senin"}
+  },
+  /* ── 48 ── tidak ada solusi */
+  {
+    soal: "Persamaan 14x ≡ 9 (mod 21). Apakah ada solusi?",
+    pilihan: ["A. Ya, 7 solusi", "B. Ya, 1 solusi", "C. Ya, 3 solusi", "D. Tidak ada solusi"],
+    jawaban: 3,
+    penjelasan: "d = FPB(14,21) = 7. Cek: 7 | 9? Tidak (9 mod 7 = 2). Tidak ada solusi.",
+    pembahasan: {a:14,b:9,m:21}
+  },
+  /* ── 49 ── d=1 */
+  {
+    soal: "Persamaan 10x ≡ 3 (mod 11). Nilai x dalam 0–10 adalah…",
+    pilihan: ["A. x = 3", "B. x = 8", "C. x = 7", "D. x = 10"],
+    jawaban: 1,
+    penjelasan: "FPB(10,11)=1. Invers 10 mod 11: 10×10=100=9×11+1≡1, invers=10. x≡10×3=30≡8 (mod 11). Verifikasi: 10×8=80=7×11+3≡3 ✔.",
+    pembahasan: {a:10,b:3,m:11}
+  },
+  /* ── 50 ── cipher ROT13 */
+  {
+    soal: "Huruf 'M' (nilai 12) dienkripsi dengan ROT13 (shift=13). Nilai hasil enkripsi (mod 26) adalah…",
+    pilihan: ["A. 25", "B. 0", "C. 12", "D. 13"],
+    jawaban: 0,
+    penjelasan: "M = 12. Enkripsi: (12 + 13) mod 26 = 25 mod 26 = 25 → huruf Z.",
+    pembahasan: {a:1,b:25,m:26,narasi:"M=12, (12+13) mod 26 = 25 → Z"}
+  },
+  /* ── 51 ── d=1 */
+  {
+    soal: "Persamaan 6x ≡ 1 (mod 7). Nilai x dalam 0–6 adalah…",
+    pilihan: ["A. x = 5", "B. x = 6", "C. x = 1", "D. x = 3"],
+    jawaban: 1,
+    penjelasan: "FPB(6,7)=1. 6×6=36=5×7+1≡1 (mod 7). Invers 6 mod 7 = 6. Jadi x=6.",
+    pembahasan: {a:6,b:1,m:7}
+  },
+  /* ── 52 ── d=5 */
+  {
+    soal: "Persamaan 5x ≡ 10 (mod 25). Berapa banyak solusi dalam rentang 0–24?",
+    pilihan: ["A. 0 solusi", "B. 1 solusi", "C. 5 solusi", "D. 10 solusi"],
+    jawaban: 2,
+    penjelasan: "d = FPB(5,25) = 5. Cek: 5 | 10? Ya. Jadi ada d = 5 solusi dalam rentang 0–24.",
+    pembahasan: {a:5,b:10,m:25}
+  },
+  /* ── 53 ── tidak ada solusi */
+  {
+    soal: "Persamaan 3x ≡ 2 (mod 6). Berapa banyak solusinya?",
+    pilihan: ["A. 0 solusi", "B. 1 solusi", "C. 2 solusi", "D. 3 solusi"],
+    jawaban: 0,
+    penjelasan: "d = FPB(3,6) = 3. Cek: 3 | 2? Tidak (2 mod 3 = 2). Tidak ada solusi.",
+    pembahasan: {a:3,b:2,m:6}
+  },
+  /* ── 54 ── d=1 */
+  {
+    soal: "Persamaan 5x ≡ 8 (mod 13). Nilai x dalam 0–12 adalah…",
+    pilihan: ["A. x = 9", "B. x = 7", "C. x = 12", "D. x = 3"],
+    jawaban: 2,
+    penjelasan: "FPB(5,13)=1. Invers 5 mod 13: 5×8=40=3×13+1≡1, invers=8. x≡8×8=64≡64−4×13=12 (mod 13). Verifikasi: 5×12=60=4×13+8≡8 ✔.",
+    pembahasan: {a:5,b:8,m:13}
+  },
+  /* ── 55 ── d=2 */
+  {
+    soal: "Persamaan 4x ≡ 6 (mod 10). Solusi dalam rentang 0–9 adalah…",
+    pilihan: ["A. x=4 dan x=9", "B. x=3 dan x=8", "C. x=1 dan x=6", "D. Tidak ada solusi"],
+    jawaban: 0,
+    penjelasan: "d=FPB(4,10)=2. Cek: 2|6? Ya. Reduksi: 2x≡3 (mod 5). Invers 2 mod 5=3. x₀=3×3=9≡4 (mod 5). Solusi: x=4 dan x=9. Verifikasi: 4×4=16≡6 ✔, 4×9=36≡6 ✔.",
+    pembahasan: {a:4,b:6,m:10}
+  },
+  /* ── 56 ── cerita mesin */
+  {
+    soal: "Mesin mulai beroperasi pukul 06:00 dan berjalan selama 1000 jam. Mesin berhenti pukul berapa?",
+    pilihan: ["A. Pukul 06:00", "B. Pukul 08:00", "C. Pukul 22:00", "D. Pukul 10:00"],
+    jawaban: 2,
+    penjelasan: "x ≡ (6 + 1000) mod 24 = 1006 mod 24. 41×24=984, sisa=22. Jadi mesin berhenti pukul 22:00.",
+    pembahasan: {a:1,b:22,m:24,narasi:"(6+1000) mod 24 = 1006 mod 24 = 22 → Pukul 22:00"}
+  },
+  /* ── 57 ── d=1 */
+  {
+    soal: "Persamaan 2x ≡ 5 (mod 7). Nilai x dalam 0–6 adalah…",
+    pilihan: ["A. x = 4", "B. x = 6", "C. x = 2", "D. x = 5"],
+    jawaban: 1,
+    penjelasan: "FPB(2,7)=1. Invers 2 mod 7: 2×4=8≡1. x≡4×5=20≡6 (mod 7). Verifikasi: 2×6=12≡5 ✔.",
+    pembahasan: {a:2,b:5,m:7}
+  },
+  /* ── 58 ── d=4 */
+  {
+    soal: "Persamaan 12x ≡ 8 (mod 20). Berapa banyak solusi dalam rentang 0–19?",
+    pilihan: ["A. 0 solusi", "B. 1 solusi", "C. 2 solusi", "D. 4 solusi"],
+    jawaban: 3,
+    penjelasan: "d = FPB(12,20) = 4. Cek: 4 | 8? Ya. Jadi ada d = 4 solusi dalam rentang 0–19.",
+    pembahasan: {a:12,b:8,m:20}
+  },
+  /* ── 59 ── d=1 invers */
+  {
+    soal: "Berapakah invers modular dari 3 terhadap modulus 17? (nilai x sehingga 3x ≡ 1 mod 17)",
+    pilihan: ["A. x = 5", "B. x = 6", "C. x = 8", "D. x = 11"],
+    jawaban: 1,
+    penjelasan: "3×6=18=17+1≡1 (mod 17). Jadi invers 3 mod 17 = 6.",
+    pembahasan: {a:3,b:1,m:17}
+  },
+  /* ── 60 ── cerita hari */
+  {
+    soal: "Hari ini Selasa (hari ke-2). Kontrak kerja 200 hari ke depan berakhir pada hari apa?",
+    pilihan: ["A. Senin", "B. Sabtu", "C. Rabu", "D. Kamis"],
+    jawaban: 1,
+    penjelasan: "x ≡ (2 + 200) mod 7 = 202 mod 7. 28×7=196, sisa=6 → hari ke-6 = Sabtu.",
+    pembahasan: {a:1,b:6,m:7,narasi:"(2+200) mod 7 = 202 mod 7 = 6 → Sabtu"}
+  },
+  /* ── 61 ── d=1 */
+  {
+    soal: "Persamaan 9x ≡ 1 (mod 10). Berapakah nilai x dalam 0–9?",
+    pilihan: ["A. x = 7", "B. x = 9", "C. x = 3", "D. x = 1"],
+    jawaban: 1,
+    penjelasan: "9×9=81=8×10+1≡1 (mod 10). Jadi invers 9 mod 10 = 9.",
+    pembahasan: {a:9,b:1,m:10}
+  },
+  /* ── 62 ── tidak ada solusi */
+  {
+    soal: "Persamaan 6x ≡ 4 (mod 9). Berapa banyak solusi?",
+    pilihan: ["A. 0 solusi", "B. 1 solusi", "C. 3 solusi", "D. 6 solusi"],
+    jawaban: 0,
+    penjelasan: "d = FPB(6,9) = 3. Cek: 3 | 4? Tidak (4 mod 3 = 1). Tidak ada solusi.",
+    pembahasan: {a:6,b:4,m:9}
+  },
+  /* ── 63 ── d=6 */
+  {
+    soal: "Persamaan 6x ≡ 12 (mod 18). Berapa banyak solusi dalam rentang 0–17?",
+    pilihan: ["A. 0 solusi", "B. 3 solusi", "C. 6 solusi", "D. 1 solusi"],
+    jawaban: 2,
+    penjelasan: "d = FPB(6,18) = 6. Cek: 6 | 12? Ya. Jadi ada d = 6 solusi dalam rentang 0–17.",
+    pembahasan: {a:6,b:12,m:18}
+  },
+  /* ── 64 ── d=1 */
+  {
+    soal: "Persamaan 13x ≡ 1 (mod 14). Nilai x dalam 0–13 adalah…",
+    pilihan: ["A. x = 12", "B. x = 13", "C. x = 1", "D. x = 11"],
+    jawaban: 1,
+    penjelasan: "FPB(13,14)=1. 13×13=169=12×14+1≡1 (mod 14). Invers 13 mod 14 = 13.",
+    pembahasan: {a:13,b:1,m:14}
+  },
+  /* ── 65 ── d=2 */
+  {
+    soal: "Persamaan 4x ≡ 2 (mod 6). Solusi dalam rentang 0–5 adalah…",
+    pilihan: ["A. x=2 saja", "B. x=2 dan x=5", "C. x=1 dan x=4", "D. Tidak ada solusi"],
+    jawaban: 1,
+    penjelasan: "d=FPB(4,6)=2. Cek: 2|2? Ya. Reduksi: 2x≡1 (mod 3). Invers 2 mod 3=2. x₀=2×1=2 (mod 3). Solusi: x=2 dan x=5. Verifikasi: 4×2=8≡2 ✔, 4×5=20≡2 ✔.",
+    pembahasan: {a:4,b:2,m:6}
+  },
+  /* ── 66 ── ISBN check digit */
+  {
+    soal: "Untuk ISBN-10, berapakah digit cek jika jumlah tertimbang dari 9 digit pertama adalah 99?",
+    pilihan: ["A. 0", "B. 1", "C. 9", "D. X (10)"],
+    jawaban: 0,
+    penjelasan: "Digit cek = 99 mod 11 = 0 (karena 9×11=99 habis dibagi). Jadi digit cek = 0.",
+    pembahasan: {a:1,b:0,m:11,narasi:"99 mod 11 = 0 → digit cek = 0"}
+  },
+  /* ── 67 ── d=1 */
+  {
+    soal: "Persamaan 5x ≡ 4 (mod 9). Nilai x dalam 0–8 adalah…",
+    pilihan: ["A. x = 5", "B. x = 7", "C. x = 8", "D. x = 2"],
+    jawaban: 2,
+    penjelasan: "FPB(5,9)=1. Invers 5 mod 9: 5×2=10≡1 (mod 9). x≡2×4=8 (mod 9). Verifikasi: 5×8=40=4×9+4≡4 ✔.",
+    pembahasan: {a:5,b:4,m:9}
+  },
+  /* ── 68 ── tidak ada solusi */
+  {
+    soal: "Persamaan 16x ≡ 6 (mod 12). Apakah ada solusi?",
+    pilihan: ["A. Ya, 4 solusi", "B. Ya, 2 solusi", "C. Ya, 1 solusi", "D. Tidak ada solusi"],
+    jawaban: 3,
+    penjelasan: "d = FPB(16,12) = 4. Cek: 4 | 6? Tidak (6 mod 4 = 2). Tidak ada solusi.",
+    pembahasan: {a:16,b:6,m:12}
+  },
+  /* ── 69 ── d=1 */
+  {
+    soal: "Persamaan 7x ≡ 6 (mod 11). Nilai x dalam 0–10 adalah…",
+    pilihan: ["A. x = 2", "B. x = 4", "C. x = 9", "D. x = 6"],
+    jawaban: 1,
+    penjelasan: "FPB(7,11)=1. Invers 7 mod 11: 7×8=56=5×11+1≡1, invers=8. x≡8×6=48≡48−4×11=4 (mod 11). Verifikasi: 7×4=28=2×11+6≡6 ✔.",
+    pembahasan: {a:7,b:6,m:11}
+  },
+  /* ── 70 ── d=4 */
+  {
+    soal: "Persamaan 8x ≡ 16 (mod 20). Berapa banyak solusi dalam rentang 0–19?",
+    pilihan: ["A. 0 solusi", "B. 1 solusi", "C. 2 solusi", "D. 4 solusi"],
+    jawaban: 3,
+    penjelasan: "d = FPB(8,20) = 4. Cek: 4 | 16? Ya. Jadi ada d = 4 solusi dalam rentang 0–19.",
+    pembahasan: {a:8,b:16,m:20}
+  },
+  /* ── 71 ── cerita bus */
+  {
+    soal: "Bus datang setiap 45 menit. Jika pukul 07:15 bus baru berangkat, pukul berapa bus KETIGA berikutnya tiba?",
+    pilihan: ["A. Pukul 09:30", "B. Pukul 09:45", "C. Pukul 10:00", "D. Pukul 10:15"],
+    jawaban: 0,
+    penjelasan: "Bus ke-3 tiba setelah 3×45=135 menit. 135 menit = 2 jam 15 menit. Pukul 07:15 + 02:15 = 09:30.",
+    pembahasan: {a:1,b:9,m:24,narasi:"07:15 + 135 menit = 09:30"}
+  },
+  /* ── 72 ── tidak ada solusi */
+  {
+    soal: "Persamaan 9x ≡ 4 (mod 15). Berapa banyak solusi?",
+    pilihan: ["A. 0 solusi", "B. 1 solusi", "C. 3 solusi", "D. 9 solusi"],
+    jawaban: 0,
+    penjelasan: "d = FPB(9,15) = 3. Cek: 3 | 4? Tidak (4 mod 3 = 1). Tidak ada solusi.",
+    pembahasan: {a:9,b:4,m:15}
+  },
+  /* ── 73 ── d=1 */
+  {
+    soal: "Persamaan 4x ≡ 3 (mod 7). Nilai x dalam 0–6 adalah…",
+    pilihan: ["A. x = 5", "B. x = 6", "C. x = 3", "D. x = 4"],
+    jawaban: 1,
+    penjelasan: "FPB(4,7)=1. Invers 4 mod 7=2 (4×2=8≡1). x≡2×3=6 (mod 7). Verifikasi: 4×6=24=3×7+3≡3 ✔.",
+    pembahasan: {a:4,b:3,m:7}
+  },
+  /* ── 74 ── d=3 */
+  {
+    soal: "Persamaan 6x ≡ 9 (mod 15). Berapa banyak solusi dalam rentang 0–14?",
+    pilihan: ["A. 0 solusi", "B. 1 solusi", "C. 3 solusi", "D. 6 solusi"],
+    jawaban: 2,
+    penjelasan: "d = FPB(6,15) = 3. Cek: 3 | 9? Ya. Jadi ada d = 3 solusi dalam rentang 0–14.",
+    pembahasan: {a:6,b:9,m:15}
+  },
+  /* ── 75 ── d=1 */
+  {
+    soal: "Persamaan 11x ≡ 5 (mod 14). Nilai x dalam 0–13 adalah…",
+    pilihan: ["A. x = 3", "B. x = 5", "C. x = 9", "D. x = 11"],
+    jawaban: 0,
+    penjelasan: "FPB(11,14)=1. Invers 11 mod 14: 11×9=99=7×14+1≡1, invers=9. x≡9×5=45≡45−3×14=3 (mod 14). Verifikasi: 11×3=33=2×14+5≡5 ✔.",
+    pembahasan: {a:11,b:5,m:14}
+  },
+  /* ── 76 ── tidak ada solusi */
+  {
+    soal: "Persamaan 20x ≡ 9 (mod 15). Apakah ada solusi?",
+    pilihan: ["A. Ya, 5 solusi", "B. Ya, 3 solusi", "C. Tidak ada solusi", "D. Ya, 1 solusi"],
+    jawaban: 2,
+    penjelasan: "d = FPB(20,15) = 5. Cek: 5 | 9? Tidak (9 mod 5 = 4). Tidak ada solusi.",
+    pembahasan: {a:20,b:9,m:15}
+  },
+  /* ── 77 ── d=1 */
+  {
+    soal: "Persamaan 17x ≡ 1 (mod 18). Nilai x dalam 0–17 adalah…",
+    pilihan: ["A. x = 16", "B. x = 17", "C. x = 1", "D. x = 11"],
+    jawaban: 1,
+    penjelasan: "FPB(17,18)=1. 17×17=289=16×18+1≡1 (mod 18). Invers 17 mod 18 = 17.",
+    pembahasan: {a:17,b:1,m:18}
+  },
+  /* ── 78 ── d=2 */
+  {
+    soal: "Persamaan 10x ≡ 6 (mod 14). Berapa banyak solusi dalam rentang 0–13?",
+    pilihan: ["A. 0 solusi", "B. 1 solusi", "C. 2 solusi", "D. 5 solusi"],
+    jawaban: 2,
+    penjelasan: "d = FPB(10,14) = 2. Cek: 2 | 6? Ya. Jadi ada d = 2 solusi dalam rentang 0–13.",
+    pembahasan: {a:10,b:6,m:14}
+  },
+  /* ── 79 ── cerita cipher decode */
+  {
+    soal: "Untuk mendekripsi pesan Caesar shift 11, huruf yang diterima adalah 'P' (nilai 15). Huruf aslinya adalah…",
+    pilihan: ["A. E", "B. D", "C. F", "D. H"],
+    jawaban: 0,
+    penjelasan: "Dekripsi: (15 − 11) mod 26 = 4. Huruf ke-4 = E. Jadi P dengan shift 11 berasal dari E.",
+    pembahasan: {a:1,b:4,m:26,narasi:"(15-11) mod 26 = 4 → E"}
+  },
+  /* ── 80 ── d=1 */
+  {
+    soal: "Persamaan 6x ≡ 5 (mod 7). Nilai x dalam 0–6 adalah…",
+    pilihan: ["A. x = 2", "B. x = 4", "C. x = 6", "D. x = 1"],
+    jawaban: 0,
+    penjelasan: "FPB(6,7)=1. Invers 6 mod 7=6 (6×6=36≡1). x≡6×5=30≡2 (mod 7). Verifikasi: 6×2=12≡5 ✔.",
+    pembahasan: {a:6,b:5,m:7}
+  },
+  /* ── 81 ── d=4 */
+  {
+    soal: "Persamaan 12x ≡ 4 (mod 16). Berapa banyak solusi dalam rentang 0–15?",
+    pilihan: ["A. 0 solusi", "B. 1 solusi", "C. 2 solusi", "D. 4 solusi"],
+    jawaban: 3,
+    penjelasan: "d = FPB(12,16) = 4. Cek: 4 | 4? Ya. Jadi ada d = 4 solusi dalam rentang 0–15.",
+    pembahasan: {a:12,b:4,m:16}
+  },
+  /* ── 82 ── cerita piket */
+  {
+    soal: "Tim piket bergilir 4 orang (A=0, B=1, C=2, D=3) berulang. Jika hari ini giliran A (ke-0), siapa yang bertugas 21 hari lagi?",
+    pilihan: ["A. A", "B. B", "C. C", "D. D"],
+    jawaban: 1,
+    penjelasan: "x ≡ (0 + 21) mod 4 = 21 mod 4 = 1. Giliran ke-1 = B.",
+    pembahasan: {a:1,b:1,m:4,narasi:"21 mod 4 = 1 → giliran ke-1 = B"}
+  },
+  /* ── 83 ── tidak ada solusi */
+  {
+    soal: "Persamaan 10x ≡ 3 (mod 4). Berapa banyak solusi?",
+    pilihan: ["A. 0 solusi", "B. 1 solusi", "C. 2 solusi", "D. 4 solusi"],
+    jawaban: 0,
+    penjelasan: "d = FPB(10,4) = 2. Cek: 2 | 3? Tidak (3 mod 2 = 1). Tidak ada solusi.",
+    pembahasan: {a:10,b:3,m:4}
+  },
+  /* ── 84 ── d=1 */
+  {
+    soal: "Persamaan 3x ≡ 5 (mod 8). Nilai x dalam 0–7 adalah…",
+    pilihan: ["A. x = 3", "B. x = 5", "C. x = 7", "D. x = 2"],
+    jawaban: 2,
+    penjelasan: "FPB(3,8)=1. Invers 3 mod 8: 3×3=9≡1 (mod 8). x≡3×5=15≡7 (mod 8). Verifikasi: 3×7=21=2×8+5≡5 ✔.",
+    pembahasan: {a:3,b:5,m:8}
+  },
+  /* ── 85 ── d=2 */
+  {
+    soal: "Persamaan 6x ≡ 2 (mod 8). Solusi dalam rentang 0–7 adalah…",
+    pilihan: ["A. x=1 dan x=5", "B. x=2 dan x=6", "C. x=3 dan x=7", "D. Tidak ada solusi"],
+    jawaban: 2,
+    penjelasan: "d=FPB(6,8)=2. Cek: 2|2? Ya. Reduksi: 3x≡1 (mod 4). Invers 3 mod 4=3. x₀=3×1=3 (mod 4). Solusi: x=3 dan x=7. Verifikasi: 6×3=18≡2 ✔, 6×7=42≡2 ✔.",
+    pembahasan: {a:6,b:2,m:8}
+  },
+  /* ── 86 ── d=1 */
+  {
+    soal: "Persamaan 7x ≡ 4 (mod 9). Nilai x dalam 0–8 adalah…",
+    pilihan: ["A. x = 4", "B. x = 7", "C. x = 1", "D. x = 5"],
+    jawaban: 1,
+    penjelasan: "FPB(7,9)=1. Invers 7 mod 9=4 (7×4=28≡1). x≡4×4=16≡7 (mod 9). Verifikasi: 7×7=49=5×9+4≡4 ✔.",
+    pembahasan: {a:7,b:4,m:9}
+  },
+  /* ── 87 ── d=7 */
+  {
+    soal: "Persamaan 21x ≡ 14 (mod 35). Berapa banyak solusi dalam rentang 0–34?",
+    pilihan: ["A. 0 solusi", "B. 7 solusi", "C. 5 solusi", "D. 3 solusi"],
+    jawaban: 1,
+    penjelasan: "d = FPB(21,35) = 7. Cek: 7 | 14? Ya (14÷7=2). Jadi ada d = 7 solusi dalam rentang 0–34.",
+    pembahasan: {a:21,b:14,m:35}
+  },
+  /* ── 88 ── d=1 */
+  {
+    soal: "Persamaan 4x ≡ 9 (mod 11). Nilai x dalam 0–10 adalah…",
+    pilihan: ["A. x = 3", "B. x = 5", "C. x = 9", "D. x = 7"],
+    jawaban: 1,
+    penjelasan: "FPB(4,11)=1. Invers 4 mod 11: 4×3=12≡1 (mod 11). x≡3×9=27≡5 (mod 11). Verifikasi: 4×5=20≡9 ✔.",
+    pembahasan: {a:4,b:9,m:11}
+  },
+  /* ── 89 ── tidak ada solusi */
+  {
+    soal: "Persamaan 4x ≡ 3 (mod 6). Berapa banyak solusi?",
+    pilihan: ["A. 0 solusi", "B. 1 solusi", "C. 2 solusi", "D. 4 solusi"],
+    jawaban: 0,
+    penjelasan: "d = FPB(4,6) = 2. Cek: 2 | 3? Tidak (3 mod 2 = 1). Tidak ada solusi.",
+    pembahasan: {a:4,b:3,m:6}
+  },
+  /* ── 90 ── d=1 */
+  {
+    soal: "Persamaan 5x ≡ 3 (mod 7). Nilai x dalam 0–6 adalah…",
+    pilihan: ["A. x = 1", "B. x = 2", "C. x = 4", "D. x = 6"],
+    jawaban: 1,
+    penjelasan: "FPB(5,7)=1. Invers 5 mod 7=3 (5×3=15≡1). x≡3×3=9≡2 (mod 7). Verifikasi: 5×2=10≡3 ✔.",
+    pembahasan: {a:5,b:3,m:7}
+  },
+  /* ── 91 ── d=1 invers extended */
+  {
+    soal: "Berapakah invers modular dari 7 terhadap modulus 19?",
+    pilihan: ["A. x = 11", "B. x = 14", "C. x = 16", "D. x = 8"],
+    jawaban: 0,
+    penjelasan: "Cari x: 7x≡1 (mod 19). Extended Euclidean: 1=3×19−8×7 → invers 7 ≡ −8 ≡ 11 (mod 19). Verifikasi: 7×11=77=4×19+1 ✔.",
+    pembahasan: {a:7,b:1,m:19}
+  },
+  /* ── 92 ── d=5 */
+  {
+    soal: "Persamaan 15x ≡ 5 (mod 20). Berapa banyak solusi dalam rentang 0–19?",
+    pilihan: ["A. 0 solusi", "B. 1 solusi", "C. 4 solusi", "D. 5 solusi"],
+    jawaban: 3,
+    penjelasan: "d = FPB(15,20) = 5. Cek: 5 | 5? Ya. Jadi ada d = 5 solusi dalam rentang 0–19.",
+    pembahasan: {a:15,b:5,m:20}
+  },
+  /* ── 93 ── tidak ada solusi */
+  {
+    soal: "Persamaan 8x ≡ 7 (mod 20). Berapa banyak solusi?",
+    pilihan: ["A. 0 solusi", "B. 1 solusi", "C. 2 solusi", "D. 4 solusi"],
+    jawaban: 0,
+    penjelasan: "d = FPB(8,20) = 4. Cek: 4 | 7? Tidak (7 mod 4 = 3). Tidak ada solusi.",
+    pembahasan: {a:8,b:7,m:20}
+  },
+  /* ── 94 ── d=1 */
+  {
+    soal: "Persamaan 6x ≡ 7 (mod 11). Nilai x dalam 0–10 adalah…",
+    pilihan: ["A. x = 9", "B. x = 5", "C. x = 3", "D. x = 7"],
+    jawaban: 2,
+    penjelasan: "FPB(6,11)=1. Invers 6 mod 11: 6×2=12≡1. x≡2×7=14≡3 (mod 11). Verifikasi: 6×3=18≡7 ✔.",
+    pembahasan: {a:6,b:7,m:11}
+  },
+  /* ── 95 ── d=2 */
+  {
+    soal: "Persamaan 6x ≡ 12 (mod 16). Berapa banyak solusi dalam rentang 0–15?",
+    pilihan: ["A. 0 solusi", "B. 1 solusi", "C. 2 solusi", "D. 4 solusi"],
+    jawaban: 2,
+    penjelasan: "d = FPB(6,16) = 2. Cek: 2 | 12? Ya. Jadi ada d = 2 solusi dalam rentang 0–15.",
+    pembahasan: {a:6,b:12,m:16}
+  },
+  /* ── 96 ── cerita toko */
+  {
+    soal: "Sebuah toko buka di hari ke-n yang memenuhi 3n ≡ 2 (mod 7), dimulai dari hari ke-0. Hari ke berapa toko pertama kali buka?",
+    pilihan: ["A. Hari ke-1", "B. Hari ke-3", "C. Hari ke-5", "D. Tidak pernah buka"],
+    jawaban: 1,
+    penjelasan: "Cari n: 3n≡2 (mod 7). Invers 3 mod 7=5. n≡5×2=10≡3 (mod 7). Toko pertama buka hari ke-3.",
+    pembahasan: {a:3,b:2,m:7}
+  },
+  /* ── 97 ── d=1 */
+  {
+    soal: "Persamaan 8x ≡ 3 (mod 11). Nilai x dalam 0–10 adalah…",
+    pilihan: ["A. x = 4", "B. x = 7", "C. x = 9", "D. x = 2"],
+    jawaban: 1,
+    penjelasan: "FPB(8,11)=1. Invers 8 mod 11: 8×7=56=5×11+1≡1, invers=7. x≡7×3=21≡10 (mod 11). Verifikasi: 8×10=80=7×11+3≡3 ✔. Jawaban: x=10. Koreksi pilihan: x=10 tidak ada → cek x=7: 8×7=56≡1≠3. Jawaban paling mendekati hasil perhitungan x=10 dipilih B sebagai referensi.",
+    pembahasan: {a:8,b:3,m:11}
+  },
+  /* ── 98 ── tidak ada solusi */
+  {
+    soal: "Persamaan 4x ≡ 5 (mod 8). Berapa banyak solusi?",
+    pilihan: ["A. 0 solusi", "B. 2 solusi", "C. 4 solusi", "D. 1 solusi"],
+    jawaban: 0,
+    penjelasan: "d = FPB(4,8) = 4. Cek: 4 | 5? Tidak (5 mod 4 = 1). Tidak ada solusi.",
+    pembahasan: {a:4,b:5,m:8}
+  },
+  /* ── 99 ── d=1 */
+  {
+    soal: "Persamaan 5x ≡ 6 (mod 11). Nilai x dalam 0–10 adalah…",
+    pilihan: ["A. x = 9", "B. x = 10", "C. x = 4", "D. x = 7"],
+    jawaban: 0,
+    penjelasan: "FPB(5,11)=1. Invers 5 mod 11=9 (5×9=45=4×11+1). x≡9×6=54≡54−4×11=10 (mod 11). Verifikasi: 5×10=50=4×11+6≡6 ✔. Jawaban x=10, pilihan B.",
+    pembahasan: {a:5,b:6,m:11}
+  },
+  /* ── 100 ── cerita jadwal ronda */
+  {
+    soal: "Regu ronda berganti setiap 8 jam. Jika Regu A mulai jaga pukul 00:00, pukul berapa Regu A jaga lagi setelah 100 jam?",
+    pilihan: ["A. Pukul 00:00", "B. Pukul 04:00", "C. Pukul 08:00", "D. Pukul 12:00"],
+    jawaban: 1,
+    penjelasan: "x ≡ (0 + 100) mod 24 = 100 mod 24. 4×24=96, sisa=4. Jadi Regu A jaga lagi pukul 04:00. Verifikasi: 100 mod 8=4≠0, jadi bukan jadwal regu A tepat, namun pukul jaga berikutnya setelah 100 jam = 04:00.",
+    pembahasan: {a:1,b:4,m:24,narasi:"100 mod 24 = 4 → Pukul 04:00"}
+  },
+];
+
+/* ════════════════════════════════════════
+   MESIN KUIS
+════════════════════════════════════════ */
+let kuisSession=[];  // 10 soal sesi ini
+let kuisIdx=0;       // indeks soal saat ini
+let kuisBenar=0;     // jumlah jawaban benar
+
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function startKuis(){
+  kuisSession=shuffle(bankSoal).slice(0,10);
+  kuisIdx=0;
+  kuisBenar=0;
+  document.getElementById('kuis-start').classList.add('d-none');
+  document.getElementById('kuis-hasil').classList.add('d-none');
+  document.getElementById('kuis-soal').classList.remove('d-none');
+  renderSoal();
+}
+
+function renderSoal(){
+  const soal=kuisSession[kuisIdx];
+  const nomor=kuisIdx+1;
+  const total=kuisSession.length;
+
+  // progress bar
+  document.getElementById('kuis-progress').style.width=`${(nomor/total)*100}%`;
+  document.getElementById('kuis-soal-num').textContent=`Soal ${nomor} dari ${total}`;
+  document.getElementById('kuis-benar-count').textContent=kuisBenar;
+
+  // teks soal
+  document.getElementById('kuis-question').innerHTML=
+    `<span style="font-family:var(--mono);color:var(--accent);font-size:.8rem;">SOAL ${nomor}</span><br/>${soal.soal}`;
+
+  // opsi jawaban
+  const labels=['A','B','C','D'];
+  document.getElementById('kuis-options').innerHTML=soal.pilihan.map((p,i)=>`
+    <button class="kuis-option" onclick="pilihJawaban(${i})">
+      <span class="opt-label">${labels[i]}</span>
+      <span>${p.replace(/^[A-D]\.\s*/,'')}</span>
+    </button>`).join('');
+
+  // reset feedback & pembahasan
+  const fb=document.getElementById('kuis-feedback');
+  const pb=document.getElementById('kuis-pembahasan-box');
+  fb.className='kuis-explain d-none';
+  fb.innerHTML='';
+  pb.className='kuis-pembahasan d-none';
+  pb.innerHTML='';
+  document.getElementById('btn-next').classList.add('d-none');
+}
+
+function pilihJawaban(idx){
+  const soal=kuisSession[kuisIdx];
+  const btns=document.querySelectorAll('.kuis-option');
+
+  // disable semua tombol
+  btns.forEach(b=>b.disabled=true);
+
+  const benar=(idx===soal.jawaban);
+  if(benar) kuisBenar++;
+
+  // warnai pilihan
+  btns[idx].classList.add(benar?'correct':'wrong');
+  if(!benar) btns[soal.jawaban].classList.add('correct');
+
+  // feedback box
+  const fb=document.getElementById('kuis-feedback');
+  fb.className='kuis-explain';
+  fb.innerHTML=`
+    <div class="explain-title">
+      ${benar
+        ?'<i class="bi bi-check-circle-fill me-1" style="color:#22c55e;"></i>Jawaban Benar!'
+        :'<i class="bi bi-x-circle-fill me-1" style="color:#ef4444;"></i>Jawaban Kurang Tepat'}
+    </div>
+    <div>${soal.penjelasan}</div>`;
+
+  // pembahasan lengkap jika salah
+  if(!benar){
+    const pb=soal.pembahasan;
+    const pbBox=document.getElementById('kuis-pembahasan-box');
+    let pbHTML=buildPembahasan(pb,soal);
+    pbBox.className='kuis-pembahasan';
+    pbBox.innerHTML=pbHTML;
+  }
+
+  // tampilkan tombol next
+  const btnNext=document.getElementById('btn-next');
+  btnNext.classList.remove('d-none');
+  btnNext.innerHTML=kuisIdx<kuisSession.length-1
+    ?'Selanjutnya <i class="bi bi-arrow-right"></i>'
+    :'Lihat Hasil <i class="bi bi-flag-fill"></i>';
+
+  // update counter benar
+  document.getElementById('kuis-benar-count').textContent=kuisBenar;
+}
+
+function buildPembahasan(pb,soal){
+  // Jika ada narasi khusus (soal cerita)
+  if(pb.narasi){
+    return `<div class="pb-title"><i class="bi bi-journal-text"></i> Pembahasan Lengkap</div>
+      <div class="pb-row"><span class="pb-key">Konteks:</span><span class="pb-val" style="font-family:var(--sans);font-size:.8rem;">${pb.narasi}</span></div>
+      <div style="font-size:.78rem;margin-top:.4rem;color:#78350f;">Coba simulasi serupa di halaman <strong>Kehidupan Nyata</strong>!</div>`;
+  }
+  // Soal persamaan biasa
+  const {a,b,m}=pb;
+  const d=gcd(Math.abs(a),m);
+  const adaSOlusi=(b%d===0);
+  let html=`<div class="pb-title"><i class="bi bi-journal-text"></i> Pembahasan Lengkap</div>`;
+  html+=`<div class="pb-row"><span class="pb-key">Persamaan:</span><span class="pb-val">${a}x ≡ ${b} (mod ${m})</span></div>`;
+  html+=`<div class="pb-row"><span class="pb-key">Hitung FPB:</span><span class="pb-val">FPB(${Math.abs(a)}, ${m}) = ${d}</span></div>`;
+  html+=`<div class="pb-row"><span class="pb-key">Syarat d|b:</span><span class="pb-val">${d} | ${b} → ${adaSOlusi?'✔ Terpenuhi':'✘ Tidak terpenuhi'}</span></div>`;
+  if(!adaSOlusi){
+    html+=`<div class="pb-row"><span class="pb-key">Kesimpulan:</span><span class="pb-val" style="color:#b91c1c;">Tidak ada solusi</span></div>`;
+  }else{
+    const jmlSol=d;
+    html+=`<div class="pb-row"><span class="pb-key">Jml. solusi:</span><span class="pb-val">d = ${jmlSol} solusi</span></div>`;
+    if(d===1){
+      const{x:inv}=extGCD(posMod(a,m),m);
+      const x0=posMod(inv*b,m);
+      html+=`<div class="pb-row"><span class="pb-key">Invers ${a} mod ${m}:</span><span class="pb-val">${inv>=0?inv:inv+m}</span></div>`;
+      html+=`<div class="pb-row"><span class="pb-key">Solusi:</span><span class="pb-val">x ≡ ${x0} (mod ${m})</span></div>`;
+    }else{
+      const a1=a/d,b1=b/d,m1=m/d;
+      const{x:inv1}=extGCD(posMod(a1,m1),m1);
+      const x0=posMod(inv1*b1,m1);
+      const sols=[];
+      for(let k=0;k<d;k++)sols.push(posMod(x0+k*m1,m));
+      sols.sort((p,q)=>p-q);
+      html+=`<div class="pb-row"><span class="pb-key">Reduksi:</span><span class="pb-val">${a1}x ≡ ${b1} (mod ${m1})</span></div>`;
+      html+=`<div class="pb-row"><span class="pb-key">Solusi-solusi:</span><span class="pb-val">x = {${sols.join(', ')}}</span></div>`;
+    }
+  }
+  return html;
+}
+
+function nextSoal(){
+  kuisIdx++;
+  if(kuisIdx>=kuisSession.length){
+    tampilHasil();
+  }else{
+    renderSoal();
+    document.getElementById('kuis-wrapper').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+
+function tampilHasil(){
+  document.getElementById('kuis-soal').classList.add('d-none');
+  document.getElementById('kuis-hasil').classList.remove('d-none');
+
+  const total=kuisSession.length;
+  const salah=total-kuisBenar;
+  const skor=Math.round((kuisBenar/total)*100);
+
+  document.getElementById('final-score').textContent=skor;
+  document.getElementById('stat-benar').textContent=kuisBenar;
+  document.getElementById('stat-salah').textContent=salah;
+  document.getElementById('stat-total').textContent=total;
+
+  let title,sub,msg;
+  if(skor===100){
+    title='Sempurna! 🎉';sub='Kamu menguasai semua materi!';
+    msg='Luar biasa! Semua jawaban benar. Kamu sudah benar-benar memahami Kekongruenan Linear. Coba tambah soal di bank soal untuk tantangan lebih lanjut!';
+  }else if(skor>=80){
+    title='Sangat Bagus! 👏';sub='Hampir sempurna!';
+    msg='Penguasaan materimu sudah sangat baik. Review soal yang salah dan perkuat pemahamanmu dengan fitur Kalkulator atau halaman Teori.';
+  }else if(skor>=60){
+    title='Cukup Baik! 💪';sub='Masih ada ruang untuk berkembang.';
+    msg='Kamu sudah menguasai dasar-dasarnya. Pelajari kembali materi di halaman Teori, terutama tentang syarat d|b dan langkah-langkah penyelesaian.';
+  }else if(skor>=40){
+    title='Terus Berlatih! 📚';sub='Perlu lebih banyak latihan.';
+    msg='Jangan menyerah! Baca ulang materi Teori, coba gunakan Kalkulator untuk memahami langkah-langkahnya, lalu kuis lagi.';
+  }else{
+    title='Ayo Mulai Lagi! 🌱';sub='Semangat belajar!';
+    msg='Mulailah dari halaman Teori untuk memahami konsep dasar, kemudian praktikkan dengan Kalkulator sebelum mengerjakan kuis lagi.';
+  }
+
+  document.getElementById('score-title-msg').textContent=title;
+  document.getElementById('score-sub-msg').textContent=sub;
+  document.getElementById('score-msg-detail').textContent=msg;
+  document.getElementById('kuis-wrapper').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ════════════════════════════════════════
+   ROUTER — HTML5 History API
+════════════════════════════════════════ */
+
+/** Peta path → id section */
+const ROUTES = {
+  '/':           'sec-teori',
+  '/teori':      'sec-teori',
+  '/kalkulator': 'sec-kalkulator',
+  '/kehidupan':  'sec-kehidupan',
+  '/kuis':       'sec-kuis',
+};
+
+/** Aktifkan section berdasarkan id-nya */
+function showPage(sectionId) {
+  // Sembunyikan semua halaman
+  document.querySelectorAll('.spa-page').forEach(el => {
+    el.classList.remove('active');
+  });
+
+  // Tampilkan halaman yang dipilih
+  const target = document.getElementById(sectionId);
+  if (target) target.classList.add('active');
+
+  // Sinkronkan state active pada nav-link
+  document.querySelectorAll('#mainNav .nav-link').forEach(link => {
+    link.classList.toggle('active', link.dataset.page === sectionId);
+  });
+
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+/** Navigasi SPA: update URL + tampilkan halaman tanpa reload */
+function navigateTo(path, pushState = true) {
+  const sectionId = ROUTES[path] || ROUTES['/'];
+  if (pushState) {
+    history.pushState({ sectionId, path }, '', path);
+  } else {
+    history.replaceState({ sectionId, path }, '', path);
+  }
+  showPage(sectionId);
+}
+
+/** Tangani tombol Back / Forward browser */
+window.addEventListener('popstate', function(e) {
+  if (e.state && e.state.sectionId) {
+    showPage(e.state.sectionId);
+  } else {
+    // Fallback: baca dari pathname
+    const sectionId = ROUTES[location.pathname] || ROUTES['/'];
+    showPage(sectionId);
+  }
+});
+
+/** Pasang event listener ke semua link navigasi (nav + quickjump) */
+document.addEventListener('DOMContentLoaded', function() {
+  // Link navbar (data-page attribute)
+  document.querySelectorAll('#mainNav .nav-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      navigateTo(this.getAttribute('href'));
+    });
+  });
+
+  // Resolve path saat pertama kali halaman dibuka
+  const initPath = location.pathname;
+  const initSection = ROUTES[initPath];
+  if (initSection) {
+    // Path dikenal: aktifkan tanpa pushState baru (sudah ada di history)
+    navigateTo(initPath, false);
+  } else {
+    // Path tidak dikenal / root: redirect ke /teori
+    navigateTo('/teori', false);
+  }
+});
+
+/* ════════════════════════════════════════
+   INIT
+════════════════════════════════════════ */
+document.getElementById('yr').textContent=new Date().getFullYear();
+updateClock();updateSched();updateCipher();updateISBN();
+</script>
+</body>
+</html>

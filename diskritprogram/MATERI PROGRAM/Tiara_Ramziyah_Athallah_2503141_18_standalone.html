@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Fungsi Hash - Matematika Diskrit</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#090979,#020024,#4c1d95);
+min-height:100vh;
+padding:25px;
+color:#fff;
+}
+
+.container{
+max-width:1400px;
+margin:auto;
+}
+
+.header{
+text-align:center;
+margin-bottom:25px;
+}
+
+.header h1{
+font-size:60px;
+font-weight:700;
+letter-spacing:2px;
+}
+
+.header p{
+font-size:22px;
+margin-top:10px;
+}
+
+.badge{
+display:inline-block;
+margin-top:15px;
+padding:10px 25px;
+border-radius:30px;
+background:linear-gradient(90deg,#9333ea,#7c3aed);
+font-weight:600;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr 1fr;
+gap:20px;
+margin-bottom:20px;
+}
+
+.card{
+background:white;
+color:#111827;
+padding:25px;
+border-radius:20px;
+box-shadow:0 10px 25px rgba(0,0,0,.25);
+}
+
+.card h2{
+color:#6d28d9;
+margin-bottom:20px;
+font-size:26px;
+}
+
+label{
+display:block;
+margin-bottom:8px;
+font-weight:600;
+}
+
+input{
+width:100%;
+padding:14px;
+border:1px solid #d1d5db;
+border-radius:12px;
+font-size:16px;
+margin-bottom:18px;
+}
+
+button{
+width:100%;
+padding:15px;
+border:none;
+border-radius:12px;
+background:linear-gradient(90deg,#9333ea,#6d28d9);
+color:white;
+font-size:18px;
+font-weight:600;
+cursor:pointer;
+transition:.3s;
+}
+
+button:hover{
+transform:translateY(-2px);
+}
+
+.result-box{
+background:#ecfdf5;
+border:2px solid #bbf7d0;
+padding:20px;
+border-radius:15px;
+text-align:center;
+margin-bottom:20px;
+}
+
+.result-box h3{
+color:#166534;
+font-size:20px;
+}
+
+.result-number{
+font-size:55px;
+font-weight:bold;
+color:#166534;
+}
+
+.steps{
+background:#f8fafc;
+border:1px solid #d1d5db;
+padding:15px;
+border-radius:12px;
+line-height:2;
+}
+
+.hash-card{
+background:white;
+padding:25px;
+border-radius:20px;
+color:#111827;
+box-shadow:0 10px 25px rgba(0,0,0,.25);
+margin-bottom:20px;
+}
+
+.hash-card h2{
+color:#6d28d9;
+margin-bottom:20px;
+}
+
+#hashContainer{
+overflow-x:auto;
+padding-bottom:10px;
+}
+
+.hash-grid{
+display:grid;
+gap:0;
+margin-top:15px;
+}
+
+.hash-index{
+height:50px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+border:1px solid #555;
+background:#ede9fe;
+}
+
+.hash-data{
+height:70px;
+display:flex;
+align-items:center;
+justify-content:center;
+border:1px solid #555;
+background:white;
+font-size:20px;
+}
+
+.filled{
+background:#c084fc;
+font-weight:bold;
+}
+
+.info{
+margin-top:15px;
+padding:12px;
+background:#f3e8ff;
+border-radius:10px;
+color:#6d28d9;
+text-align:center;
+font-weight:600;
+}
+
+.owner{
+background:linear-gradient(90deg,#020024,#090979);
+padding:20px;
+border-radius:20px;
+display:flex;
+justify-content:space-around;
+flex-wrap:wrap;
+gap:15px;
+margin-top:20px;
+}
+
+.owner div{
+font-size:18px;
+font-weight:600;
+}
+
+.footer{
+text-align:center;
+margin-top:20px;
+color:#ddd;
+}
+
+@media(max-width:1000px){
+
+.grid{
+grid-template-columns:1fr;
+}
+
+.header h1{
+font-size:40px;
+}
+
+}
+
+</style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Tiara Ramziyah Athallah_2503141</div>
+<div class="container">
+<div class="header">
+<h1>🔐 HashEdu </h1>
+<p>Simulasi Fungsi Hash dengan Metode Modulo</p>
+<div class="badge">
+Teori Bilangan - Matematika Diskrit
+</div>
+</div>
+<div class="grid">
+<div class="card">
+<h2>📥 INPUT DATA</h2>
+<label>Key (k)</label>
+<input id="key" placeholder="Masukkan bilangan bulat" type="number"/>
+<label>Ukuran Tabel (m)</label>
+<input id="size" placeholder="Contoh: 13" type="number"/>
+<button onclick="hitungHash()">
+🧮 HITUNG HASH
+</button>
+</div>
+<div class="card">
+<h2>📈 HASIL PERHITUNGAN</h2>
+<div class="result-box">
+<h3>h(k) = k mod m</h3>
+<div class="result-number" id="hasil">
+-
+</div>
+</div>
+<h3>Langkah Perhitungan:</h3>
+<div class="steps" id="langkah">
+Masukkan data terlebih dahulu.
+</div>
+</div>
+<div class="card">
+<h2>ℹ️ APA ITU FUNGSI HASH?</h2>
+<p>
+Fungsi hash adalah fungsi yang memetakan sebuah key (k)
+ke suatu alamat dalam tabel hash menggunakan operasi modulo.
+</p>
+<br/>
+<div class="steps">
+<b>Rumus Fungsi Hash:</b>
+<br/><br/>
+
+h(k) = k mod m
+
+<br/><br/>
+<b>Keterangan:</b>
+<ul style="margin-left:20px">
+<li>k = key / data yang dimasukkan</li>
+<li>m = ukuran tabel hash</li>
+</ul>
+<br/>
+<b>Tujuan:</b>
+<p>
+Mempercepat proses pencarian dan penyimpanan data dalam tabel hash.
+</p>
+</div>
+</div>
+</div>
+<div class="hash-card">
+<h2>📦 VISUALISASI TABEL HASH</h2>
+<div id="hashContainer">
+</div>
+<div class="info">
+Setiap key ditempatkan pada indeks: h(k) = k mod m
+</div>
+</div>
+<div class="hash-card">
+<h2>📌 KESIMPULAN</h2>
+<p style="line-height:2;">
+Fungsi Hash menggunakan operasi modulo untuk memetakan suatu key ke alamat tertentu dalam tabel hash.
+Semakin baik fungsi hash yang digunakan, semakin cepat proses pencarian dan penyimpanan data.
+</p>
+</div>
+<div class="owner">
+<div>👤 Nama: Tiara Ramziyah Athallah</div>
+<div>🎓 Kelas: 2A PSTI</div>
+<div>🆔 NIM: 2503141</div>
+</div>
+<div class="footer">
+Matematika Diskrit - Teori Bilangan Bagian 3 (Fungsi Hash)
+</div>
+</div>
+<script>
+
+function hitungHash(){
+
+let k = parseInt(document.getElementById("key").value);
+let m = parseInt(document.getElementById("size").value);
+
+if(isNaN(k) || isNaN(m) || m<=0){
+
+alert("Masukkan nilai yang valid!");
+
+return;
+
+}
+
+let hash = k % m;
+
+document.getElementById("hasil").innerHTML = hash;
+
+let pembagi = Math.floor(k/m);
+
+document.getElementById("langkah").innerHTML =
+
+`
+${k} ÷ ${m}<br>
+
+${m} × ${pembagi} = ${m*pembagi}<br>
+
+${k} − ${m*pembagi} = ${hash}<br><br>
+
+<b>Jadi, ${k} mod ${m} = ${hash}</b>
+`;
+
+tampilkanHash(k,m,hash);
+
+}
+
+function tampilkanHash(k,m,hash){
+
+let html =
+
+`<div class="hash-grid"
+style="grid-template-columns:repeat(${m},80px)">`;
+
+for(let i=0;i<m;i++){
+
+html += `
+<div class="hash-index">${i}</div>
+`;
+
+}
+
+for(let i=0;i<m;i++){
+
+if(i===hash){
+
+html += `
+<div class="hash-data filled">
+${k}
+</div>
+`;
+
+}else{
+
+html += `
+<div class="hash-data"></div>
+`;
+
+}
+
+}
+
+html += `</div>`;
+
+document.getElementById("hashContainer").innerHTML = html;
+
+}
+
+</script>
+</body>
+</html>
+```

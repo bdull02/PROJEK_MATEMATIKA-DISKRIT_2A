@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Program Himpunan Komplemen</title>
+<style>
+        body{
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .hasil{
+            background-color: #f4f4f4;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        h1{
+            color: darkblue;
+        }
+    </style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Weni Prabandani_2502349</div>
+<h1>Program Himpunan Komplemen</h1>
+<div id="output"></div>
+<script>
+
+        // =============================================
+        // FUNGSI parseSet
+        // =============================================
+        function parseSet(inputStr) {
+
+            if (!inputStr || inputStr.trim() === "") {
+                return new Set();
+            }
+
+            const elemen = inputStr
+                .split(',')
+                .map(e => e.trim())
+                .filter(e => e !== "");
+
+            return new Set(elemen);
+        }
+
+        // =============================================
+        // FUNGSI setToString
+        // =============================================
+        function setToString(S) {
+
+            if (S.size === 0) {
+                return "∅";
+            }
+
+            const sorted = [...S].sort((a, b) => {
+
+                const na = parseFloat(a);
+                const nb = parseFloat(b);
+
+                if (!isNaN(na) && !isNaN(nb)) {
+                    return na - nb;
+                }
+
+                return a.localeCompare(b);
+            });
+
+            return "{ " + sorted.join(", ") + " }";
+        }
+
+        // =============================================
+        // FUNGSI compute
+        // =============================================
+        function compute(judul, inputS, inputA, inputB = "") {
+
+            const output = document.getElementById("output");
+
+            // LANGKAH 1
+            const S = parseSet(inputS);
+            const A = parseSet(inputA);
+            const B = parseSet(inputB);
+
+            // LANGKAH 2 - Validasi
+            let valid = true;
+
+            for (let x of A) {
+                if (!S.has(x)) {
+                    valid = false;
+                    break;
+                }
+            }
+
+            for (let x of B) {
+                if (!S.has(x)) {
+                    valid = false;
+                    break;
+                }
+            }
+
+            if (!valid) {
+                output.innerHTML += `
+                    <div class="hasil">
+                        <h3>${judul}</h3>
+                        <p style="color:red;">
+                            ERROR: Elemen A dan B harus ada di dalam S
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
+            // LANGKAH 3
+            const Ac = new Set([...S].filter(x => !A.has(x)));
+            const Bc = new Set([...S].filter(x => !B.has(x)));
+            const AiB = new Set([...A].filter(x => B.has(x)));
+
+            // LANGKAH 4
+            const kardS = S.size;
+            const kardA = A.size;
+            const kardAc = Ac.size;
+            const kardB = B.size;
+            const kardBc = Bc.size;
+
+            // LANGKAH 5 - Output ke halaman
+            output.innerHTML += `
+                <div class="hasil">
+
+                    <h2>${judul}</h2>
+
+                    <p><b>S</b> = ${setToString(S)} |S| = ${kardS}</p>
+
+                    <p><b>A</b> = ${setToString(A)} |A| = ${kardA}</p>
+
+                    <p><b>Ac</b> = ${setToString(Ac)} |Ac| = ${kardAc}</p>
+
+                    <p><b>B</b> = ${setToString(B)} |B| = ${kardB}</p>
+
+                    <p><b>Bc</b> = ${setToString(Bc)} |Bc| = ${kardBc}</p>
+
+                    <p><b>A irisan B</b> = ${setToString(AiB)}</p>
+
+                </div>
+            `;
+        }
+
+        // =============================================
+        // UJI COBA
+        // =============================================
+
+        compute(
+            "KASUS 1: Bilangan Genap",
+            "1,2,3,4,5,6,7,8,9,10",
+            "2,4,6,8,10",
+            "1,3,5,7"
+        );
+
+        compute(
+            "KASUS 2: Huruf Vokal",
+            "a,b,c,d,e,f,g,h,i",
+            "a,e,i",
+            "b,c,d"
+        );
+
+        compute(
+            "KASUS 3: Bilangan Prima ≤ 15",
+            "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15",
+            "2,3,5,7,11,13",
+            "1,4,9"
+        );
+
+        compute(
+            "KASUS 4: Kelipatan 3",
+            "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20",
+            "3,6,9,12,15,18",
+            "2,4,6,8,10"
+        );
+
+        compute(
+            "KASUS 5: Mahasiswa Lulus",
+            "Andi,Budi,Cici,Doni,Eka,Fita,Gina,Hadi",
+            "Andi,Cici,Eka,Gina",
+            "Budi,Doni"
+        );
+
+        compute(
+            "VALIDASI ERROR",
+            "1,2,3,4,5",
+            "1,2,9"
+        );
+
+    </script>
+</body>
+</html>

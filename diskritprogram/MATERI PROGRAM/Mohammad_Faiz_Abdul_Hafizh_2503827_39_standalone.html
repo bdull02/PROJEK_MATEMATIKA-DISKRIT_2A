@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kalkulator Permutasi & Kombinasi | Matematika Diskrit</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* Purple palette */
+      --p50:  #F5F3FF;
+      --p100: #EDE9FE;
+      --p200: #DDD6FE;
+      --p300: #C4B5FD;
+      --p400: #A78BFA;
+      --p500: #8B5CF6;
+      --p600: #7C3AED;
+      --p700: #6D28D9;
+      --p800: #5B21B6;
+      --p900: #4C1D95;
+
+      /* Indigo accent */
+      --i500: #6366F1;
+      --i600: #4F46E5;
+
+      /* Emerald for permutasi */
+      --e500: #10B981;
+      --e600: #059669;
+
+      /* Amber for kombinasi */
+      --a500: #F59E0B;
+      --a600: #D97706;
+
+      --bg: #F0EEFF;
+      --surface: #FFFFFF;
+      --surface-2: #F9F7FF;
+      --text-primary: #1E1B4B;
+      --text-secondary: #4B5563;
+      --text-muted: #9CA3AF;
+      --border: #E5E7EB;
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-xl: 26px;
+
+      --shadow: 0 4px 24px rgba(109,40,217,.12), 0 1px 4px rgba(0,0,0,.05);
+      --glow-p: 0 0 0 4px rgba(139,92,246,.18);
+      --glow-e: 0 0 0 4px rgba(16,185,129,.18);
+
+      --mode: 'P'; /* logical marker only */
+    }
+
+    body {
+      font-family: 'Outfit', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 2rem 1rem 4rem;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--p100);
+      color: var(--p700);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: .875rem;
+    }
+    .header h1 {
+      font-size: clamp(22px, 4.5vw, 36px);
+      font-weight: 800;
+      color: var(--p900);
+      letter-spacing: -.025em;
+      margin-bottom: .4rem;
+    }
+    .header p {
+      color: var(--text-secondary);
+      font-size: 15px;
+    }
+
+    /* ── WRAPPER ── */
+    .wrapper {
+      max-width: 940px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 720px) {
+      .wrapper { grid-template-columns: 1fr; }
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      padding: 1.75rem;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(221,214,254,.5);
+    }
+
+    /* ── MODE TOGGLE ── */
+    .toggle-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 1.75rem;
+      background: var(--surface-2);
+      border-radius: var(--radius-lg);
+      padding: 5px;
+      border: 1px solid var(--p200);
+    }
+    .mode-btn {
+      padding: 11px 8px;
+      border: none;
+      border-radius: var(--radius-md);
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .25s, color .25s, box-shadow .25s, transform .1s;
+      background: transparent;
+      color: var(--p500);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+    .mode-btn .icon {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      background: currentColor;
+      color: var(--surface);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      transition: background .25s;
+    }
+    .mode-btn.active-p {
+      background: linear-gradient(135deg, var(--p600), var(--i600));
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(124,58,237,.35);
+    }
+    .mode-btn.active-p .icon { background: rgba(255,255,255,.25); color: #fff; }
+
+    .mode-btn.active-c {
+      background: linear-gradient(135deg, var(--e500), #0891B2);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(16,185,129,.3);
+    }
+    .mode-btn.active-c .icon { background: rgba(255,255,255,.25); color: #fff; }
+    .mode-btn:active { transform: scale(.97); }
+
+    /* ── MODE DESCRIPTION ── */
+    .mode-desc {
+      border-radius: var(--radius-md);
+      padding: .875rem 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 13px;
+      line-height: 1.65;
+      transition: background .3s, border-color .3s, color .3s;
+    }
+    .mode-desc.desc-p {
+      background: var(--p100);
+      border-left: 3px solid var(--p500);
+      color: var(--p800);
+    }
+    .mode-desc.desc-c {
+      background: #ECFDF5;
+      border-left: 3px solid var(--e500);
+      color: #065F46;
+    }
+    .mode-desc strong { font-weight: 700; }
+    .mode-desc .formula-ref {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      font-weight: 600;
+      display: block;
+      margin-top: 5px;
+      opacity: .85;
+    }
+
+    /* ── INPUTS ── */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 1rem;
+    }
+    .field label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .field label .var-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 100px;
+    }
+    .var-n { background: var(--p100); color: var(--p700); }
+    .var-r { background: #FEF3C7; color: #92400E; }
+
+    .field input[type="number"] {
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      background: var(--surface);
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+      -moz-appearance: textfield;
+      width: 100%;
+    }
+    .field input[type="number"]::-webkit-outer-spin-button,
+    .field input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .field input[type="number"]:focus { border-color: var(--p500); box-shadow: var(--glow-p); }
+    .field input[type="number"].error-input { border-color: #EF4444; box-shadow: 0 0 0 4px rgba(239,68,68,.12); }
+
+    .field-error {
+      font-size: 12px;
+      color: #DC2626;
+      font-weight: 600;
+      min-height: 16px;
+      display: none;
+    }
+    .field-error.show { display: block; }
+
+    /* ── BUTTONS ── */
+    .btn-calc {
+      width: 100%;
+      margin-top: .5rem;
+      padding: 14px;
+      border: none;
+      border-radius: var(--radius-md);
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .2s, transform .1s, box-shadow .2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      letter-spacing: .01em;
+    }
+    .btn-calc.btn-p {
+      background: linear-gradient(135deg, var(--p600) 0%, var(--i600) 100%);
+      color: #fff;
+      box-shadow: 0 5px 18px rgba(124,58,237,.38);
+    }
+    .btn-calc.btn-c {
+      background: linear-gradient(135deg, var(--e500) 0%, #0891B2 100%);
+      color: #fff;
+      box-shadow: 0 5px 18px rgba(16,185,129,.35);
+    }
+    .btn-calc:hover { opacity: .92; }
+    .btn-calc:active { transform: scale(.98); }
+    .btn-reset {
+      width: 100%;
+      margin-top: .5rem;
+      padding: 9px;
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s, border-color .2s;
+    }
+    .btn-reset:hover { background: var(--p50); border-color: var(--p300); color: var(--p700); }
+
+    /* ── INFO BOX ── */
+    .info-box {
+      margin-top: 1.25rem;
+      background: var(--surface-2);
+      border: 1px solid var(--p200);
+      border-radius: var(--radius-md);
+      padding: .875rem 1rem;
+    }
+    .info-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--text-muted);
+      margin-bottom: .5rem;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 13px;
+      padding: 3px 0;
+      border-bottom: 1px solid var(--p100);
+      color: var(--text-secondary);
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-row .info-formula {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--p600);
+      font-weight: 600;
+    }
+
+    /* ── RIGHT PANEL ── */
+    .result-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-muted);
+    }
+    .empty-icon {
+      width: 52px;
+      height: 52px;
+      background: var(--p100);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+    }
+    .empty-icon svg { width: 26px; height: 26px; color: var(--p400); }
+    .empty-state p { font-size: 14px; line-height: 1.6; }
+
+    /* Answer card */
+    .ans-card {
+      border-radius: var(--radius-lg);
+      padding: 1.625rem;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(10px) scale(.97);
+      transition: opacity .45s ease, transform .45s ease;
+    }
+    .ans-card.show { opacity: 1; transform: translateY(0) scale(1); }
+    .ans-card.theme-p {
+      background: linear-gradient(145deg, var(--p700) 0%, #312E81 100%);
+    }
+    .ans-card.theme-c {
+      background: linear-gradient(145deg, #059669 0%, #0369A1 100%);
+    }
+    .ans-type {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.65);
+      margin-bottom: .5rem;
+    }
+    .ans-expr {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      color: rgba(255,255,255,.8);
+      margin-bottom: .625rem;
+    }
+    .ans-value {
+      font-size: clamp(32px, 7vw, 50px);
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -.02em;
+      line-height: 1;
+      margin-bottom: .3rem;
+      word-break: break-all;
+      transition: transform .3s;
+    }
+    .ans-unit {
+      font-size: 13px;
+      color: rgba(255,255,255,.6);
+      font-weight: 500;
+    }
+    .ans-digits {
+      display: inline-block;
+      margin-top: .5rem;
+      background: rgba(255,255,255,.15);
+      border-radius: 100px;
+      padding: 3px 12px;
+      font-size: 12px;
+      color: rgba(255,255,255,.8);
+      font-weight: 600;
+    }
+
+    /* Steps card */
+    .steps-card {
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .4s ease .15s, transform .4s ease .15s;
+    }
+    .steps-card.show { opacity: 1; transform: translateY(0); }
+
+    .step-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .step-title::before {
+      content: '';
+      display: block;
+      width: 3px;
+      height: 14px;
+      border-radius: 2px;
+    }
+    .step-title.sp::before { background: var(--p500); }
+    .step-title.sc::before { background: var(--e500); }
+
+    .step-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: .875rem;
+    }
+    .step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .step-num.sp { background: var(--p100); color: var(--p700); }
+    .step-num.sc { background: #D1FAE5; color: #065F46; }
+
+    .step-content {
+      flex: 1;
+      min-width: 0;
+    }
+    .step-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 3px;
+    }
+    .step-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.6;
+      word-break: break-all;
+    }
+    .step-code.hl-p { color: var(--p700); }
+    .step-code.hl-c { color: #065F46; }
+
+    /* Breakdown mini-cards */
+    .mini-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: .625rem;
+      margin-top: 1rem;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .4s ease .3s, transform .4s ease .3s;
+    }
+    .mini-grid.show { opacity: 1; transform: translateY(0); }
+    .mini-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: .75rem;
+      text-align: center;
+    }
+    .mini-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .mini-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--p600);
+      word-break: break-all;
+    }
+    .mini-val.hl-c { color: #059669; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes popIn {
+      0%   { transform: scale(1); }
+      45%  { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    .popping { animation: popIn .35s ease; }
+
+    /* ── LARGE RESULT NOTE ── */
+    .big-note {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: .375rem;
+      display: none;
+    }
+    .big-note.show { display: block; }
+  </style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Mohammad Faiz Abdul Hafizh_2503827</div>
+<div class="header">
+<div class="badge">
+<svg fill="currentColor" height="11" viewbox="0 0 24 24" width="11"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm1 14.93V17a1 1 0 0 1-2 0v-.07A8.001 8.001 0 0 1 12 4a7.974 7.974 0 0 1 5.67 2.33L13 11H11l-4-3.5A8 8 0 0 1 11 4.07V5a1 1 0 0 1 2 0v-.07c2.76.46 5 2.7 5.46 5.5A5.99 5.99 0 0 0 13 16.93z"></path></svg>
+      Matematika Diskrit
+    </div>
+<h1>Kalkulator Kombinatorika</h1>
+<p>Hitung Permutasi &amp; Kombinasi dengan tepat — mendukung angka sangat besar</p>
+</div>
+<div class="wrapper">
+<!-- ── KIRI: INPUT ── -->
+<div class="card">
+<!-- Toggle Mode -->
+<div class="toggle-wrap">
+<button class="mode-btn active-p" id="btnP" onclick="setMode('P')">
+<span class="icon">P</span> Permutasi
+        </button>
+<button class="mode-btn" id="btnC" onclick="setMode('C')">
+<span class="icon">C</span> Kombinasi
+        </button>
+</div>
+<!-- Mode Description -->
+<div class="mode-desc desc-p" id="modeDesc">
+<strong>Permutasi P(n, r)</strong> — urutan diperhitungkan.
+        <span class="formula-ref">P(n,r) = n! / (n−r)!</span>
+</div>
+<!-- Input n -->
+<div class="field">
+<label>
+<span class="var-badge var-n">n</span>
+          Total Objek / Elemen yang Tersedia
+        </label>
+<input id="valN" min="0" oninput="onInput()" placeholder="cth: 10" type="number"/>
+</div>
+<!-- Input r -->
+<div class="field">
+<label>
+<span class="var-badge var-r">r</span>
+          Objek yang Dipilih / Disusun
+        </label>
+<input id="valR" min="0" oninput="onInput()" placeholder="cth: 4" type="number"/>
+<span class="field-error" id="errR">⚠ Nilai r tidak boleh lebih besar dari n!</span>
+</div>
+<!-- Buttons -->
+<button class="btn-calc btn-p" id="btnCalc" onclick="hitung()">
+<svg fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24" width="18"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"></path></svg>
+        Hitung Hasil
+      </button>
+<button class="btn-reset" onclick="resetAll()">↺ Reset</button>
+<!-- Info Reference -->
+<div class="info-box">
+<div class="info-title">Referensi Rumus</div>
+<div class="info-row">
+<span>Permutasi P(n,r)</span>
+<span class="info-formula">n! ÷ (n−r)!</span>
+</div>
+<div class="info-row">
+<span>Kombinasi C(n,r)</span>
+<span class="info-formula">n! ÷ (r! × (n−r)!)</span>
+</div>
+<div class="info-row">
+<span>Faktorial 0!</span>
+<span class="info-formula">= 1</span>
+</div>
+<div class="info-row">
+<span>Batas Presisi</span>
+<span class="info-formula">BigInt (tak terbatas)</span>
+</div>
+</div>
+</div>
+<!-- ── KANAN: HASIL ── -->
+<div class="result-panel">
+<div class="card" style="padding:1.5rem;">
+<!-- Empty state -->
+<div class="empty-state" id="emptyState">
+<div class="empty-icon">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5" viewbox="0 0 24 24">
+<path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"></path>
+</svg>
+</div>
+<p>Masukkan nilai <strong>n</strong> dan <strong>r</strong>,<br/>lalu tekan <strong>Hitung Hasil</strong></p>
+</div>
+<!-- Answer -->
+<div class="ans-card theme-p" id="ansCard">
+<div class="ans-type" id="ansType">Permutasi</div>
+<div class="ans-expr" id="ansExpr">P(n, r)</div>
+<div class="ans-value" id="ansValue">–</div>
+<div class="ans-unit" id="ansUnit">Cara / Susunan</div>
+<span class="ans-digits" id="ansDigits"></span>
+</div>
+<!-- Steps -->
+<div class="steps-card card" id="stepsCard" style="margin-top:.875rem; box-shadow:none; border:1px solid var(--border);">
+<div class="step-title sp" id="stepsTitle">Langkah Perhitungan</div>
+<div id="stepsBody"></div>
+</div>
+<!-- Mini breakdown -->
+<div class="mini-grid" id="miniGrid">
+<div class="mini-card">
+<div class="mini-label">n!</div>
+<div class="mini-val" id="mnFactN">–</div>
+</div>
+<div class="mini-card">
+<div class="mini-label" id="mnLabel2">(n−r)!</div>
+<div class="mini-val" id="mnFactNR">–</div>
+</div>
+<div class="mini-card">
+<div class="mini-label" id="mnLabel3">r!</div>
+<div class="mini-val" id="mnFactR">–</div>
+</div>
+</div>
+<div class="big-note" id="bigNote">
+          * Hasil sangat besar — ditampilkan sebagai bilangan bulat presisi penuh (BigInt)
+        </div>
+</div>
+</div>
+</div><!-- /wrapper -->
+<script>
+    /* ─── STATE ─── */
+    let mode = 'P';
+
+    /* ─── MODE TOGGLE ─── */
+    function setMode(m) {
+      mode = m;
+      const isP = m === 'P';
+
+      // Buttons
+      document.getElementById('btnP').className = 'mode-btn' + (isP ? ' active-p' : '');
+      document.getElementById('btnC').className = 'mode-btn' + (!isP ? ' active-c' : '');
+
+      // Description
+      const desc = document.getElementById('modeDesc');
+      if (isP) {
+        desc.className = 'mode-desc desc-p';
+        desc.innerHTML = '<strong>Permutasi P(n, r)</strong> — urutan diperhitungkan.<span class="formula-ref">P(n,r) = n! / (n−r)!</span>';
+      } else {
+        desc.className = 'mode-desc desc-c';
+        desc.innerHTML = '<strong>Kombinasi C(n, r)</strong> — urutan TIDAK diperhitungkan.<span class="formula-ref">C(n,r) = n! / (r! × (n−r)!)</span>';
+      }
+
+      // Calc button
+      const btn = document.getElementById('btnCalc');
+      btn.className = 'btn-calc ' + (isP ? 'btn-p' : 'btn-c');
+      btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg> Hitung Hasil`;
+
+      // Hide result
+      hideResult();
+    }
+
+    /* ─── FACTORIAL (BigInt) ─── */
+    function faktorial(num) {
+      if (num === 0n || num === 1n) return 1n;
+      let h = 1n;
+      for (let i = 2n; i <= num; i++) h *= i;
+      return h;
+    }
+
+    /* ─── FORMAT LARGE NUMBER ─── */
+    function fmt(bigVal) {
+      const s = bigVal.toString();
+      /* Insert commas every 3 digits */
+      return s.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
+    /* ─── TRUNCATE FOR DISPLAY ─── */
+    function displayBig(s, maxLen = 18) {
+      if (s.length <= maxLen) return s;
+      return s.slice(0, 8) + '…' + s.slice(-6);
+    }
+
+    /* ─── LIVE VALIDATION ─── */
+    function onInput() {
+      const n = parseInt(document.getElementById('valN').value);
+      const r = parseInt(document.getElementById('valR').value);
+      const err = document.getElementById('errR');
+      const inp = document.getElementById('valR');
+      if (!isNaN(n) && !isNaN(r) && r > n) {
+        err.classList.add('show');
+        inp.classList.add('error-input');
+      } else {
+        err.classList.remove('show');
+        inp.classList.remove('error-input');
+      }
+    }
+
+    /* ─── HIDE RESULT ─── */
+    function hideResult() {
+      document.getElementById('emptyState').style.display = 'block';
+      document.getElementById('ansCard').classList.remove('show');
+      document.getElementById('stepsCard').classList.remove('show');
+      document.getElementById('miniGrid').classList.remove('show');
+      document.getElementById('bigNote').classList.remove('show');
+    }
+
+    /* ─── MAIN CALCULATE ─── */
+    function hitung() {
+      const nRaw = document.getElementById('valN').value;
+      const rRaw = document.getElementById('valR').value;
+
+      /* Input presence check */
+      if (nRaw === '' || rRaw === '') {
+        shakeMissing(nRaw, rRaw);
+        return;
+      }
+
+      const n = parseInt(nRaw);
+      const r = parseInt(rRaw);
+
+      if (n < 0 || r < 0) {
+        alert('Nilai n dan r harus bilangan non-negatif!');
+        return;
+      }
+      if (r > n) {
+        document.getElementById('errR').classList.add('show');
+        document.getElementById('valR').classList.add('error-input');
+        return;
+      }
+
+      /* ── BigInt Calculations ── */
+      const nB  = BigInt(n);
+      const rB  = BigInt(r);
+      const nrB = BigInt(n - r);
+
+      const fN   = faktorial(nB);
+      const fR   = faktorial(rB);
+      const fNR  = faktorial(nrB);
+
+      const isP = mode === 'P';
+      const result = isP ? fN / fNR : fN / (fR * fNR);
+      const resStr = result.toString();
+      const digits = resStr.length;
+
+      /* ── Populate Answer Card ── */
+      const ac = document.getElementById('ansCard');
+      ac.className = 'ans-card ' + (isP ? 'theme-p' : 'theme-c');
+      document.getElementById('ansType').textContent = isP ? 'Permutasi P(n,r)' : 'Kombinasi C(n,r)';
+      document.getElementById('ansExpr').textContent = isP ? `P(${n}, ${r})` : `C(${n}, ${r})`;
+
+      const valEl = document.getElementById('ansValue');
+      valEl.textContent = displayBig(resStr);
+      document.getElementById('ansUnit').textContent = isP ? 'Cara / Susunan' : 'Kombinasi / Pilihan';
+      document.getElementById('ansDigits').textContent = digits + ' digit';
+
+      /* ── Populate Steps ── */
+      const stepsTitle = document.getElementById('stepsTitle');
+      stepsTitle.className = 'step-title ' + (isP ? 'sp' : 'sc');
+      const cls = isP ? 'sp' : 'sc';
+      const hlCls = isP ? 'hl-p' : 'hl-c';
+
+      let stepsHTML = '';
+
+      if (isP) {
+        stepsHTML += stepRow(cls, 1, 'Tulis Rumus',
+          `P(${n}, ${r}) = ${n}! / (${n} − ${r})!`);
+        stepsHTML += stepRow(cls, 2, 'Sederhanakan Penyebut',
+          `P(${n}, ${r}) = ${n}! / ${n-r}!`, hlCls);
+        stepsHTML += stepRow(cls, 3, 'Hitung Faktorial Pembilang',
+          `${n}! = ${displayBig(fN.toString())}`, hlCls);
+        stepsHTML += stepRow(cls, 4, 'Hitung Faktorial Penyebut',
+          `${n-r}! = ${displayBig(fNR.toString())}`, hlCls);
+        stepsHTML += stepRow(cls, 5, 'Bagi Pembilang ÷ Penyebut',
+          `P(${n}, ${r}) = ${displayBig(fN.toString())} / ${displayBig(fNR.toString())}`, hlCls);
+        stepsHTML += stepRow(cls, 6, 'Hasil Akhir',
+          `P(${n}, ${r}) = ${displayBig(resStr)}`, hlCls);
+      } else {
+        stepsHTML += stepRow(cls, 1, 'Tulis Rumus',
+          `C(${n}, ${r}) = ${n}! / (${r}! × (${n} − ${r})!)`);
+        stepsHTML += stepRow(cls, 2, 'Sederhanakan Penyebut',
+          `C(${n}, ${r}) = ${n}! / (${r}! × ${n-r}!)`, hlCls);
+        stepsHTML += stepRow(cls, 3, 'Hitung n!',
+          `${n}! = ${displayBig(fN.toString())}`, hlCls);
+        stepsHTML += stepRow(cls, 4, 'Hitung r!',
+          `${r}! = ${displayBig(fR.toString())}`, hlCls);
+        stepsHTML += stepRow(cls, 5, 'Hitung (n−r)!',
+          `${n-r}! = ${displayBig(fNR.toString())}`, hlCls);
+        stepsHTML += stepRow(cls, 6, 'Kalikan Penyebut',
+          `${r}! × ${n-r}! = ${displayBig((fR * fNR).toString())}`, hlCls);
+        stepsHTML += stepRow(cls, 7, 'Hasil Akhir',
+          `C(${n}, ${r}) = ${displayBig(resStr)}`, hlCls);
+      }
+
+      document.getElementById('stepsBody').innerHTML = stepsHTML;
+
+      /* ── Mini Grid ── */
+      const mnV = isP ? hlCls : 'hl-c';
+      document.getElementById('mnFactN').className  = 'mini-val ' + mnV;
+      document.getElementById('mnFactNR').className = 'mini-val ' + mnV;
+      document.getElementById('mnFactR').className  = 'mini-val ' + mnV;
+      document.getElementById('mnFactN').textContent  = displayBig(fN.toString());
+      document.getElementById('mnLabel2').textContent = `(n−r)! = ${n-r}!`;
+      document.getElementById('mnFactNR').textContent = displayBig(fNR.toString());
+      if (isP) {
+        document.getElementById('mnLabel3').textContent = 'r! (Kombinasi)';
+        document.getElementById('mnFactR').textContent  = '—';
+      } else {
+        document.getElementById('mnLabel3').textContent = `r! = ${r}!`;
+        document.getElementById('mnFactR').textContent  = displayBig(fR.toString());
+      }
+
+      /* ── Show elements ── */
+      document.getElementById('emptyState').style.display = 'none';
+
+      [ac, document.getElementById('stepsCard'), document.getElementById('miniGrid')].forEach(el => {
+        el.classList.remove('show');
+      });
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        ac.classList.add('show');
+        document.getElementById('stepsCard').classList.add('show');
+        document.getElementById('miniGrid').classList.add('show');
+      }));
+
+      /* Pop animation */
+      valEl.classList.remove('popping');
+      void valEl.offsetWidth;
+      valEl.classList.add('popping');
+
+      /* Large number note */
+      const bigNote = document.getElementById('bigNote');
+      if (digits > 15) bigNote.classList.add('show');
+      else bigNote.classList.remove('show');
+    }
+
+    /* ─── STEP HTML BUILDER ─── */
+    function stepRow(cls, num, label, code, codeCls = '') {
+      return `
+        <div class="step-row">
+          <div class="step-num ${cls}">${num}</div>
+          <div class="step-content">
+            <div class="step-label">${label}</div>
+            <div class="step-code ${codeCls}">${code}</div>
+          </div>
+        </div>`;
+    }
+
+    /* ─── SHAKE MISSING INPUTS ─── */
+    function shakeMissing(nRaw, rRaw) {
+      if (nRaw === '') shake('valN');
+      if (rRaw === '') shake('valR');
+    }
+    function shake(id) {
+      const el = document.getElementById(id);
+      el.style.borderColor = '#EF4444';
+      el.style.boxShadow   = '0 0 0 4px rgba(239,68,68,.15)';
+      setTimeout(() => {
+        el.style.borderColor = '';
+        el.style.boxShadow   = '';
+      }, 1200);
+    }
+
+    /* ─── RESET ─── */
+    function resetAll() {
+      document.getElementById('valN').value = '';
+      document.getElementById('valR').value = '';
+      document.getElementById('errR').classList.remove('show');
+      document.getElementById('valR').classList.remove('error-input');
+      hideResult();
+    }
+  </script>
+</body>
+</html>

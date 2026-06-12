@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Program Relasi Invers dan Kombinasi Relasi Invers</title>
+<style>
+body{
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#FFE5EC,#E2F0CB,#CDE7FF);
+    min-height:100vh;
+    padding:30px;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.1);
+}
+
+h1{
+    text-align:center;
+    color:#6D597A;
+}
+
+.subtitle{
+    text-align:center;
+    color:#666;
+    margin-bottom:25px;
+}
+
+.card{
+    background:#F8F9FA;
+    padding:20px;
+    border-radius:15px;
+}
+
+label{
+    font-weight:bold;
+}
+
+select{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:#F7D6E0;
+    margin-top:8px;
+    margin-bottom:15px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:#A0C4FF;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#7FB3FF;
+}
+
+.output{
+    margin-top:20px;
+    background:#FFF7E6;
+    border-left:6px solid #FFD6A5;
+    padding:20px;
+    border-radius:15px;
+    white-space:pre-wrap;
+    line-height:1.8;
+}
+
+.footer{
+    text-align:center;
+    margin-top:20px;
+    color:#666;
+}
+</style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Nadia Rahmayanti_2503085</div>
+<div class="container">
+<h1>Program Relasi Invers dan Kombinasi Relasi Invers</h1>
+<p class="subtitle">
+Implementasi Matematika Diskrit Semester 2
+</p>
+<div class="card">
+<label>Pilih Studi Kasus:</label>
+<select id="kasus">
+<option value="1">Studi Kasus 1</option>
+<option value="2">Studi Kasus 2</option>
+<option value="3">Studi Kasus 3</option>
+<option value="4">Studi Kasus 4</option>
+<option value="5">Studi Kasus 5</option>
+</select>
+<button onclick="jalankanProgram()">
+Jalankan Program
+</button>
+</div>
+<div class="output" id="hasil">
+Pilih studi kasus lalu klik tombol "Jalankan Program".
+</div>
+<div class="footer">
+Program Relasi Invers dan Kombinasi Relasi Invers
+</div>
+</div>
+<script>
+
+function inversRelasi(relasi){
+    let hasil = [];
+
+    for(let pasangan of relasi){
+        hasil.push([
+            pasangan[1],
+            pasangan[0]
+        ]);
+    }
+
+    return hasil;
+}
+
+function gabungan(relasi1, relasi2){
+    let hasil = [...relasi1];
+
+    for(let pasangan of relasi2){
+
+        let ada = hasil.some(
+            item =>
+            item[0] === pasangan[0] &&
+            item[1] === pasangan[1]
+        );
+
+        if(!ada){
+            hasil.push(pasangan);
+        }
+    }
+
+    return hasil;
+}
+
+function irisan(relasi1, relasi2){
+
+    let hasil = [];
+
+    for(let p1 of relasi1){
+
+        for(let p2 of relasi2){
+
+            if(
+                p1[0] === p2[0] &&
+                p1[1] === p2[1]
+            ){
+                hasil.push(p1);
+            }
+        }
+    }
+
+    return hasil;
+}
+
+function jalankanProgram(){
+
+    let pilihan =
+    document.getElementById("kasus").value;
+
+    let R,S;
+
+    switch(pilihan){
+
+        case "1":
+            R = [[1,"a"],[2,"b"]];
+            S = [[2,"b"],[3,"c"]];
+        break;
+
+        case "2":
+            R = [[1,"x"],[2,"y"],[3,"z"]];
+            S = [[2,"y"],[4,"w"]];
+        break;
+
+        case "3":
+            R = [[1,"a"],[2,"b"],[3,"c"]];
+            S = [[4,"d"],[5,"e"]];
+        break;
+
+        case "4":
+            R = [[10,"p"],[20,"q"],[30,"r"]];
+            S = [[20,"q"],[30,"r"],[40,"s"]];
+        break;
+
+        case "5":
+            R = [["A",1],["B",2],["C",3]];
+            S = [["B",2],["D",4]];
+        break;
+    }
+
+    const inversR = inversRelasi(R);
+    const inversS = inversRelasi(S);
+
+    const gabunganInvers =
+    gabungan(inversR,inversS);
+
+    const irisanInvers =
+    irisan(inversR,inversS);
+
+    let hasil = "";
+
+    hasil += "STUDI KASUS : " + pilihan + "\n\n";
+
+    hasil += "Relasi R\n";
+    hasil += JSON.stringify(R);
+    hasil += "\n\n";
+
+    hasil += "Relasi S\n";
+    hasil += JSON.stringify(S);
+    hasil += "\n\n";
+
+    hasil += "Invers Relasi R\n";
+    hasil += JSON.stringify(inversR);
+    hasil += "\n\n";
+
+    hasil += "Invers Relasi S\n";
+    hasil += JSON.stringify(inversS);
+    hasil += "\n\n";
+
+    hasil += "Gabungan Relasi Invers\n";
+    hasil += JSON.stringify(gabunganInvers);
+    hasil += "\n\n";
+
+    hasil += "Irisan Relasi Invers\n";
+    hasil += JSON.stringify(irisanInvers);
+
+    document.getElementById("hasil").innerText = hasil;
+}
+
+</script>
+</body>
+</html>

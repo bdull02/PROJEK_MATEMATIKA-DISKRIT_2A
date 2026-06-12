@@ -1,0 +1,75 @@
+HTML
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Deret Aritmatika Sederhana</title>
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 350px;
+            margin: auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        #hasil {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Keysha Ranya Rahil_2509376</div>
+<div class="container">
+<h2>Deret Aritmatika</h2>
+<label>Suku Pertama (a)</label>
+<input id="a" type="number"/>
+<label>Beda (b)</label>
+<input id="b" type="number"/>
+<label>Banyak Suku (n)</label>
+<input id="n" type="number"/>
+<button onclick="hitungDeret()">Hitung</button>
+<div id="hasil"></div>
+</div>
+<script>
+function hitungDeret() {
+    let a = parseInt(document.getElementById("a").value);
+    let b = parseInt(document.getElementById("b").value);
+    let n = parseInt(document.getElementById("n").value);
+
+    let un = a + (n - 1) * b;
+    let sn = (n / 2) * (2 * a + (n - 1) * b);
+
+    document.getElementById("hasil").innerHTML =
+        "Suku ke-" + n + " = " + un + "<br>" +
+        "Jumlah Deret = " + sn;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Determinan Matriks 2×2 </title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #fffbf0;
+      color: #333;
+      padding: 24px 16px 60px;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* HEADER */
+    header {
+      text-align: center;
+      padding: 32px 20px;
+      background: #fff;
+      border-radius: 20px;
+      border: 2.5px solid #ffd166;
+      margin-bottom: 24px;
+      box-shadow: 4px 4px 0px #ffd166;
+    }
+
+    header .emoji-row { font-size: 2rem; margin-bottom: 10px; }
+
+    header h1 {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: #e63946;
+      margin-bottom: 8px;
+    }
+
+    header p {
+      color: #777;
+      font-size: .92rem;
+      line-height: 1.5;
+    }
+
+    /* SECTION */
+    .section {
+      background: #fff;
+      border-radius: 16px;
+      border: 2px solid #e0e0e0;
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #e63946;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* DEFINISI */
+    .def-box {
+      background: #fff8e1;
+      border-left: 4px solid #ffd166;
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: .93rem;
+      line-height: 1.7;
+      margin-bottom: 14px;
+    }
+
+    /* RUMUS */
+    .rumus-box {
+      background: #fff0f3;
+      border: 2px dashed #e63946;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      margin: 14px 0;
+    }
+
+    .rumus-box .rumus-label {
+      font-size: .8rem;
+      font-weight: 700;
+      color: #e63946;
+      margin-bottom: 8px;
+    }
+
+    .rumus-box .rumus-text {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #333;
+    }
+
+    .rumus-text .diag-utama { color: #e63946; }
+    .rumus-text .diag-kedua { color: #457b9d; }
+
+    /* MATRIX & DET DISPLAY */
+    .mx {
+      display: inline-grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px 12px;
+      position: relative;
+      padding: 6px 14px;
+      font-weight: 800;
+      font-size: 1rem;
+    }
+    .mx::before, .mx::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 5px;
+      border: 2.5px solid #457b9d;
+    }
+    .mx::before { left: 0; border-right: none; border-radius: 3px 0 0 3px; }
+    .mx::after  { right: 0; border-left: none;  border-radius: 0 3px 3px 0; }
+    .mx span { text-align: center; line-height: 1.9; min-width: 22px; }
+
+    .dt {
+      display: inline-grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px 12px;
+      position: relative;
+      padding: 6px 10px;
+      font-weight: 800;
+      font-size: 1rem;
+    }
+    .dt::before, .dt::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 2px;
+      background: #333;
+    }
+    .dt::before { left: 0; }
+    .dt::after  { right: 0; }
+    .dt span { text-align: center; line-height: 1.9; min-width: 22px; }
+
+    /* DIAGONAL LEGEND */
+    .legend {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      font-size: .85rem;
+      font-weight: 700;
+      margin-top: 14px;
+    }
+    .legend span { display: flex; align-items: center; gap: 6px; }
+    .dot-r { width:11px;height:11px;border-radius:50%;background:#e63946;display:inline-block; }
+    .dot-b { width:11px;height:11px;border-radius:50%;background:#457b9d;display:inline-block; }
+
+    /* CONTOH SOAL */
+    .soal-num-badge {
+      display: inline-block;
+      background: #e63946;
+      color: #fff;
+      font-size: .78rem;
+      font-weight: 800;
+      padding: 3px 12px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+
+    .soal-q {
+      font-weight: 700;
+      font-size: .95rem;
+      margin-bottom: 14px;
+      line-height: 1.5;
+      color: #444;
+    }
+
+    .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+
+    .solve-box {
+      background: #f8f8f8;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: .9rem;
+      line-height: 1.8;
+      margin-top: 10px;
+    }
+
+    .solve-label {
+      font-size: .75rem;
+      font-weight: 800;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 6px;
+    }
+
+    .answer {
+      display: inline-block;
+      background: #e63946;
+      color: #fff;
+      font-weight: 800;
+      font-size: 1rem;
+      padding: 2px 16px;
+      border-radius: 999px;
+    }
+
+    .var { color: #e67e22; font-weight: 900; }
+
+    hr.divider {
+      border: none;
+      border-top: 2px dashed #eee;
+      margin: 18px 0;
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      color: #aaa;
+      font-size: .83rem;
+      margin-top: 32px;
+    }
+    footer span { color: #e63946; }
+  </style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Rifa Alfiyah_2504911</div>
+<div class="container">
+<!-- HEADER -->
+<header>
+<div class="emoji-row">🧮 📐 ✏️</div>
+<h1>Determinan Matriks 2×2</h1>
+<p>Rifa Alfiyah - 2504911 - PSTI </p>
+</header>
+<!-- PENGERTIAN -->
+<div class="section">
+<div class="section-title">💡 Pengertian Determinan</div>
+<div class="def-box">
+<b>Determinan</b> adalah nilai yang bisa dihitung dari unsur-unsur suatu
+      <b>matriks persegi</b> (matriks yang jumlah baris dan kolomnya sama banyak).
+    </div>
+<p style="font-size:.9rem;color:#555;margin-bottom:12px;">Misalkan matriks A berorde 2×2:</p>
+<div class="row">
+<span style="font-size:.9rem;color:#777;">A =</span>
+<div class="mx">
+<span style="color:#e63946;">a</span>
+<span style="color:#457b9d;">b</span>
+<span style="color:#457b9d;">c</span>
+<span style="color:#e63946;">d</span>
+</div>
+</div>
+<div class="legend">
+<span><span class="dot-r"></span> a &amp; d = Diagonal Utama</span>
+<span><span class="dot-b"></span> b &amp; c = Diagonal Kedua (Skunder)</span>
+</div>
+<div class="rumus-box">
+<div class="rumus-label"> Rumus Determinan</div>
+<div class="rumus-text">
+        |A| = <span class="diag-utama">a×d</span> − <span class="diag-kedua">b×c</span>
+</div>
+</div>
+<div class="def-box" style="margin-bottom:0;">
+      Kalikan elemen <b style="color:#e63946;">diagonal utama</b>, lalu kurangi perkalian <b style="color:#457b9d;">diagonal kedua</b>.
+    </div>
+</div>
+<!-- CONTOH SOAL -->
+<div class="section">
+<div class="section-title">📝 Contoh Soal</div>
+<!-- SOAL 1 -->
+<div class="soal-num-badge">Soal 1</div>
+<div class="soal-q">Cari nilai determinan matriks A berikut ini.</div>
+<div class="row">
+<span style="font-size:.9rem;color:#777;">A =</span>
+<div class="mx">
+<span>2</span><span>5</span>
+<span>4</span><span>3</span>
+</div>
+</div>
+<div class="solve-box">
+<div class="solve-label">Penyelesaian</div>
+<div class="row">
+        det A =
+        <div class="dt">
+<span>2</span><span>5</span>
+<span>4</span><span>3</span>
+</div>
+        = (2×3) − (5×4) = 6 − 20 = <span class="answer">−14</span>
+</div>
+</div>
+<hr class="divider"/>
+<!-- SOAL 2 -->
+<div class="soal-num-badge">Soal 2</div>
+<div class="soal-q">Cari nilai determinan matriks A dengan bilangan negatif.</div>
+<div class="row">
+<span style="font-size:.9rem;color:#777;">A =</span>
+<div class="mx">
+<span>−7</span><span>2</span>
+<span>4</span><span>5</span>
+</div>
+</div>
+<div class="solve-box">
+<div class="solve-label">Penyelesaian</div>
+<div class="row">
+        det A =
+        <div class="dt">
+<span>−7</span><span>2</span>
+<span>4</span><span>5</span>
+</div>
+        = (−7×5) − (2×4) = −35 − 8 = <span class="answer">−43</span>
+</div>
+</div>
+<hr class="divider"/>
+<!-- SOAL 3 -->
+<div class="soal-num-badge">Soal 3</div>
+<div class="soal-q">Determinan matriks A sudah diketahui yaitu 18. Berapa nilai <span class="var">x</span>?</div>
+<div class="row">
+<span style="font-size:.9rem;color:#777;">A =</span>
+<div class="mx">
+<span>3</span><span class="var">x</span>
+<span>2</span><span>8</span>
+</div>
+</div>
+<div class="solve-box">
+<div class="solve-label">Penyelesaian</div>
+<div style="line-height:2;">
+<div class="row">
+          18 =
+          <div class="dt">
+<span>3</span><span class="var">x</span>
+<span>2</span><span>8</span>
+</div>
+          = (3×8) − (<span class="var">x</span>×2) = 24 − 2<span class="var">x</span>
+</div>
+<div>18 = 24 − 2<span class="var">x</span></div>
+<div>2<span class="var">x</span> = 24 − 18 = 6</div>
+<div class="row"><span class="var">x</span> = <span class="answer">3</span></div>
+</div>
+</div>
+<hr class="divider"/>
+<!-- SOAL 4 -->
+<div class="soal-num-badge">Soal 4</div>
+<div class="soal-q">Jumlahkan kedua matriks berikut, lalu cari determinan dari hasil penjumlahannya!</div>
+<div class="row" style="gap:16px;">
+<div>
+<div style="font-size:.78rem;font-weight:800;color:#999;margin-bottom:4px;">A</div>
+<div class="mx">
+<span>3</span><span>2</span>
+<span>1</span><span>4</span>
+</div>
+</div>
+<span style="font-size:1.3rem;color:#ccc;">+</span>
+<div>
+<div style="font-size:.78rem;font-weight:800;color:#999;margin-bottom:4px;">B</div>
+<div class="mx">
+<span>1</span><span>3</span>
+<span>2</span><span>5</span>
+</div>
+</div>
+<span style="font-size:1.3rem;color:#ccc;">=</span>
+<div>
+<div style="font-size:.78rem;font-weight:800;color:#e63946;margin-bottom:4px;">A + B</div>
+<div class="mx">
+<span>4</span><span>5</span>
+<span>3</span><span>9</span>
+</div>
+</div>
+</div>
+<div class="solve-box">
+<div class="solve-label">Penyelesaian</div>
+<div class="row">
+        det (A+B) =
+        <div class="dt">
+<span>4</span><span>5</span>
+<span>3</span><span>9</span>
+</div>
+        = (4×9) − (5×3) = 36 − 15 = <span class="answer">21</span>
+</div>
+</div>
+<hr class="divider"/>
+<!-- SOAL 5 -->
+<div class="soal-num-badge">Soal 5</div>
+<div class="soal-q">Kalikan hasil determinan dari kedua matriks berikut!</div>
+<div class="row" style="gap:20px;">
+<div>
+<div style="font-size:.78rem;font-weight:800;color:#999;margin-bottom:4px;">A</div>
+<div class="mx">
+<span>7</span><span>3</span>
+<span>3</span><span>1</span>
+</div>
+</div>
+<div>
+<div style="font-size:.78rem;font-weight:800;color:#999;margin-bottom:4px;">B</div>
+<div class="mx">
+<span>1</span><span>4</span>
+<span>3</span><span>5</span>
+</div>
+</div>
+</div>
+<div class="solve-box">
+<div class="solve-label">Penyelesaian</div>
+<div style="line-height:2.1;">
+<div class="row">
+          det A =
+          <div class="dt"><span>7</span><span>3</span><span>3</span><span>1</span></div>
+          = (7×1) − (3×3) = 7 − 9 = <b>−2</b>
+</div>
+<div class="row">
+          det B =
+          <div class="dt"><span>1</span><span>4</span><span>3</span><span>5</span></div>
+          = (1×5) − (4×3) = 5 − 12 = <b>−7</b>
+</div>
+<div class="row">
+          det A × det B = (−2) × (−7) = <span class="answer">14</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,96 @@
+index.html
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aplikasi Penghitung KPK</title>
+<style>
+        body {
+            background-color: #0f0f0f;
+            font-family: Arial;
+            text-align: center;
+            margin-top: 50px;
+            color: #e6e6e6;
+        }
+
+        h1 {
+            color: #1e90ff;
+        }
+
+        label {
+            font-weight: bold;
+            color: #cccccc;
+        }
+
+        input {
+            padding: 10px;
+            margin: 5px;
+            width: 220px;
+            border: 2px solid #1e90ff;
+            border-radius: 5px;
+            background-color: #1a1a1a;
+            color: white;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #00bfff;
+            box-shadow: 0 0 5px #00bfff;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #1e90ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #0d6efd;
+        }
+
+        #hasil {
+            margin-top: 20px;
+            font-size: 22px;
+            color: #00bfff;
+            font-weight: bold;
+        }
+    </style>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Shafira Zefania fahby[2505130]</div>
+<h1>Aplikasi Penghitung KPK Berbasis Web</h1>
+<label>Bilangan Pertama:</label><br/>
+<input id="angka1" type="number"/><br/><br/>
+<label>Bilangan Kedua:</label><br/>
+<input id="angka2" type="number"/><br/><br/>
+<button onclick="hitungKPK()">Hitung KPK</button>
+<h3>Hasil:</h3>
+<p id="hasil"></p>
+<script>
+        function hitungKPK() {
+            let a = parseInt(document.getElementById("angka1").value);
+            let b = parseInt(document.getElementById("angka2").value);
+
+            if (isNaN(a) || isNaN(b)) {
+                document.getElementById("hasil").innerHTML =
+                    "Masukkan dua angka terlebih dahulu!";
+                return;
+            }
+
+            let kpk = Math.max(a, b);
+
+            while (kpk % a !== 0 || kpk % b !== 0) {
+                kpk++;
+            }
+
+            document.getElementById("hasil").innerHTML =
+                "KPK dari " + a + " dan " + b + " adalah " + kpk;
+        }
+    </script>
+</body>
+</html>

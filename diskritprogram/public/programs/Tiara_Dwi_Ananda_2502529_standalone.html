@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prinsip Perkalian - Tiara Dwi Ananda (2502529)</title>
+
+    <style>
+/* =========================
+   RESET
+========================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background:#FFF7FA;
+    color:#2D2D2D;
+    line-height:1.8;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+header{
+    background:linear-gradient(
+        135deg,
+        #E75480,
+        #F06292
+    );
+
+    color:white;
+    text-align:center;
+    padding:70px 20px;
+
+    box-shadow:0 4px 15px rgba(0,0,0,0.15);
+}
+
+header h1{
+    font-size:2.8rem;
+    margin-bottom:10px;
+}
+
+header p{
+    font-size:1.1rem;
+    opacity:0.95;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+nav{
+    position:sticky;
+    top:0;
+    z-index:100;
+
+    background:white;
+
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:15px;
+
+    padding:15px;
+
+    box-shadow:0 3px 12px rgba(0,0,0,0.08);
+}
+
+nav a{
+    text-decoration:none;
+    color:#E75480;
+    font-weight:600;
+
+    padding:10px 16px;
+
+    border-radius:10px;
+
+    transition:0.3s;
+}
+
+nav a:hover{
+    background:#FFE4EC;
+    color:#C2185B;
+}
+
+/* =========================
+   SECTION CARD
+========================= */
+
+.card{
+    width:90%;
+    max-width:1100px;
+
+    margin:35px auto;
+
+    background:white;
+
+    padding:30px;
+
+    border-radius:20px;
+
+    box-shadow:
+    0 8px 20px rgba(0,0,0,0.08);
+
+    animation:fadeIn 0.8s ease;
+}
+
+.card h2{
+    color:#E75480;
+    margin-bottom:20px;
+}
+
+/* =========================
+   MATERI
+========================= */
+
+.section-title{
+    text-align:center;
+    color:#E75480;
+    margin-bottom:25px;
+}
+
+.materi-box{
+    background:#FFF0F5;
+
+    padding:25px;
+
+    border-radius:15px;
+
+    margin-bottom:20px;
+
+    border-left:6px solid #E75480;
+}
+
+.materi-box h3{
+    color:#C2185B;
+    margin-bottom:10px;
+}
+
+.materi-box ul{
+    padding-left:25px;
+}
+
+.materi-grid{
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(300px,1fr));
+
+    gap:20px;
+
+    margin-bottom:20px;
+}
+
+.materi-item{
+    background:white;
+
+    padding:20px;
+
+    border-radius:15px;
+
+    border:2px solid #F8D7E3;
+
+    transition:0.3s;
+}
+
+.materi-item:hover{
+    transform:translateY(-5px);
+
+    box-shadow:
+    0 8px 15px rgba(231,84,128,0.15);
+}
+
+.materi-item h3{
+    color:#C2185B;
+    margin-bottom:10px;
+}
+
+.materi-item ul{
+    padding-left:20px;
+}
+
+/* =========================
+   ILUSTRASI
+========================= */
+
+.visual{
+    display:flex;
+
+    justify-content:center;
+
+    flex-wrap:wrap;
+
+    gap:20px;
+
+    margin-top:20px;
+}
+
+.visual-card{
+    width:130px;
+    height:130px;
+
+    background:white;
+
+    border-radius:20px;
+
+    border:2px solid #F8D7E3;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    font-size:2rem;
+
+    transition:0.3s;
+}
+
+.visual-card:hover{
+    transform:scale(1.05);
+
+    box-shadow:
+    0 10px 20px rgba(231,84,128,0.15);
+}
+
+.visual-card span{
+    margin-top:10px;
+    font-size:0.9rem;
+}
+
+.hasil-ilustrasi{
+    text-align:center;
+    margin-top:20px;
+    color:#C2185B;
+}
+
+/* =========================
+   FORM
+========================= */
+
+label{
+    display:block;
+    margin-bottom:5px;
+    font-weight:600;
+}
+
+input,
+select{
+    width:100%;
+
+    padding:12px;
+
+    border:1px solid #ddd;
+
+    border-radius:10px;
+
+    margin-bottom:15px;
+
+    transition:0.3s;
+}
+
+input:focus,
+select:focus{
+    outline:none;
+
+    border-color:#E75480;
+
+    box-shadow:
+    0 0 8px rgba(231,84,128,0.2);
+}
+
+/* =========================
+   BUTTON
+========================= */
+
+button{
+    background:#E75480;
+
+    color:white;
+
+    border:none;
+
+    padding:12px 20px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    transition:0.3s;
+
+    margin-right:10px;
+    margin-top:10px;
+}
+
+button:hover{
+    background:#C2185B;
+
+    transform:translateY(-2px);
+}
+
+/* =========================
+   INPUT GROUP
+========================= */
+
+.input-group{
+    margin-bottom:15px;
+}
+
+/* =========================
+   HASIL SIMULASI
+========================= */
+
+#hasil{
+    margin-top:20px;
+}
+
+.result-card{
+    background:#FFF0F5;
+
+    padding:25px;
+
+    border-radius:15px;
+
+    border-left:5px solid #E75480;
+}
+
+.result-card h3{
+    color:#C2185B;
+}
+
+.result-card hr{
+    margin:15px 0;
+    border:none;
+    border-top:1px solid #f2cdd9;
+}
+
+.result-value{
+    font-size:2.8rem;
+    font-weight:bold;
+
+    text-align:center;
+
+    color:#E75480;
+
+    margin:15px 0;
+}
+
+/* =========================
+   CONTOH SOAL
+========================= */
+
+.soal{
+    margin-bottom:20px;
+
+    padding:20px;
+
+    background:#FFF0F5;
+
+    border-left:5px solid #E75480;
+
+    border-radius:10px;
+
+    transition:0.3s;
+}
+
+.soal:hover{
+    transform:translateX(5px);
+}
+
+.soal h3{
+    color:#C2185B;
+}
+
+/* =========================
+   LATIHAN
+========================= */
+
+#soalLatihan{
+    margin-bottom:15px;
+    font-size:1.05rem;
+}
+
+#feedback{
+    margin-top:15px;
+    color:#C2185B;
+}
+
+#skor{
+    color:#E75480;
+    font-weight:bold;
+}
+
+/* =========================
+   TENTANG
+========================= */
+
+#tentang p{
+    margin-bottom:10px;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer{
+    background:#E75480;
+
+    color:white;
+
+    text-align:center;
+
+    padding:25px;
+
+    margin-top:50px;
+}
+
+/* =========================
+   ANIMATION
+========================= */
+
+@keyframes fadeIn{
+
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:768px){
+
+    header h1{
+        font-size:2rem;
+    }
+
+    nav{
+        flex-direction:column;
+        align-items:center;
+    }
+
+    .card{
+        width:95%;
+        padding:20px;
+    }
+
+    .visual-card{
+        width:110px;
+        height:110px;
+    }
+
+    button{
+        width:100%;
+        margin-right:0;
+    }
+}
+
+.author-badge{
+position:fixed;
+top:16px;
+left:16px;
+z-index:99999;
+padding:6px 12px;
+border-radius:999px;
+font-size:12px;
+background:#111;
+color:#fff;
+font-family:Arial,sans-serif;
+box-shadow:0 2px 8px rgba(0,0,0,.2);
+}
+
+</style>
+</head>
+<body>
+<div class="author-badge">Tiara Dwi Ananda (2502529)</div>
+
+    <!-- HEADER -->
+    <header>
+        <h1>Prinsip Perkalian (Rule of Product)</h1>
+        <p>Website Edukasi Matematika Diskrit</p>
+    </header>
+
+    <!-- NAVIGATION -->
+    <nav>
+        <a href="#materi">Materi</a>
+        <a href="#simulasi">Simulasi</a>
+        <a href="#contoh">Contoh Soal</a>
+        <a href="#latihan">Latihan</a>
+        <a href="#tentang">Tentang</a>
+    </nav>
+
+    <!-- MATERI -->
+    <section id="materi" class="card">
+
+        <h2 class="section-title">
+            📚 Materi Prinsip Perkalian
+        </h2>
+
+        <div class="materi-box">
+            <h3>Pengertian</h3>
+
+            <p>
+                Prinsip Perkalian (Rule of Product) adalah aturan yang digunakan
+                untuk menghitung banyaknya kemungkinan hasil dari suatu kegiatan
+                yang terdiri atas beberapa tahap.
+            </p>
+        </div>
+
+        <div class="materi-grid">
+
+            <div class="materi-item">
+                <h3>📌 Rumus</h3>
+
+                <p>
+                    Total = n₁ × n₂ × n₃ × ... × nₖ
+                </p>
+
+                <p>
+                    Setiap tahap dikalikan dengan jumlah pilihan pada tahap lainnya.
+                </p>
+            </div>
+
+            <div class="materi-item">
+                <h3>🎯 Kapan Digunakan?</h3>
+
+                <ul>
+                    <li>Memilih pakaian</li>
+                    <li>Menyusun menu makanan</li>
+                    <li>Membuat password</li>
+                    <li>Kombinasi produk</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="materi-box">
+
+            <h3>🌍 Contoh Kehidupan Sehari-hari</h3>
+
+            <p>
+                Sebuah toko memiliki:
+            </p>
+
+            <ul>
+                <li>3 jenis baju</li>
+                <li>4 jenis celana</li>
+                <li>2 jenis sepatu</li>
+            </ul>
+
+            <p>
+                Maka jumlah kombinasi pakaian:
+            </p>
+
+            <h3>3 × 4 × 2 = 24 kombinasi</h3>
+
+        </div>
+
+        <div class="materi-box">
+
+            <h3>🧠 Ilustrasi Sederhana</h3>
+
+            <div class="visual">
+
+                <div class="visual-card">
+                    👕
+                    <span>3 Baju</span>
+                </div>
+
+                <div class="visual-card">
+                    👖
+                    <span>4 Celana</span>
+                </div>
+
+                <div class="visual-card">
+                    👟
+                    <span>2 Sepatu</span>
+                </div>
+
+            </div>
+
+            <h3 class="hasil-ilustrasi">
+                Total = 24 Kombinasi
+            </h3>
+
+        </div>
+
+    </section>
+
+    <!-- SIMULASI -->
+    <section id="simulasi" class="card">
+
+        <h2>🧮 Simulasi Prinsip Perkalian</h2>
+
+        <label>Jumlah Tahap</label>
+
+        <select id="jumlahTahap" onchange="buatInput()">
+            <option value="2">2 Tahap</option>
+            <option value="3">3 Tahap</option>
+            <option value="4">4 Tahap</option>
+            <option value="5">5 Tahap</option>
+        </select>
+
+        <div id="inputContainer"></div>
+
+        <button onclick="hitung()">
+            Hitung
+        </button>
+
+        <div id="hasil"></div>
+
+    </section>
+
+    <!-- CONTOH SOAL -->
+    <section id="contoh" class="card">
+
+        <h2>📖 Contoh Soal</h2>
+
+        <div class="soal">
+            <h3>Soal 1</h3>
+            <p>3 jenis baju dan 2 jenis celana.</p>
+            <p><b>Pembahasan:</b> 3 × 2 = 6 kombinasi.</p>
+        </div>
+
+        <div class="soal">
+            <h3>Soal 2</h3>
+            <p>4 makanan dan 3 minuman.</p>
+            <p><b>Pembahasan:</b> 4 × 3 = 12 kombinasi.</p>
+        </div>
+
+        <div class="soal">
+            <h3>Soal 3</h3>
+            <p>5 kendaraan dan 2 tujuan.</p>
+            <p><b>Pembahasan:</b> 5 × 2 = 10 kemungkinan.</p>
+        </div>
+
+        <div class="soal">
+            <h3>Soal 4</h3>
+            <p>3 huruf dan 4 angka.</p>
+            <p><b>Pembahasan:</b> 3 × 4 = 12 kombinasi.</p>
+        </div>
+
+        <div class="soal">
+            <h3>Soal 5</h3>
+            <p>3 hotel, 2 transportasi, 4 destinasi.</p>
+            <p><b>Pembahasan:</b> 3 × 2 × 4 = 24 kombinasi.</p>
+        </div>
+
+    </section>
+
+    <!-- LATIHAN -->
+    <section id="latihan" class="card">
+
+        <h2>📝 Latihan Interaktif</h2>
+
+        <p id="soalLatihan"></p>
+
+        <input
+            type="number"
+            id="jawaban"
+            placeholder="Masukkan jawaban"
+        >
+
+        <button onclick="cekJawaban()">
+            Periksa Jawaban
+        </button>
+
+        <button onclick="buatSoal()">
+            Soal Baru
+        </button>
+
+        <h3 id="feedback"></h3>
+
+        <h3>
+            Skor :
+            <span id="skor">0</span>
+        </h3>
+
+    </section>
+
+    <!-- TENTANG -->
+    <section id="tentang" class="card">
+
+        <h2>ℹ️ Tentang Website</h2>
+
+        <p>
+            Website ini dibuat untuk membantu mahasiswa memahami
+            konsep Prinsip Perkalian dalam Kombinatorika secara
+            interaktif dan mudah dipahami.
+        </p>
+
+        <p>
+            Website menyediakan materi, simulasi, contoh soal,
+            dan latihan untuk meningkatkan pemahaman pengguna.
+        </p>
+
+        <p>
+            <b>Pembuat:</b> Tiara Dwi Ananda (2502529)
+        </p>
+
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>
+            © 2026 Website Edukasi Prinsip Perkalian
+        </p>
+    </footer>
+
+    <script>
+/* =====================================
+   SIMULASI
+===================================== */
+
+function buatInput() {
+
+    const jumlah = parseInt(
+        document.getElementById("jumlahTahap").value
+    );
+
+    const container =
+        document.getElementById("inputContainer");
+
+    container.innerHTML = "";
+
+    for(let i = 1; i <= jumlah; i++){
+
+        container.innerHTML += `
+            <div class="input-group">
+                <label>Tahap ${i}</label>
+
+                <input
+                    type="number"
+                    id="tahap${i}"
+                    min="1"
+                    placeholder="Masukkan jumlah pilihan"
+                >
+            </div>
+        `;
+    }
+
+    document.getElementById("hasil").innerHTML = "";
+}
+
+/* =====================================
+   HITUNG
+===================================== */
+
+function hitung(){
+
+    const jumlah = parseInt(
+        document.getElementById("jumlahTahap").value
+    );
+
+    let total = 1;
+    let langkah = [];
+
+    for(let i = 1; i <= jumlah; i++){
+
+        const nilai = parseInt(
+            document.getElementById(`tahap${i}`).value
+        );
+
+        if(isNaN(nilai) || nilai <= 0){
+
+            document.getElementById("hasil").innerHTML = `
+                <div class="result-card">
+                    <h3>⚠️ Input Tidak Valid</h3>
+                    <p>
+                        Semua input harus diisi
+                        dengan angka lebih dari 0.
+                    </p>
+                </div>
+            `;
+
+            return;
+        }
+
+        langkah.push(nilai);
+        total *= nilai;
+    }
+
+    const rumus = langkah.join(" × ");
+
+    document.getElementById("hasil").innerHTML = `
+        <div class="result-card">
+
+            <h3>📌 Rumus</h3>
+
+            <p>
+                Total = n₁ × n₂ × n₃ × ... × nₖ
+            </p>
+
+            <hr>
+
+            <h3>📝 Langkah Perhitungan</h3>
+
+            <p>${rumus}</p>
+
+            <p>
+                ${rumus} = <strong>${total}</strong>
+            </p>
+
+            <hr>
+
+            <div class="result-value">
+                ${total}
+            </div>
+
+            <p style="text-align:center;">
+                Total Kemungkinan
+            </p>
+
+        </div>
+    `;
+}
+
+/* =====================================
+   LATIHAN
+===================================== */
+
+let jawabanBenar = 0;
+let skor = 0;
+
+function buatSoal(){
+
+    const tipe =
+        Math.floor(Math.random() * 4);
+
+    let a, b, c;
+
+    if(tipe === 0){
+
+        a = Math.floor(Math.random() * 5) + 2;
+        b = Math.floor(Math.random() * 5) + 2;
+
+        jawabanBenar = a * b;
+
+        document.getElementById(
+            "soalLatihan"
+        ).innerHTML = `
+            Sebuah toko memiliki
+            <b>${a}</b> jenis baju dan
+            <b>${b}</b> jenis celana.
+
+            <br><br>
+
+            Berapa banyak kombinasi
+            pakaian yang dapat dibentuk?
+        `;
+    }
+
+    else if(tipe === 1){
+
+        a = Math.floor(Math.random() * 5) + 2;
+        b = Math.floor(Math.random() * 5) + 2;
+
+        jawabanBenar = a * b;
+
+        document.getElementById(
+            "soalLatihan"
+        ).innerHTML = `
+            Sebuah restoran memiliki
+            <b>${a}</b> menu makanan dan
+            <b>${b}</b> menu minuman.
+
+            <br><br>
+
+            Berapa paket menu yang
+            dapat dibuat?
+        `;
+    }
+
+    else if(tipe === 2){
+
+        a = Math.floor(Math.random() * 5) + 2;
+        b = Math.floor(Math.random() * 5) + 2;
+        c = Math.floor(Math.random() * 4) + 2;
+
+        jawabanBenar = a * b * c;
+
+        document.getElementById(
+            "soalLatihan"
+        ).innerHTML = `
+            Sebuah toko menyediakan:
+
+            <ul>
+                <li>${a} jenis baju</li>
+                <li>${b} jenis celana</li>
+                <li>${c} jenis sepatu</li>
+            </ul>
+
+            Berapa banyak kombinasi
+            yang dapat dibentuk?
+        `;
+    }
+
+    else{
+
+        a = Math.floor(Math.random() * 5) + 2;
+        b = Math.floor(Math.random() * 5) + 2;
+
+        jawabanBenar = a * b;
+
+        document.getElementById(
+            "soalLatihan"
+        ).innerHTML = `
+            Terdapat
+            <b>${a}</b> pilihan kendaraan
+            dan
+            <b>${b}</b> pilihan tujuan.
+
+            <br><br>
+
+            Berapa kemungkinan perjalanan
+            yang dapat dipilih?
+        `;
+    }
+
+    document.getElementById("jawaban").value = "";
+    document.getElementById("feedback").innerHTML = "";
+}
+
+function cekJawaban(){
+
+    const jawabanUser = parseInt(
+        document.getElementById("jawaban").value
+    );
+
+    if(isNaN(jawabanUser)){
+
+        document.getElementById(
+            "feedback"
+        ).innerHTML =
+        "⚠️ Masukkan jawaban terlebih dahulu.";
+
+        return;
+    }
+
+    if(jawabanUser === jawabanBenar){
+
+        skor++;
+
+        document.getElementById(
+            "feedback"
+        ).innerHTML =
+        "✅ Jawaban Benar!";
+
+    }else{
+
+        document.getElementById(
+            "feedback"
+        ).innerHTML =
+        `❌ Jawaban Salah. Jawaban yang benar adalah <b>${jawabanBenar}</b>`;
+    }
+
+    document.getElementById("skor")
+    .innerText = skor;
+}
+
+/* =====================================
+   LOAD AWAL
+===================================== */
+
+window.onload = function(){
+
+    buatInput();
+    buatSoal();
+
+};
+</script>
+
+</body>
+</html>

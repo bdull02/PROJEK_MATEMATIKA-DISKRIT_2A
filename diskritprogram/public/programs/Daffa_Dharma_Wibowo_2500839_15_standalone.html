@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Matematika Diskrit - Pohon Berakar</title>
+<link href="style.css" rel="stylesheet"/>
+<style>.author-badge{position:fixed;top:16px;left:16px;z-index:9999;padding:6px 12px;border-radius:999px;font-size:12px;background:#111;color:#fff}</style></head>
+<body><div class="author-badge">Daffa Dharma Wibowo_2500839</div>
+<header class="navbar">
+<div class="brand">
+<span class="logo">∑</span>
+<div>
+<h1>MathTree</h1>
+<p>Matematika Diskrit</p>
+</div>
+</div>
+<nav>
+<a href="#beranda">Beranda</a>
+<a href="#materi">Materi</a>
+<a href="#terminologi">Terminologi</a>
+<a href="#terurut">Pohon Terurut</a>
+<a href="#analisis">Analisis</a>
+<a href="#kuis">Kuis</a>
+</nav>
+</header>
+<main>
+<section class="hero" id="beranda">
+<div class="hero-text">
+<span class="badge">Pohon Bagian 2</span>
+<h2>Pohon Berakar dalam Matematika Diskrit</h2>
+<p>
+          Website ini membahas konsep pohon berakar atau <em>rooted tree</em>,
+          mulai dari pengertian, struktur simpul, terminologi dasar, pohon terurut,
+          hingga contoh analisis sederhana.
+        </p>
+<div class="student-card">
+<p>Dibuat oleh:</p>
+<h3>Daffa Dharma Wibowo</h3>
+<div class="student-detail">
+<span>Kelas: 2A</span>
+<span>NIM: 2500839</span>
+</div>
+</div>
+<div class="hero-buttons">
+<a class="btn-primary" href="#materi">Mulai Belajar</a>
+<a class="btn-secondary" href="#kuis">Coba Kuis</a>
+</div>
+</div>
+<div class="tree-card">
+<svg class="tree-lines" preserveaspectratio="none" viewbox="0 0 100 100">
+<line x1="50" x2="28" y1="18" y2="42"></line>
+<line x1="50" x2="72" y1="18" y2="42"></line>
+<line x1="28" x2="18" y1="42" y2="74"></line>
+<line x1="28" x2="50" y1="42" y2="74"></line>
+<line x1="72" x2="82" y1="42" y2="74"></line>
+</svg>
+<div class="node root node-a">A</div>
+<div class="node node-b">B</div>
+<div class="node node-c">C</div>
+<div class="node small node-d">D</div>
+<div class="node small node-e">E</div>
+<div class="node small node-f">F</div>
+</div>
+</section>
+<section class="section" id="materi">
+<div class="section-title">
+<span>01</span>
+<h2>Apa itu Pohon Berakar?</h2>
+</div>
+<div class="content-grid">
+<article class="card">
+<h3>Pengertian</h3>
+<p>
+            Pohon berakar adalah pohon yang memiliki satu simpul khusus yang disebut
+            <strong>akar</strong>. Dari akar, hubungan antar simpul dapat dibaca
+            seperti struktur keluarga.
+          </p>
+</article>
+<article class="card">
+<h3>Ide Utama</h3>
+<p>
+            Setiap simpul selain akar memiliki tepat satu orang tua.
+            Sebuah simpul dapat memiliki anak, saudara kandung, atau menjadi daun.
+          </p>
+</article>
+<article class="card">
+<h3>Kegunaan</h3>
+<p>
+            Pohon berakar banyak digunakan untuk struktur folder, silsilah keluarga,
+            struktur organisasi, pengambilan keputusan, dan struktur data.
+          </p>
+</article>
+</div>
+<div class="info-box">
+<h3>Fokus Pembahasan</h3>
+<p>
+          Fokus materi ini adalah memahami hubungan antar simpul, seperti akar,
+          anak, orang tua, daun, lintasan, aras, dan tinggi pohon.
+        </p>
+</div>
+</section>
+<section class="section light" id="terminologi">
+<div class="section-title">
+<span>02</span>
+<h2>Terminologi Pohon Berakar</h2>
+</div>
+<div class="search-box">
+<input id="searchInput" placeholder="Cari istilah, contoh: akar, daun, tinggi..." type="text"/>
+</div>
+<div class="term-grid" id="termContainer">
+<div class="term-card">
+<h3>Akar / Root</h3>
+<p>Simpul utama pada pohon berakar dan menjadi titik awal struktur pohon.</p>
+</div>
+<div class="term-card">
+<h3>Anak / Child</h3>
+<p>Simpul yang berada tepat di bawah simpul lain dan terhubung langsung.</p>
+</div>
+<div class="term-card">
+<h3>Orang Tua / Parent</h3>
+<p>Simpul yang memiliki cabang langsung menuju simpul anak.</p>
+</div>
+<div class="term-card">
+<h3>Saudara Kandung / Sibling</h3>
+<p>Dua simpul atau lebih yang memiliki orang tua yang sama.</p>
+</div>
+<div class="term-card">
+<h3>Daun / Leaf</h3>
+<p>Simpul yang tidak memiliki anak.</p>
+</div>
+<div class="term-card">
+<h3>Simpul Dalam</h3>
+<p>Simpul yang memiliki setidaknya satu anak.</p>
+</div>
+<div class="term-card">
+<h3>Lintasan / Path</h3>
+<p>Urutan simpul yang dilewati dari satu simpul ke simpul lain.</p>
+</div>
+<div class="term-card">
+<h3>Aras / Level</h3>
+<p>Tingkat posisi simpul jika dihitung dari akar.</p>
+</div>
+<div class="term-card">
+<h3>Tinggi / Height</h3>
+<p>Panjang lintasan terpanjang dari akar menuju daun.</p>
+</div>
+</div>
+</section>
+<section class="section" id="terurut">
+<div class="section-title">
+<span>03</span>
+<h2>Pohon Terurut dan Pengembangan Materi</h2>
+</div>
+<div class="split-box">
+<div>
+<h3>Pohon Terurut / Ordered Tree</h3>
+<p>
+            Pohon terurut adalah pohon berakar yang urutan anak-anaknya diperhatikan.
+            Artinya, posisi anak pertama, kedua, dan seterusnya memiliki makna.
+          </p>
+<p>
+            Contohnya, jika simpul A memiliki anak B dan C, maka susunan
+            <strong>B lalu C</strong> berbeda dengan susunan <strong>C lalu B</strong>
+            pada pohon terurut.
+          </p>
+</div>
+<div class="mini-comparison">
+<div class="mini-card">
+<h4>Pohon Tidak Terurut</h4>
+<p>Urutan anak tidak terlalu diperhatikan.</p>
+</div>
+<div class="mini-card">
+<h4>Pohon Terurut</h4>
+<p>Urutan anak diperhatikan dan memengaruhi struktur pohon.</p>
+</div>
+</div>
+</div>
+<div class="info-box">
+<h3>Pengantar Pohon n-ary</h3>
+<p>
+          Setelah memahami pohon berakar, materi dapat dikembangkan ke pohon n-ary.
+          Pohon n-ary adalah pohon berakar yang setiap simpul cabangnya memiliki
+          paling banyak n anak.
+        </p>
+</div>
+</section>
+<section class="section light" id="analisis">
+<div class="section-title">
+<span>04</span>
+<h2>Contoh Analisis Pohon</h2>
+</div>
+<div class="example-box">
+<pre>
+      A
+    /   \
+   B     C
+  / \     \
+ D   E     F
+        </pre>
+<div class="analysis-list">
+<p><strong>A</strong> adalah akar.</p>
+<p><strong>B dan C</strong> adalah anak dari A.</p>
+<p><strong>D dan E</strong> adalah anak dari B.</p>
+<p><strong>F</strong> adalah anak dari C.</p>
+<p><strong>D, E, dan F</strong> adalah daun.</p>
+<p>Jika akar berada pada aras 0, maka tinggi pohon adalah <strong>2</strong>.</p>
+</div>
+</div>
+<div class="table-card">
+<h3>Ringkasan Simpul</h3>
+<table>
+<thead>
+<tr>
+<th>Simpul</th>
+<th>Orang Tua</th>
+<th>Anak</th>
+<th>Keterangan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>-</td>
+<td>B, C</td>
+<td>Akar</td>
+</tr>
+<tr>
+<td>B</td>
+<td>A</td>
+<td>D, E</td>
+<td>Simpul dalam</td>
+</tr>
+<tr>
+<td>C</td>
+<td>A</td>
+<td>F</td>
+<td>Simpul dalam</td>
+</tr>
+<tr>
+<td>D, E, F</td>
+<td>B atau C</td>
+<td>-</td>
+<td>Daun</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="section" id="kuis">
+<div class="section-title">
+<span>05</span>
+<h2>Kuis Analisis Pohon</h2>
+</div>
+<div class="quiz-card">
+<p class="quiz-note">
+          Gunakan contoh pohon A, B, C, D, E, F pada bagian analisis untuk menjawab soal.
+        </p>
+<h3 id="question">Memuat pertanyaan...</h3>
+<div class="answer-buttons" id="answerButtons"></div>
+<p id="result"></p>
+<button class="btn-primary" id="nextBtn">Pertanyaan Berikutnya</button>
+</div>
+</section>
+</main>
+<footer>
+<p>Website tugas Matematika Diskrit - Materi Pohon Berakar</p>
+<p>Dibuat oleh Daffa Dharma Wibowo | Kelas 2A | NIM 2500839</p>
+</footer>
+<script src="script.js"></script>
+</body>
+</html>
